@@ -30,7 +30,6 @@ public class CityServiceImpl extends GenericServiceImpl<City, CityDto> implement
     @Override
     public City toEntity(CityDto cityDto) {
         return City.builder()
-                .id(cityDto.getId())
                 .name(cityDto.getName())
                 .build();
     }

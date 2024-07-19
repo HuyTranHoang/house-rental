@@ -24,7 +24,7 @@ public abstract class GenericServiceImpl<T, V> implements GenericService<T, V> {
     public V getById(long id) {
         return getRepository().findById(id)
                 .map(this::toDto)
-                .orElse(null);
+                .orElseThrow(() -> new NoResultException("No entity found with id: " + id));
     }
 
     @Override
