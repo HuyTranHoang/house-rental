@@ -30,6 +30,7 @@ public class DistrictServiceImpl extends GenericServiceImpl<District, DistrictDt
         return DistrictDto.builder()
                 .id(district.getId())
                 .name(district.getName())
+                .cityId(district.getCity().getId())
                 .cityName(district.getCity().getName())
                 .build();
     }
