@@ -15,9 +15,7 @@ import java.util.Date;
 @Table(name = "amenities")
 @SQLDelete(sql = "UPDATE amenities SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
-public class Amenities {
-
-
+public class Amenity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
