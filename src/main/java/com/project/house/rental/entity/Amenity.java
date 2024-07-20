@@ -17,6 +17,7 @@ import java.util.Date;
 @SQLRestriction("is_deleted = false")
 public class Amenities {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
