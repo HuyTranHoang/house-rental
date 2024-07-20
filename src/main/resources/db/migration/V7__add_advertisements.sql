@@ -6,7 +6,7 @@ CREATE TABLE advertisements (
     start_date DATE,
     end_date DATE,
     discount_code VARCHAR(50),
-    is_deleted INT,
+    is_deleted TINYINT(1) NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

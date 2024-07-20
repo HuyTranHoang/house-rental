@@ -2,7 +2,7 @@ DROP TABLE if EXISTS authorities;
 CREATE TABLE IF NOT EXISTS authorities (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE,
-    is_deleted INT,
+    is_deleted TINYINT(1) NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -11,7 +11,7 @@ DROP TABLE if EXISTS roles;
 CREATE TABLE IF NOT EXISTS roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE,
-    is_deleted INT,
+    is_deleted TINYINT(1) NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS users (
     avatar_url VARCHAR(255),
     is_active TINYINT(1) NOT NULL,
     is_non_locked TINYINT(1) NOT NULL,
-    is_deleted INT,
+    is_deleted TINYINT(1) NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -51,11 +51,20 @@ CREATE TABLE IF NOT EXISTS user_roles (
     FOREIGN KEY (role_id) REFERENCES roles(id) on delete cascade on update cascade
 );
 
-DROP TABLE if EXISTS role_authorities;
-CREATE TABLE IF NOT EXISTS role_authorities (
-    role_id INT,
+DROP TABLE if EXISTS user_authorities;
+CREATE TABLE IF NOT EXISTS user_authorities (
+    user_id INT,
     authority_id INT,
-    PRIMARY KEY (role_id, authority_id),
-    FOREIGN KEY (role_id) REFERENCES roles(id) on delete cascade on update cascade,
+    PRIMARY KEY (user_id, authority_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade on update cascade,
     FOREIGN KEY (authority_id) REFERENCES authorities(id) on delete cascade on update cascade
 );
+
+# DROP TABLE if EXISTS role_authorities;
+# CREATE TABLE IF NOT EXISTS role_authorities (
+#                                                 role_id INT,
+#                                                 authority_id INT,
+#                                                 PRIMARY KEY (role_id, authority_id),
+#                                                 FOREIGN KEY (role_id) REFERENCES roles(id) on delete cascade on update cascade,
+#                                                 FOREIGN KEY (authority_id) REFERENCES authorities(id) on delete cascade on update cascade
+# );

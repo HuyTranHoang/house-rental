@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -12,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "role")
+@Table(name = "roles")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Role {
 
@@ -22,9 +23,18 @@ public class Role {
 
     String name;
 
+    @Column(name = "is_deleted")
+    boolean isDeleted;
+
+    @Column(name = "created_at")
+    Date createdAt;
+
+    @Column(name = "updated_at")
+    Date updatedAt;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
-            name = "role_authority",
+            name = "role_authorities",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )

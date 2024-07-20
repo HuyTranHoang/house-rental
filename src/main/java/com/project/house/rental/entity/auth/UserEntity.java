@@ -14,22 +14,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-
-    @Column(name = "user_id")
-    String userId;
-
-    @Column(name = "first_name")
-    String firstName;
-
-    @Column(name = "last_name")
-    String lastName;
 
     String username;
 
@@ -38,27 +29,36 @@ public class UserEntity {
 
     String email;
 
-    @Column(name = "profile_image_url")
-    String profileImageUrl;
+    @Column(name = "phone_number")
+    String phoneNumber;
 
-    @Column(name = "last_login_date")
-    Date lastLoginDate;
+    @Column(name = "first_name")
+    String firstName;
 
-    @Column(name = "last_login_date_display")
-    Date lastLoginDateDisplay;
+    @Column(name = "last_name")
+    String lastName;
 
-    @Column(name = "join_date")
-    Date joinDate;
+    @Column(name = "avatar_url")
+    String avatarUrl;
 
     @Column(name = "is_active")
     boolean isActive;
 
-    @Column(name = "is_not_locked")
-    boolean isNotLocked;
+    @Column(name = "is_non_locked")
+    boolean isNonLocked;
+
+    @Column(name = "is_deleted")
+    boolean isDeleted;
+
+    @Column(name = "created_at")
+    Date createdAt;
+
+    @Column(name = "updated_at")
+    Date updatedAt;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
-            name = "user_role",
+            name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
@@ -66,7 +66,7 @@ public class UserEntity {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
-            name = "user_authority",
+            name = "user_authorities",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )

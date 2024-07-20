@@ -4,13 +4,16 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "city")
+@Table(name = "cities")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class City {
 
@@ -19,4 +22,16 @@ public class City {
     long id;
 
     String name;
+
+    @Column(name = "is_deleted")
+    boolean isDeleted;
+
+    @Column(name = "created_at")
+    Date createdAt;
+
+    @Column(name = "updated_at")
+    Date updatedAt;
+
+//    @OneToMany(mappedBy = "city")
+//    List<District> districts;
 }
