@@ -140,6 +140,17 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<configuration>
+					<url>jdbc:mysql://localhost:3306/house_rental?allowPublicKeyRetrieval=true&amp;useSSL=false</url>
+					<user>root</user>
+					<password>root</password>
+					<baselineOnMigrate>true</baselineOnMigrate>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
