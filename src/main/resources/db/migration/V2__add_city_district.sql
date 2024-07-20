@@ -1,17 +1,19 @@
-DROP TABLE if EXISTS city;
-CREATE TABLE IF NOT EXISTS city
-(
-    id   INT(11)      NOT NULL AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    PRIMARY KEY (id)
+DROP TABLE if EXISTS cities;
+CREATE TABLE IF NOT EXISTS cities (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    is_deleted INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE if EXISTS district;
-CREATE TABLE IF NOT EXISTS district
-(
-    id      INT(11)      NOT NULL AUTO_INCREMENT,
-    name    VARCHAR(100) NOT NULL,
-    city_id INT(11)      NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT FK_district_01 FOREIGN KEY (city_id) REFERENCES city (id) on delete no action on update no action
+DROP TABLE if EXISTS districts;
+CREATE TABLE IF NOT EXISTS districts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    is_deleted INT,
+    city_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (city_id) REFERENCES cities(id) on delete cascade on update cascade
 );

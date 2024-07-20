@@ -2,10 +2,14 @@ spring:
   application:
     name: house-rental
   datasource:
-    url: jdbc:mysql://localhost:3306/house_rental?useSSL=false
+    url: jdbc:mysql://localhost:3306/house_rental?allowPublicKeyRetrieval=true&useSSL=false
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    url: jdbc:mysql://localhost:3306/house_rental?allowPublicKeyRetrieval=true&useSSL=false
+    user: root
+    password: root
   jpa:
     hibernate.ddl-auto: none
   sql:
