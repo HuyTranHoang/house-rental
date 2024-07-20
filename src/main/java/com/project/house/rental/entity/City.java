@@ -37,9 +37,9 @@ public class City {
     Date createdAt;
 
     @Column(name = "updated_at")
+    @UpdateTimestamp
     Date updatedAt;
 
     @OneToMany(mappedBy = "city")
-    @UpdateTimestamp
     List<District> districts;
 }

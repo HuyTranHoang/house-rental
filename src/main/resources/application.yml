@@ -36,3 +36,9 @@ server:
 jwt:
   secret: superSerectJwt1234567890!@#$%^&*()_+superSerectJwt1234567890!@#$%^&*()_+
 
+app:
+  pagination:
+    default-page-size: 10
+    default-page-number: 0
+    max-page-size: 20
+

@@ -34,6 +34,11 @@ public class ExceptionHandling {
         return createResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<HttpResponse> illegalArgumentException(IllegalArgumentException e) {
+        return createResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
     @ExceptionHandler(CustomRuntimeException.class)
     public ResponseEntity<HttpResponse> customRuntimeException(Exception e) {
         return createResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
