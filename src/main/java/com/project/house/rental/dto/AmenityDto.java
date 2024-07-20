@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AmenitiesDto {
+public class AmenityDto {
     long id;
 
     @NotEmpty(message = "Amenities name is required")
