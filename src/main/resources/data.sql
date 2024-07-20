@@ -1,0 +1,27 @@
+INSERT INTO cities(name) VALUES ('TPHCM');
+INSERT INTO cities(name) VALUES ('Hà Nội');
+
+INSERT INTO districts(name, city_id) VALUES ('Quận 1', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận 2 (TP. Thủ Đức)', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận 3', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận 4', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận 5', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận 6', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận 7', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận 8', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận 9', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận 10', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận 11', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận 12', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận Bình Thạnh', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận Gò Vấp', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận Phú Nhuận', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận Tân Bình', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận Tân Phú', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận Thủ Đức (TP. Thủ Đức)', 1);
+INSERT INTO districts(name, city_id) VALUES ('Quận Bình Tân', 1);
+INSERT INTO districts(name, city_id) VALUES ('Huyện Bình Chánh', 1);
+INSERT INTO districts(name, city_id) VALUES ('Huyện Cần Giờ', 1);
+INSERT INTO districts(name, city_id) VALUES ('Huyện Củ Chi', 1);
+INSERT INTO districts(name, city_id) VALUES ('Huyện Hóc Môn', 1);
+INSERT INTO districts(name, city_id) VALUES ('Huyện Nhà Bè', 1);
