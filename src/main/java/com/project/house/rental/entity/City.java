@@ -32,6 +32,6 @@ public class City {
     @Column(name = "updated_at")
     Date updatedAt;
 
-    @OneToMany(mappedBy = "city")
-    List<District> districts;
+//    @OneToMany(mappedBy = "city")
+//    List<District> districts;
 }
