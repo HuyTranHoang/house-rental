@@ -2,11 +2,13 @@ package com.project.house.rental.controller;
 
 
 import com.project.house.rental.dto.DistrictDto;
+import com.project.house.rental.dto.params.DistrictParams;
 import com.project.house.rental.service.DistrictService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/district")
@@ -19,8 +21,14 @@ public class DistrictController {
     }
 
     @GetMapping({"/", ""})
-    public ResponseEntity<List<DistrictDto>> getAllDistricts() {
-        List<DistrictDto> districts = districtService.getAll();
+    public ResponseEntity<Map<String,Object>> getAllDistrict(@ModelAttribute DistrictParams districtParams) {
+        Map<String, Object> districtsWithPagination = districtService.getAllDistrictsWithParams(districtParams);
+        return ResponseEntity.ok(districtsWithPagination);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<DistrictDto>> getAllDistrictsNoPaging(@RequestParam(required = false) String city) {
+        List<DistrictDto> districts = districtService.getAllWithFilter(city);
         return ResponseEntity.ok(districts);
     }
 
