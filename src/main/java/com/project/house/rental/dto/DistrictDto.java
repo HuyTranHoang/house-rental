@@ -3,6 +3,7 @@ package com.project.house.rental.dto;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -11,8 +12,7 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@SQLDelete(sql = "UPDATE districts SET is_deleted = true WHERE id = ?")
-@SQLRestriction("is_deleted = false")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DistrictDto {
     long id;
 

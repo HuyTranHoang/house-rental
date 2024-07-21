@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 import java.util.List;
@@ -51,9 +53,11 @@ public class UserEntity {
     boolean isDeleted;
 
     @Column(name = "created_at")
+    @CreationTimestamp
     Date createdAt;
 
     @Column(name = "updated_at")
+    @UpdateTimestamp
     Date updatedAt;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

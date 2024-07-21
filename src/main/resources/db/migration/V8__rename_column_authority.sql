@@ -1,0 +1,1 @@
+ALTER TABLE authorities RENAME COLUMN name TO privilege;
