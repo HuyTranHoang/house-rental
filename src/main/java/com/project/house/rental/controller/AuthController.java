@@ -1,6 +1,7 @@
 package com.project.house.rental.controller;
 
 import com.project.house.rental.constant.SecurityConstant;
+import com.project.house.rental.dto.auth.LoginDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.entity.auth.UserPrincipal;
@@ -8,6 +9,7 @@ import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.auth.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,16 +36,16 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserEntityDto> register(@RequestBody UserEntityDto user) throws CustomRuntimeException {
+    public ResponseEntity<UserEntityDto> register(@RequestBody @Valid UserEntityDto user) throws CustomRuntimeException {
         UserEntityDto newUserEntityDto = userService.register(user);
         return ResponseEntity.ok(newUserEntityDto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserEntityDto> login(@RequestBody UserEntityDto user) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+    public ResponseEntity<UserEntityDto> login(@RequestBody @Valid LoginDto loginDto) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
 
-        UserEntity loginUser = userRepository.findUserByUsername(user.getUsername());
+        UserEntity loginUser = userRepository.findUserByUsername(loginDto.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
 
         String JwtToken = jwtTokenProvider.generateJwtToken(userPrincipal);
