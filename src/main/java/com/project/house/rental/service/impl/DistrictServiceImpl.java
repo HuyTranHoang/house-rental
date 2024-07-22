@@ -4,6 +4,7 @@ import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.dto.DistrictDto;
 import com.project.house.rental.dto.params.DistrictParams;
 import com.project.house.rental.entity.City;
+import com.project.house.rental.entity.City_;
 import com.project.house.rental.entity.District;
 import com.project.house.rental.entity.District_;
 import com.project.house.rental.repository.CityRepository;
@@ -83,8 +84,8 @@ public class DistrictServiceImpl extends GenericServiceImpl<District, DistrictDt
             case "nameDesc" -> Sort.by(District_.NAME).descending();
             case "nameAsc" -> Sort.by(District_.NAME);
             case "createAtAsc" -> Sort.by(District_.CREATED_AT);
-            case "cityAsc" -> Sort.by(District_.CITY);
-            case "cityDesc" -> Sort.by(District_.CITY).descending();
+            case "cityNameAsc" -> Sort.by(District_.CITY + "." + City_.NAME);
+            case "cityNameDesc" -> Sort.by(District_.CITY + "." + City_.NAME).descending();
             default -> Sort.by(District_.CREATED_AT).descending();
         };
 
