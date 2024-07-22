@@ -4,6 +4,7 @@ package com.project.house.rental.controller;
 import com.project.house.rental.dto.DistrictDto;
 import com.project.house.rental.dto.params.DistrictParams;
 import com.project.house.rental.service.DistrictService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,8 +39,14 @@ public class DistrictController {
         return ResponseEntity.ok(district);
     }
 
+    @PostMapping({"/", ""})
+    public ResponseEntity<DistrictDto> createDistrict(@RequestBody @Valid DistrictDto districtDto){
+        DistrictDto district = districtService.create(districtDto);
+        return ResponseEntity.ok(district);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<DistrictDto> updateDistrict(@PathVariable long id, @RequestBody DistrictDto districtDto){
+    public ResponseEntity<DistrictDto> updateDistrict(@PathVariable long id, @RequestBody @Valid DistrictDto districtDto){
         DistrictDto district = districtService.update(id, districtDto);
         return ResponseEntity.ok(district);
     }

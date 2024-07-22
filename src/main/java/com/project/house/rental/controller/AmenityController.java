@@ -2,6 +2,7 @@ package com.project.house.rental.controller;
 
 import com.project.house.rental.dto.AmenityDto;
 import com.project.house.rental.service.AmenityService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,13 +30,13 @@ public class AmenityController {
     }
 
     @PostMapping({"/", ""})
-    public ResponseEntity<AmenityDto> createAmenities(@RequestBody AmenityDto amenitiesDto) {
+    public ResponseEntity<AmenityDto> createAmenities(@RequestBody @Valid AmenityDto amenitiesDto) {
         AmenityDto amenities = amenitiesService.create(amenitiesDto);
         return ResponseEntity.ok(amenities);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AmenityDto> updateAmenities(@PathVariable long id, @RequestBody AmenityDto amenitiesDto) {
+    public ResponseEntity<AmenityDto> updateAmenities(@PathVariable long id, @RequestBody @Valid AmenityDto amenitiesDto) {
         AmenityDto amenities = amenitiesService.update(id, amenitiesDto);
         return ResponseEntity.ok(amenities);
     }

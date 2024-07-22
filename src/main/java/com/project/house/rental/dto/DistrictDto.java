@@ -20,7 +20,6 @@ public class DistrictDto {
     @Size(max = 100, message = "The district cannot exceed 100 characters")
     String name;
 
-    @NotEmpty(message = "City id is required")
     long cityId;
 
     String cityName;

@@ -3,6 +3,7 @@ package com.project.house.rental.controller;
 import com.project.house.rental.dto.CityDto;
 import com.project.house.rental.dto.params.CityParams;
 import com.project.house.rental.service.CityService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,13 +39,13 @@ public class CityController {
     }
 
     @PostMapping({"/", ""})
-    public ResponseEntity<CityDto> createCity(@RequestBody CityDto cityDto) {
+    public ResponseEntity<CityDto> createCity(@RequestBody @Valid CityDto cityDto) {
         CityDto city = cityService.create(cityDto);
         return ResponseEntity.ok(city);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CityDto> updateCity(@PathVariable long id, @RequestBody CityDto cityDto) {
+    public ResponseEntity<CityDto> updateCity(@PathVariable long id, @RequestBody @Valid CityDto cityDto) {
         CityDto city = cityService.update(id, cityDto);
         return ResponseEntity.ok(city);
     }

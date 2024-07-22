@@ -4,6 +4,7 @@ import com.project.house.rental.dto.CityDto;
 import com.project.house.rental.dto.RoomTypeDto;
 import com.project.house.rental.dto.params.RoomTypeParams;
 import com.project.house.rental.service.RoomTypeService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,13 +39,13 @@ public class RoomTypeController {
     }
 
     @PostMapping({"/", ""})
-    public ResponseEntity<RoomTypeDto> createRoomType(@RequestBody RoomTypeDto roomTypeDto) {
+    public ResponseEntity<RoomTypeDto> createRoomType(@RequestBody @Valid RoomTypeDto roomTypeDto) {
         RoomTypeDto roomType = roomTypeService.create(roomTypeDto);
         return ResponseEntity.ok(roomType);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RoomTypeDto> updateRoomType(@PathVariable long id, @RequestBody RoomTypeDto roomTypeDto) {
+    public ResponseEntity<RoomTypeDto> updateRoomType(@PathVariable long id, @RequestBody @Valid RoomTypeDto roomTypeDto) {
         RoomTypeDto roomType = roomTypeService.update(id, roomTypeDto);
         return ResponseEntity.ok(roomType);
     }

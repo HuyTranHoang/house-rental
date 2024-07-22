@@ -65,7 +65,6 @@ public class DistrictServiceImpl extends GenericServiceImpl<District, DistrictDt
         City city = cityRepository.findById(districtDto.getCityId())
                 .orElseThrow(() -> new NoResultException("Not found City with id: " + districtDto.getCityId()));
 
-        district.setId(districtDto.getId());
         district.setName(districtDto.getName());
         district.setCity(city);
     }
