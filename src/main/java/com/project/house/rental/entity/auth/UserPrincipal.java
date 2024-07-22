@@ -52,4 +52,8 @@ public class UserPrincipal implements UserDetails {
     public boolean isEnabled() {
         return user.isActive();
     }
+
+    public Long getId() {
+        return user.getId();
+    }
 }
