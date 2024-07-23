@@ -1,12 +1,11 @@
 package com.project.house.rental.controller;
-
 import com.project.house.rental.dto.AmenityDto;
+import com.project.house.rental.dto.params.AmenityParams;
 import com.project.house.rental.service.AmenityService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/amenities")
@@ -18,9 +17,9 @@ public class AmenityController {
         this.amenitiesService = amenitiesService;
     }
     @GetMapping({"/", ""})
-    public ResponseEntity<List<AmenityDto>> getAllAmenities() {
-        List<AmenityDto> amenities = amenitiesService.getAll();
-        return ResponseEntity.ok(amenities);
+    public ResponseEntity<Map<String, Object>> getAllAmenities(@ModelAttribute AmenityParams amenityParams) {
+        Map<String, Object> amenityWithParams = amenitiesService.getAllAmenitiesWithParams(amenityParams);
+        return ResponseEntity.ok(amenityWithParams);
     }
 
     @GetMapping("/{id}")
