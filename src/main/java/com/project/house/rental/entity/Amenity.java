@@ -2,6 +2,7 @@ package com.project.house.rental.entity;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.*;
 
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "amenities")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @SQLDelete(sql = "UPDATE amenities SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 public class Amenity {
