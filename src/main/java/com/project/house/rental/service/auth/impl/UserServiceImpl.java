@@ -62,12 +62,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         UserEntity existUsername = userRepository.findUserByUsername(user.getUsername());
         if (existUsername != null) {
-            throw new CustomRuntimeException("User already exists");
+            throw new CustomRuntimeException("Tài khoản đã tồn tại!");
         }
 
         UserEntity existEmail = userRepository.findUserByEmail(user.getEmail());
         if (existEmail != null) {
-            throw new CustomRuntimeException("Email has been registered for other user");
+            throw new CustomRuntimeException("Email đã được đăng ký!");
         }
 
         String encodePassword = passwordEncoder.encode(user.getPassword());
@@ -88,11 +88,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         UserEntity user = userRepository.findUserByUsername(username);
 
         if (user == null) {
-            throw new UsernameNotFoundException("User not found in the database");
+            throw new UsernameNotFoundException("Không tìm thấy tài khoản!");
         }
 
         if (!user.isNonLocked()) {
-            throw new UsernameNotFoundException("User account is locked");
+            throw new UsernameNotFoundException("Tài khoản đã bị khóa!");
         }
 
         return new UserPrincipal(user);
