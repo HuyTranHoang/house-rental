@@ -1,6 +1,5 @@
 package com.project.house.rental.controller;
 import com.project.house.rental.dto.AmenityDto;
-import com.project.house.rental.dto.CityDto;
 import com.project.house.rental.dto.params.AmenityParams;
 import com.project.house.rental.service.AmenityService;
 import jakarta.validation.Valid;
