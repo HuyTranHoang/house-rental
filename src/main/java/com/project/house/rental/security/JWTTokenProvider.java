@@ -64,6 +64,15 @@ public class JWTTokenProvider {
         return !isTokenExpiration && StringUtils.isNotEmpty(username);
     }
 
+    public boolean isTokenValid(String token) {
+        JWTVerifier verifier = getVerifier();
+
+        Date expiration = verifier.verify(token).getExpiresAt();
+        boolean isTokenExpiration = expiration.before(new Date());
+
+        return !isTokenExpiration;
+    }
+
     public List<GrantedAuthority> grantedAuthorities(String token) {
         JWTVerifier verifier = getVerifier();
 
