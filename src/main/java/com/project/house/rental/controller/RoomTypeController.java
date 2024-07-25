@@ -1,6 +1,5 @@
 package com.project.house.rental.controller;
 
-import com.project.house.rental.dto.CityDto;
 import com.project.house.rental.dto.RoomTypeDto;
 import com.project.house.rental.dto.params.RoomTypeParams;
 import com.project.house.rental.service.RoomTypeService;

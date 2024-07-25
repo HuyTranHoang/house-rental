@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 public class AmenityDto {
     long id;
 
-    @NotEmpty(message = "Amenities name is required")
-    @Size(max = 100, message = "The amenities cannot exceed 100 characters")
+    @NotEmpty(message = "Vui lòng nhập tên tiện ích")
+    @Size(max = 100, message = "Tên tiện ích không được vượt quá 100 kí tự")
     String name;
 }

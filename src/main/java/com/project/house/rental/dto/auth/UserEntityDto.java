@@ -18,17 +18,17 @@ import java.util.List;
 public class UserEntityDto {
     long id;
 
-    @NotEmpty(message = "Username is required")
-    @Size(min = 4, max = 50, message = "Username must be between 4 and 50 characters")
+    @NotEmpty(message = "Vui lòng nhập tên đăng nhập")
+    @Size(min = 4, max = 50, message = "Tên đăng nhập phải từ 4 đến 50 kí tự")
     String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotEmpty(message = "Password is required")
+    @NotEmpty(message = "Vui lòng nhập mật khẩu")
     String password;
 
-    @NotEmpty(message = "Email is required")
-    @Size(max = 100, message = "Email must be less than 100 characters")
-    @Email(message = "Email must be a valid email address")
+    @NotEmpty(message = "Vui lòng nhập email")
+    @Size(max = 100, message = "Email không được vượt quá 100 kí tự")
+    @Email(message = "Vui lòng nhập email hợp lệ")
     String email;
 
     String phoneNumber;

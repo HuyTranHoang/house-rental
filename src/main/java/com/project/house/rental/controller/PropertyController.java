@@ -1,4 +1,5 @@
 package com.project.house.rental.controller;
+
 import com.project.house.rental.dto.PropertyDto;
 import com.project.house.rental.service.PropertyService;
 import jakarta.validation.Valid;
@@ -26,8 +27,9 @@ public class PropertyController {
         List<PropertyDto> properties = propertyService.getAll();
         return ResponseEntity.ok(properties);
     }
+
     @PostMapping
-    public ResponseEntity<PropertyDto> createProperty( @Valid @RequestBody PropertyDto propertyDto) {
+    public ResponseEntity<PropertyDto> createProperty(@Valid @RequestBody PropertyDto propertyDto) {
         PropertyDto createdProperty = propertyService.create(propertyDto);
         return new ResponseEntity<>(createdProperty, HttpStatus.CREATED);
     }
@@ -39,9 +41,9 @@ public class PropertyController {
     }
 
     @PutMapping("/{id}")
-        public ResponseEntity<PropertyDto> updateProperty(@PathVariable Long id, @Valid @RequestBody PropertyDto propertyDto) {
-            PropertyDto updatedProperty = propertyService.update(id,propertyDto);
-            return new ResponseEntity<>(updatedProperty, HttpStatus.OK);
+    public ResponseEntity<PropertyDto> updateProperty(@PathVariable Long id, @Valid @RequestBody PropertyDto propertyDto) {
+        PropertyDto updatedProperty = propertyService.update(id, propertyDto);
+        return new ResponseEntity<>(updatedProperty, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

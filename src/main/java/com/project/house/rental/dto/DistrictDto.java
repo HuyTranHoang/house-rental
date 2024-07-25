@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Setter
@@ -16,8 +14,8 @@ import org.hibernate.annotations.SQLRestriction;
 public class DistrictDto {
     long id;
 
-    @NotEmpty(message = "District name is required")
-    @Size(max = 100, message = "The district cannot exceed 100 characters")
+    @NotEmpty(message = "Vui lòng nhập tên quận")
+    @Size(max = 100, message = "Tên quận không được vượt quá 100 kí tự")
     String name;
 
     long cityId;
