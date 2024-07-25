@@ -14,8 +14,8 @@ import lombok.experimental.FieldDefaults;
 public class DistrictDto {
     long id;
 
-    @NotEmpty(message = "District name is required")
-    @Size(max = 100, message = "The district cannot exceed 100 characters")
+    @NotEmpty(message = "Vui lòng nhập tên quận")
+    @Size(max = 100, message = "Tên quận không được vượt quá 100 kí tự")
     String name;
 
     long cityId;

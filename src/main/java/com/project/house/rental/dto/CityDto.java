@@ -1,6 +1,7 @@
 package com.project.house.rental.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 public class CityDto {
     long id;
 
-    @NotEmpty(message = "City name is required")
+    @NotEmpty(message = "Vui lòng nhập tên thành phố")
+    @Size(max = 100, message = "Tên thành phố không được vượt quá 100 kí tự")
     String name;
 }

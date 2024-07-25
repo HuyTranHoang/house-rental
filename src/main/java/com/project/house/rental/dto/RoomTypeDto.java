@@ -1,6 +1,7 @@
 package com.project.house.rental.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
@@ -11,6 +12,7 @@ import lombok.*;
 public class RoomTypeDto {
     long id;
 
-    @NotEmpty(message = "Room type is required")
+    @NotEmpty(message = "Vui lòng nhập tên loại phòng")
+    @Size(max = 100, message = "Tên loại phòng không được vượt quá 100 kí tự")
     String name;
 }
