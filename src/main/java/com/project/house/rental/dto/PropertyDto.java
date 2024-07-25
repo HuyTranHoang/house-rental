@@ -13,10 +13,13 @@ public class PropertyDto {
 
     long id;
 
+    @Size(max = 255, message = "Tiêu đề có tối đa 255 kí tự")
+    @NotBlank(message = "Tiêu đề là bắt buộc")
     String title;
 
     String description;
 
+    @Size(max = 255, message = "Tiêu đề có tối đa 255 kí tự")
     @NotBlank(message = "Vị trí là bắt buộc")
     String location;
 
