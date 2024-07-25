@@ -4,6 +4,8 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -39,16 +41,21 @@ public class PropertyDto {
     @NotEmpty(message = "Vui lòng chọn trạng thái")
     String status;
 
-    String userName;
     long userId;
 
-    String cityName;
+    String userName;
+
     long cityId;
 
-    String districtName;
+    String cityName;
+
     long districtId;
 
-    String roomTypeName;
+    String districtName;
+
     long roomTypeId;
 
+    String roomTypeName;
+
+    List<String> amenities;
 }

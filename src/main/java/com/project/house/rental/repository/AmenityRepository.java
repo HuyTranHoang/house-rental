@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AmenityRepository extends GenericRepository<Amenity> , JpaSpecificationExecutor<Amenity> {
+    Amenity findByNameIgnoreCase(String name);
 }
