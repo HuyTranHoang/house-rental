@@ -1,5 +1,6 @@
 package com.project.house.rental.entity;
 
+import com.project.house.rental.entity.auth.Role;
 import com.project.house.rental.entity.auth.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -64,6 +66,14 @@ public class Property {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "room_type_id")
     RoomType roomType;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "property_amenities",
+            joinColumns = @JoinColumn(name = "property_id"),
+            inverseJoinColumns = @JoinColumn(name = "amenity_id")
+    )
+    List<Amenity> amenities;
 
     @Column(name = "is_deleted")
     boolean isDeleted = Boolean.FALSE;
