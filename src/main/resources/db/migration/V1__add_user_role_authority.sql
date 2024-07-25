@@ -1,4 +1,4 @@
-DROP TABLE if EXISTS authorities;
+DROP TABLE IF EXISTS authorities;
 CREATE TABLE IF NOT EXISTS authorities (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE,
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS authorities (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE if EXISTS roles;
+DROP TABLE IF EXISTS roles;
 CREATE TABLE IF NOT EXISTS roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS roles (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE if EXISTS role_authorities;
+DROP TABLE IF EXISTS role_authorities;
 CREATE TABLE IF NOT EXISTS role_authorities (
     role_id INT,
     authority_id INT,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS role_authorities (
     FOREIGN KEY (authority_id) REFERENCES authorities(id) on delete cascade on update cascade
 );
 
-DROP TABLE if EXISTS users;
+DROP TABLE IF EXISTS users;
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE if EXISTS user_roles;
+DROP TABLE IF EXISTS user_roles;
 CREATE TABLE IF NOT EXISTS user_roles (
     user_id INT,
     role_id INT,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS user_roles (
     FOREIGN KEY (role_id) REFERENCES roles(id) on delete cascade on update cascade
 );
 
-DROP TABLE if EXISTS user_authorities;
+DROP TABLE IF EXISTS user_authorities;
 CREATE TABLE IF NOT EXISTS user_authorities (
     user_id INT,
     authority_id INT,
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS user_authorities (
     FOREIGN KEY (authority_id) REFERENCES authorities(id) on delete cascade on update cascade
 );
 
-# DROP TABLE if EXISTS role_authorities;
+# DROP TABLE IF EXISTS role_authorities;
 # CREATE TABLE IF NOT EXISTS role_authorities (
 #                                                 role_id INT,
 #                                                 authority_id INT,

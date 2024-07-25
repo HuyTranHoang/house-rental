@@ -1,4 +1,4 @@
-DROP TABLE if EXISTS reviews;
+DROP TABLE IF EXISTS reviews;
 CREATE TABLE reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -12,7 +12,7 @@ CREATE TABLE reviews (
     FOREIGN KEY (property_id) REFERENCES properties(id)  on delete cascade on update cascade
 );
 
-DROP TABLE if EXISTS reports;
+DROP TABLE IF EXISTS reports;
 CREATE TABLE reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,

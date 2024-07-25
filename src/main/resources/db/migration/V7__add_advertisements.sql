@@ -1,4 +1,4 @@
-DROP TABLE if EXISTS advertisements;
+DROP TABLE IF EXISTS advertisements;
 CREATE TABLE advertisements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
