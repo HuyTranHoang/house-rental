@@ -2,14 +2,15 @@ package com.project.house.rental.entity;
 
 
 import jakarta.persistence.*;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -44,5 +45,5 @@ public class District {
     City city;
 
     @OneToMany(mappedBy = "district")
-    private Set<Property> properties;
+    List<Property> properties;
 }

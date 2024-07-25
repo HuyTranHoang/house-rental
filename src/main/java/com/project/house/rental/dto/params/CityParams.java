@@ -1,6 +1,7 @@
 package com.project.house.rental.dto.params;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

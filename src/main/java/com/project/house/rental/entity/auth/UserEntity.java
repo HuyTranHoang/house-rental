@@ -10,7 +10,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -80,5 +79,5 @@ public class UserEntity {
     List<Authority> authorities;
 
     @OneToMany(mappedBy = "user")
-    private Set<Property> properties;
+    List<Property> properties;
 }

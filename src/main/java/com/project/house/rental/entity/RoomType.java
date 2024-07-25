@@ -9,7 +9,7 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -41,5 +41,5 @@ public class RoomType {
     Date updatedAt;
 
     @OneToMany(mappedBy = "roomType")
-    private Set<Property> properties;
+    List<Property> properties;
 }

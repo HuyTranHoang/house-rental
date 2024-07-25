@@ -10,7 +10,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -45,5 +44,5 @@ public class City {
     List<District> districts;
 
     @OneToMany(mappedBy = "city")
-    private Set<Property> properties;
+    List<Property> properties;
 }
