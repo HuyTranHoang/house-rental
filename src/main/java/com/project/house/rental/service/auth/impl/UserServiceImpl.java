@@ -1,6 +1,7 @@
 package com.project.house.rental.service.auth.impl;
 
 import com.project.house.rental.common.email.EmailSenderService;
+import com.project.house.rental.dto.auth.ChangePasswordDto;
 import com.project.house.rental.dto.auth.ProfileDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
 import com.project.house.rental.entity.auth.Authority;
@@ -118,6 +119,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setFirstName(profileDto.getFirstName());
         user.setLastName(profileDto.getLastName());
         user.setPhoneNumber(profileDto.getPhoneNumber());
+
+        return toDto(userRepository.save(user));
+    }
+
+    @Override
+    public UserEntityDto changePassword(ChangePasswordDto changePasswordDto, HttpServletRequest request) throws CustomRuntimeException {
+        String username = getUsernameFromToken(request);
+        if (username == null) {
+            throw new CustomRuntimeException("Vui lòng đăng nhập để thay đổi mật khẩu!");
+        }
+
+        UserEntity user = userRepository.findUserByUsername(username);
+        if (user == null) {
+            throw new CustomRuntimeException("Không tìm thấy tài khoản!");
+        }
+
+        if (!passwordEncoder.matches(changePasswordDto.getOldPassword(), user.getPassword())) {
+            throw new CustomRuntimeException("Mật khẩu cũ không chính xác!");
+        }
+
+        user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
 
         return toDto(userRepository.save(user));
     }

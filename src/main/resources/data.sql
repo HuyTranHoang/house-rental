@@ -116,9 +116,9 @@ VALUES (1, 1),
 
 INSERT IGNORE INTO users (id, username, password, email, phone_number, first_name, last_name, avatar_url, is_active,
                           is_non_locked, is_deleted, created_at, updated_at)
-VALUES (1, 'user', 'password', 'user@gmail.com', '0123456789', 'User', 'Test',
+VALUES (1, 'user', 'password1', 'user@gmail.com', '0123456789', 'User', 'Test',
         'http://localhost:8080/api/user/image/profile/user@email.com', 1, 1, 0, now(), now()),
-       (2, 'admin', 'password', 'admin@gmail.com', '0123456789', 'Admin', 'Test',
+       (2, 'admin', 'password1', 'admin@gmail.com', '0123456789', 'Admin', 'Test',
         'http://localhost:8080/api/user/image/profile/admin@email.com', 1, 1, 0, now(), now());
 
 INSERT IGNORE INTO user_authorities (user_id, authority_id)

@@ -1,5 +1,6 @@
 package com.project.house.rental.controller;
 
+import com.project.house.rental.dto.auth.ChangePasswordDto;
 import com.project.house.rental.dto.auth.ProfileDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
 import com.project.house.rental.exception.CustomRuntimeException;
@@ -24,6 +25,13 @@ public class UserController {
     @PutMapping("/profile")
     public ResponseEntity<UserEntityDto> updateProfile(@RequestBody @Valid ProfileDto profileDto, HttpServletRequest request) throws CustomRuntimeException {
         UserEntityDto userEntityDto = userService.updateProfile(profileDto, request);
+        return ResponseEntity.ok(userEntityDto);
+    }
+
+    @PreAuthorize("hasAnyAuthority('user:update')")
+    @PutMapping("/change-password")
+    public ResponseEntity<UserEntityDto> changePassword(@RequestBody @Valid ChangePasswordDto changePasswordDto, HttpServletRequest request) throws CustomRuntimeException {
+        UserEntityDto userEntityDto = userService.changePassword(changePasswordDto, request);
         return ResponseEntity.ok(userEntityDto);
     }
 }

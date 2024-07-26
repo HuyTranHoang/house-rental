@@ -3,6 +3,7 @@ package com.project.house.rental.dto.auth;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,6 +24,7 @@ public class UserEntityDto {
     String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm chữ thường và số")
     @NotEmpty(message = "Vui lòng nhập mật khẩu")
     String password;
 
