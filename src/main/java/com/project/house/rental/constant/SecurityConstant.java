@@ -13,15 +13,18 @@ public class SecurityConstant {
     public static final String JWT_AUTHORITIES = "authorities";
 
     public static final String[] API_PUBLIC_URLS = {
-            "/api/login",
-            "/api/user/register",
+            "/api/auth/login",
+            "/api/auth/register",
+            "/api/auth/refresh-token",
             "/api/user/resetPassword/**",
-            "/api/user/image/**",
     };
 
     public static final String[] API_PUBLIC_GET_URLS = {
-            "/api/products/**",
-            "/api/file/image/**"
+            "/api/city/**",
+            "/api/district/**",
+            "/api/property/**",
+            "/api/amenities/**",
+            "/api/room-type/**",
     };
 
     public static final String[] RESOURCE_URLS = {

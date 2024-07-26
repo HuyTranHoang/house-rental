@@ -108,6 +108,7 @@ VALUES (1, 'ROLE_USER'),
 
 INSERT IGNORE INTO role_authorities (role_id, authority_id)
 VALUES (1, 1),
+       (1, 2),
        (2, 1),
        (2, 2),
        (2, 3),

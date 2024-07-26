@@ -1,9 +1,11 @@
 package com.project.house.rental.security;
 
+import com.project.house.rental.constant.SecurityConstant;
 import com.project.house.rental.filter.JWTAuthenticationEntryPoint;
 import com.project.house.rental.filter.JWTAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -51,8 +53,14 @@ public class WebSecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest()
+                        .requestMatchers(SecurityConstant.RESOURCE_URLS)
                         .permitAll()
+                        .requestMatchers(SecurityConstant.API_PUBLIC_URLS)
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, SecurityConstant.API_PUBLIC_GET_URLS)
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(authenticationEntryPoint)
