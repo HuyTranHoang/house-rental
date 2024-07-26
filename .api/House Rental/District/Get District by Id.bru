@@ -1,0 +1,15 @@
+meta {
+  name: Get District by Id
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{host}}/api/district/48
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

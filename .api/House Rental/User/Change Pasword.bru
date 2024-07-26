@@ -1,0 +1,22 @@
+meta {
+  name: Change Pasword
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{host}}/api/user/change-password
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "oldPassword": "newpassword",
+      "newPassword": "password1"
+  }
+}

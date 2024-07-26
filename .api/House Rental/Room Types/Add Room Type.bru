@@ -1,0 +1,21 @@
+meta {
+  name: Add Room Type
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{host}}/api/room-type
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "name": "Loại phòng gì không biết nữa"
+  }
+}

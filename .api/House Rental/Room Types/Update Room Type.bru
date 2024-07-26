@@ -1,0 +1,25 @@
+meta {
+  name: Update Room Type
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{host}}/api/room-type/6
+  body: json
+  auth: bearer
+}
+
+params:query {
+  ~: 
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "name": "Update room type nè"
+  }
+}

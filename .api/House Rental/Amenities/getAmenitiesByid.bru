@@ -1,0 +1,15 @@
+meta {
+  name: getAmenitiesByid
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{host}}/api/amenities/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

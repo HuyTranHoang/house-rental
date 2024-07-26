@@ -1,0 +1,22 @@
+meta {
+  name: Update District
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{host}}/api/district/48
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "name": "update district",
+      "cityId": 2
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Delete Room Type
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{host}}/api/room-type/6
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Refresh
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{host}}/api/auth/refresh-token
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJIb3VzZSBSZW50YWwgQVBJIiwic3ViIjoibmV3VXNlcjEiLCJpc3MiOiJIT1VTRSBSRU5UQUwiLCJleHAiOjE3MjIxNjY4MzUsImlhdCI6MTcyMTczNDgzNSwidXNlcklkIjozLCJhdXRob3JpdGllcyI6WyJ1c2VyOnJlYWQiXSwidXNlcm5hbWUiOiJuZXdVc2VyMSJ9.TyGbDlQxXXGmGpZfE2Mzzet3IoOSJMpQg4jTaBFquhsXFEc5Nea0C5bQCe5qKEVVdso6rUnnYdQrBx67GmHvJ
+}
+
+body:json {
+  {
+  }
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Add New District
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{host}}/api/district
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "name": "Hello"
+  }
+}

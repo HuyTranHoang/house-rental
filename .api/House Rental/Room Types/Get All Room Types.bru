@@ -1,0 +1,15 @@
+meta {
+  name: Get All Room Types
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{host}}/api/room-type/all
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

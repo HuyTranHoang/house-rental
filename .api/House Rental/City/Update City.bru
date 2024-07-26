@@ -1,0 +1,17 @@
+meta {
+  name: Update City
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{host}}/api/city/2
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "name": "update city"
+  }
+}

@@ -1,0 +1,23 @@
+meta {
+  name: Update Profile
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{host}}/api/user/profile
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "firstName": "Huy Update",
+      "lastName": "Tran Update",
+      "phoneNumber": "0701113333"
+  }
+}
