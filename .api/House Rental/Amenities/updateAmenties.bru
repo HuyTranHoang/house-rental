@@ -1,0 +1,21 @@
+meta {
+  name: updateAmenties
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{host}}/api/amenities/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "name": "Full Noi That"
+  }
+}

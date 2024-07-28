@@ -1,6 +1,8 @@
 package com.project.house.rental.service.auth.impl;
 
 import com.project.house.rental.common.email.EmailSenderService;
+import com.project.house.rental.dto.auth.ChangePasswordDto;
+import com.project.house.rental.dto.auth.ProfileDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
 import com.project.house.rental.entity.auth.Authority;
 import com.project.house.rental.entity.auth.Role;
@@ -9,7 +11,9 @@ import com.project.house.rental.entity.auth.UserPrincipal;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.repository.auth.RoleRepository;
 import com.project.house.rental.repository.auth.UserRepository;
+import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.auth.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,12 +33,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final RoleRepository roleRepository;
     private final EmailSenderService emailSenderService;
     private final PasswordEncoder passwordEncoder;
+    private final JWTTokenProvider jwtTokenProvider;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, EmailSenderService emailSenderService, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, EmailSenderService emailSenderService, PasswordEncoder passwordEncoder, JWTTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.emailSenderService = emailSenderService;
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -62,12 +68,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         UserEntity existUsername = userRepository.findUserByUsername(user.getUsername());
         if (existUsername != null) {
-            throw new CustomRuntimeException("User already exists");
+            throw new CustomRuntimeException("Tài khoản đã tồn tại!");
         }
 
         UserEntity existEmail = userRepository.findUserByEmail(user.getEmail());
         if (existEmail != null) {
-            throw new CustomRuntimeException("Email has been registered for other user");
+            throw new CustomRuntimeException("Email đã được đăng ký!");
         }
 
         String encodePassword = passwordEncoder.encode(user.getPassword());
@@ -88,14 +94,54 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         UserEntity user = userRepository.findUserByUsername(username);
 
         if (user == null) {
-            throw new UsernameNotFoundException("User not found in the database");
+            throw new UsernameNotFoundException("Không tìm thấy tài khoản!");
         }
 
         if (!user.isNonLocked()) {
-            throw new UsernameNotFoundException("User account is locked");
+            throw new UsernameNotFoundException("Tài khoản đã bị khóa!");
         }
 
         return new UserPrincipal(user);
+    }
+
+    @Override
+    public UserEntityDto updateProfile(ProfileDto profileDto, HttpServletRequest request) throws CustomRuntimeException {
+        String username = getUsernameFromToken(request);
+        if (username == null) {
+            throw new CustomRuntimeException("Vui lòng đăng nhập để thay đổi thông tin tài khoản!");
+        }
+
+        UserEntity user = userRepository.findUserByUsername(username);
+        if (user == null) {
+            throw new CustomRuntimeException("Không tìm thấy tài khoản!");
+        }
+
+        user.setFirstName(profileDto.getFirstName());
+        user.setLastName(profileDto.getLastName());
+        user.setPhoneNumber(profileDto.getPhoneNumber());
+
+        return toDto(userRepository.save(user));
+    }
+
+    @Override
+    public UserEntityDto changePassword(ChangePasswordDto changePasswordDto, HttpServletRequest request) throws CustomRuntimeException {
+        String username = getUsernameFromToken(request);
+        if (username == null) {
+            throw new CustomRuntimeException("Vui lòng đăng nhập để thay đổi mật khẩu!");
+        }
+
+        UserEntity user = userRepository.findUserByUsername(username);
+        if (user == null) {
+            throw new CustomRuntimeException("Không tìm thấy tài khoản!");
+        }
+
+        if (!passwordEncoder.matches(changePasswordDto.getOldPassword(), user.getPassword())) {
+            throw new CustomRuntimeException("Mật khẩu cũ không chính xác!");
+        }
+
+        user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+
+        return toDto(userRepository.save(user));
     }
 
     /*
@@ -176,5 +222,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setNonLocked(userDto.isNonLocked());
         user.setRoles(roles);
         user.setAuthorities(authorities);
+    }
+
+    private String getUsernameFromToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            String token = bearerToken.substring(7);
+            return jwtTokenProvider.getSubject(token);
+        }
+        return null;
     }
 }

@@ -2,11 +2,14 @@ package com.project.house.rental.controller;
 
 
 import com.project.house.rental.dto.DistrictDto;
+import com.project.house.rental.dto.params.DistrictParams;
 import com.project.house.rental.service.DistrictService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/district")
@@ -19,8 +22,14 @@ public class DistrictController {
     }
 
     @GetMapping({"/", ""})
-    public ResponseEntity<List<DistrictDto>> getAllDistricts() {
-        List<DistrictDto> districts = districtService.getAll();
+    public ResponseEntity<Map<String,Object>> getAllDistrict(@ModelAttribute DistrictParams districtParams) {
+        Map<String, Object> districtsWithPagination = districtService.getAllDistrictsWithParams(districtParams);
+        return ResponseEntity.ok(districtsWithPagination);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<DistrictDto>> getAllDistrictsNoPaging(@RequestParam(required = false) String city) {
+        List<DistrictDto> districts = districtService.getAllWithFilter(city);
         return ResponseEntity.ok(districts);
     }
 
@@ -30,8 +39,14 @@ public class DistrictController {
         return ResponseEntity.ok(district);
     }
 
+    @PostMapping({"/", ""})
+    public ResponseEntity<DistrictDto> createDistrict(@RequestBody @Valid DistrictDto districtDto){
+        DistrictDto district = districtService.create(districtDto);
+        return ResponseEntity.ok(district);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<DistrictDto> updateDistrict(@PathVariable long id, @RequestBody DistrictDto districtDto){
+    public ResponseEntity<DistrictDto> updateDistrict(@PathVariable long id, @RequestBody @Valid DistrictDto districtDto){
         DistrictDto district = districtService.update(id, districtDto);
         return ResponseEntity.ok(district);
     }

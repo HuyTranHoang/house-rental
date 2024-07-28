@@ -1,0 +1,20 @@
+meta {
+  name: Upload Image
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{host}}/api/cloudinary/upload
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:multipart-form {
+  file: @file(/C:/Users/nhokp/OneDrive/Pictures/546eae1118102fe00dce711c51f64049.jpg)
+  publicId: 1
+}

@@ -10,9 +10,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class LoginDto {
 
-    @NotEmpty(message = "Username is required")
+    @NotEmpty(message = "Vui lòng nhập tên đăng nhập")
     String username;
 
-    @NotEmpty(message = "Password is required")
+    @NotEmpty(message = "Vui lòng nhập mật khẩu")
     String password;
 }

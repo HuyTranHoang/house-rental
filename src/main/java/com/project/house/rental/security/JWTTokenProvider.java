@@ -9,19 +9,23 @@ import com.project.house.rental.entity.auth.UserPrincipal;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Component
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
 public class JWTTokenProvider {
     @Value("${jwt.secret}")
     private String secret;
@@ -40,6 +44,8 @@ public class JWTTokenProvider {
                 .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.EXPIRATION_TIME))
                 .withSubject(userPrincipal.getUsername())
                 .withArrayClaim(SecurityConstant.JWT_AUTHORITIES, claims)
+                .withClaim("userId", userPrincipal.getId())
+                .withClaim("username", userPrincipal.getUsername())
                 .sign(Algorithm.HMAC512(secret.getBytes()));
     }
 
@@ -60,6 +66,15 @@ public class JWTTokenProvider {
         boolean isTokenExpiration = expiration.before(new Date());
 
         return !isTokenExpiration && StringUtils.isNotEmpty(username);
+    }
+
+    public boolean isTokenValid(String token) {
+        JWTVerifier verifier = getVerifier();
+
+        Date expiration = verifier.verify(token).getExpiresAt();
+        boolean isTokenExpiration = expiration.before(new Date());
+
+        return !isTokenExpiration;
     }
 
     public List<GrantedAuthority> grantedAuthorities(String token) {

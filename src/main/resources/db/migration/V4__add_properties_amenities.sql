@@ -1,4 +1,4 @@
-DROP TABLE if EXISTS properties;
+DROP TABLE IF EXISTS properties;
 CREATE TABLE IF NOT EXISTS properties (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS properties (
     FOREIGN KEY (room_type_id) REFERENCES room_types(id) on delete cascade on update cascade
 );
 
-DROP TABLE if EXISTS amenities;
+DROP TABLE IF EXISTS amenities;
 CREATE TABLE IF NOT EXISTS amenities (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS amenities (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE if EXISTS property_amenities;
+DROP TABLE IF EXISTS property_amenities;
 CREATE TABLE IF NOT EXISTS property_amenities (
     property_id INT,
     amenity_id INT,

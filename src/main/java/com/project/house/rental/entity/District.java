@@ -2,12 +2,15 @@ package com.project.house.rental.entity;
 
 
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -40,4 +43,7 @@ public class District {
     @ManyToOne
     @JoinColumn(name = "city_id")
     City city;
+
+    @OneToMany(mappedBy = "district")
+    List<Property> properties;
 }

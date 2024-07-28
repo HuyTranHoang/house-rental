@@ -1,0 +1,15 @@
+meta {
+  name: getAllProperty
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}/api/properties/all
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

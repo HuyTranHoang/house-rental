@@ -2,18 +2,18 @@ spring:
   application:
     name: house-rental
   datasource:
-    url: jdbc:mysql://localhost:3306/house_rental?allowPublicKeyRetrieval=true&useSSL=false
-    username: root
-    password: root
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   flyway:
-    url: jdbc:mysql://localhost:3306/house_rental?allowPublicKeyRetrieval=true&useSSL=false
-    user: root
-    password: root
+    url: ${MYSQL_URL}
+    user: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
   jpa:
     hibernate.ddl-auto: none
   sql:
-    init.mode: embedded
+    init.mode: always
   servlet:
     multipart:
       max-file-size: 2MB
@@ -24,8 +24,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: huy.th878@aptechlearning.edu.vn
-    password: ivyuiosiserxuxce
+    username: ${USERNAME_EMAIL}
+    password: ${PASSWORD_EMAIL}
     properties.mail.smtp:
       auth: true
       starttls.enable: true
@@ -34,7 +34,7 @@ server:
   error.include-stacktrace: never
 
 jwt:
-  secret: superSerectJwt1234567890!@#$%^&*()_+superSerectJwt1234567890!@#$%^&*()_+
+  secret: ${JWT_SECRET}
 
 app:
   pagination:
@@ -42,3 +42,7 @@ app:
     default-page-number: 0
     max-page-size: 20
 
+cloudinary:
+  cloudName: ${CLOUDINARY_CLOUD_NAME}
+  apiKey: ${CLOUDINARY_API_KEY}
+  apiSecret: ${CLOUDINARY_API_SECRET}

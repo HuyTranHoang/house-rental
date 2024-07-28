@@ -1,4 +1,4 @@
-DROP TABLE if EXISTS favorites;
+DROP TABLE IF EXISTS favorites;
 CREATE TABLE IF NOT EXISTS favorites (
     user_id INT,
     property_id INT,
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS favorites (
     FOREIGN KEY (property_id) REFERENCES properties(id)  on delete cascade on update cascade
 );
 
-DROP TABLE if EXISTS property_images;
+DROP TABLE IF EXISTS property_images;
 CREATE TABLE IF NOT EXISTS property_images (
     id INT AUTO_INCREMENT PRIMARY KEY,
     property_id INT,

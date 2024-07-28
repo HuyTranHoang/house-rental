@@ -1,6 +1,7 @@
 package com.project.house.rental.entity.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.house.rental.entity.Property;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -74,5 +75,9 @@ public class UserEntity {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
+
     List<Authority> authorities;
+
+    @OneToMany(mappedBy = "user")
+    List<Property> properties;
 }

@@ -1,0 +1,22 @@
+meta {
+  name: Get All Room Types With Params
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}/api/room-type
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:multipart-form {
+  sortBy: nameAsc
+  pageNumber: 0
+  pageSize: 99
+  ~name: Phòng
+}

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "House Rental",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
