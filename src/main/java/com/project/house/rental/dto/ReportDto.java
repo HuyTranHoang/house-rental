@@ -16,11 +16,13 @@ public class ReportDto {
     long id;
 
     long userId;
+    String username;
 
-    long property_id;
+    long propertyId;
+    String title;
 
     @NotEmpty(message = "Vui lòng nhập lí do báo cáo")
     String reason;
 
-    Date createdAt;
+
 }
