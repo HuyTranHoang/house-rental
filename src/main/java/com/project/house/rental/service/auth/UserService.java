@@ -6,6 +6,9 @@ import com.project.house.rental.dto.auth.UserEntityDto;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.exception.CustomRuntimeException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 
 public interface UserService {
@@ -20,6 +23,8 @@ public interface UserService {
     UserEntityDto updateProfile(ProfileDto profileDto, HttpServletRequest request) throws CustomRuntimeException;
 
     UserEntityDto changePassword(ChangePasswordDto changePasswordDto, HttpServletRequest request) throws CustomRuntimeException;
+
+    UserEntityDto updateAvatar(MultipartFile avatar, HttpServletRequest request) throws CustomRuntimeException, IOException;
 
     UserEntityDto register(UserEntityDto user) throws CustomRuntimeException;
 

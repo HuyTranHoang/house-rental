@@ -12,6 +12,7 @@ import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.repository.auth.RoleRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
+import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.service.auth.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,8 +22,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -34,13 +38,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final EmailSenderService emailSenderService;
     private final PasswordEncoder passwordEncoder;
     private final JWTTokenProvider jwtTokenProvider;
+    private final CloudinaryService cloudinaryService;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, EmailSenderService emailSenderService, PasswordEncoder passwordEncoder, JWTTokenProvider jwtTokenProvider) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, EmailSenderService emailSenderService, PasswordEncoder passwordEncoder, JWTTokenProvider jwtTokenProvider, CloudinaryService cloudinaryService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.emailSenderService = emailSenderService;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @Override
@@ -140,6 +146,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+
+        return toDto(userRepository.save(user));
+    }
+
+    @Override
+    public UserEntityDto updateAvatar(MultipartFile avatar, HttpServletRequest request) throws CustomRuntimeException, IOException {
+        String username = getUsernameFromToken(request);
+        if (username == null) {
+            throw new CustomRuntimeException("Vui lòng đăng nhập để thay đổi ảnh đại diện!");
+        }
+
+        UserEntity user = userRepository.findUserByUsername(username);
+        if (user == null) {
+            throw new CustomRuntimeException("Không tìm thấy tài khoản!");
+        }
+
+        Map cloudinaryResponse = cloudinaryService.upload(avatar, String.format("avatar/%s", user.getUsername()));
+        String avatarUrl = (String) cloudinaryResponse.get("url");
+        user.setAvatarUrl(avatarUrl);
 
         return toDto(userRepository.save(user));
     }

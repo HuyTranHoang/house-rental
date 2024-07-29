@@ -10,6 +10,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/user")
@@ -34,4 +37,12 @@ public class UserController {
         UserEntityDto userEntityDto = userService.changePassword(changePasswordDto, request);
         return ResponseEntity.ok(userEntityDto);
     }
+
+    @PreAuthorize("hasAnyAuthority('user:update')")
+    @PutMapping("/update-avatar")
+    public ResponseEntity<UserEntityDto> updateAvatar(@RequestParam MultipartFile avatar, HttpServletRequest request) throws CustomRuntimeException, IOException {
+        UserEntityDto userEntityDto = userService.updateAvatar(avatar, request);
+        return ResponseEntity.ok(userEntityDto);
+    }
+
 }

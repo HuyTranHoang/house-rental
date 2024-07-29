@@ -1,0 +1,19 @@
+meta {
+  name: Update Avatar
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{host}}/api/user/update-avatar
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:multipart-form {
+  avatar: @file(C:\Users\nhokp\OneDrive\Pictures\409161608_386664157417459_431656142098075825_n.jpg)
+}
