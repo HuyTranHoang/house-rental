@@ -1,16 +1,12 @@
 package com.project.house.rental.entity;
 
-import com.project.house.rental.entity.auth.Role;
 import com.project.house.rental.entity.auth.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -23,11 +19,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SQLDelete(sql = "UPDATE properties SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
-public class Property {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+public class Property extends BaseEntity {
 
     @Column(name = "title")
     String title;
@@ -77,17 +69,6 @@ public class Property {
 
     @OneToMany(mappedBy = "property")
     List<Review> reviews;
-
-    @Column(name = "is_deleted")
-    boolean isDeleted = Boolean.FALSE;
-
-    @Column(name = "created_at")
-    @CreationTimestamp
-    Date createdAt;
-
-    @Column(name = "updated_at")
-    @UpdateTimestamp
-    Date updatedAt;
 
     public enum PropertyStatus {
         PENDING,
