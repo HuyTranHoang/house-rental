@@ -1,5 +1,6 @@
 package com.project.house.rental.service.impl;
 
+import com.project.house.rental.common.email.EmailSenderService;
 import com.project.house.rental.dto.ReportDto;
 import com.project.house.rental.dto.params.ReportParams;
 import com.project.house.rental.entity.Property;
@@ -24,12 +25,14 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
     private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
     private final PropertyRepository propertyRepository;
+    private final EmailSenderService emailSenderService;
 
-    public ReportServiceImpl(ReportRepository reportRepository, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, PropertyRepository propertyRepository) {
+    public ReportServiceImpl(ReportRepository reportRepository, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, PropertyRepository propertyRepository, EmailSenderService emailSenderService) {
         this.reportRepository = reportRepository;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.propertyRepository = propertyRepository;
+        this.emailSenderService = emailSenderService;
     }
 
     @Override
@@ -49,21 +52,12 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
                 .build();
     }
 
+
+
     @Override
-    //Ko dùng function này
     public Report toEntity(ReportDto reportDto) {
-
-        return null;
-    }
-
-    @Override
-    public Report toEntity(ReportDto reportDto, HttpServletRequest request) {
-        String username = getUsernameFromToken(request);
-        UserEntity currentUser = userRepository.findUserByUsername(username);
-
-        if (currentUser == null) {
-            throw new UsernameNotFoundException("Không tìm thấy tài khoản!");
-        }
+        UserEntity currentUser = userRepository.findById(reportDto.getUserId())
+                .orElseThrow(() -> new NoResultException("Không tìm thấy user này!"));
 
         Property currentProperty = propertyRepository.findById(reportDto.getPropertyId())
                 .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng này!"));
@@ -75,21 +69,29 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
                 .build();
     }
 
-//    @Override
-//    public ReportDto createWithUserId(ReportDto reportDto, HttpServletRequest request) {
-//        String username = getUsernameFromToken(request);
-//        UserEntity currentUser = userRepository.findUserByUsername(username);
-//
-//        if (currentUser == null) {
-//            throw new UsernameNotFoundException("Không tìm thấy tài khoản!");
-//        }
-//
-//        Property currentProperty = propertyRepository.findById(reportDto.getPropertyId())
-//                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng này!"));
-//
-//        Report newReport = toEntity()
-//        return null;
-//    }
+    @Override
+    public ReportDto createReport(ReportDto reportDto, HttpServletRequest request) {
+        String username = getUsernameFromToken(request);
+        UserEntity currentUser = userRepository.findUserByUsername(username);
+
+        if (currentUser == null) {
+            throw new UsernameNotFoundException("Không tìm thấy tài khoản!");
+        }
+
+        Property currentProperty = propertyRepository.findById(reportDto.getPropertyId())
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng này!"));
+
+        reportDto.setUserId(currentUser.getId());
+        reportDto.setUsername(currentUser.getUsername());
+        reportDto.setPropertyId(currentProperty.getId());
+        reportDto.setTitle(currentProperty.getTitle());
+
+        Report newReport = toEntity(reportDto);
+
+        emailSenderService.sendEmail(currentUser.getEmail(), "Thông báo Report", reportDto.getReason());
+
+        return toDto(reportRepository.save(newReport));
+    }
 
     @Override
     public void updateEntityFromDto(Report report, ReportDto reportDto) {

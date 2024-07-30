@@ -1,12 +1,13 @@
 package com.project.house.rental.controller;
 
+import com.project.house.rental.common.email.EmailSenderService;
 import com.project.house.rental.dto.ReportDto;
 import com.project.house.rental.service.ReportService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +25,11 @@ public class ReportController {
     public ResponseEntity<List<ReportDto>> getAllReports() {
         List<ReportDto> reportDtos = reportService.getAll();
         return ResponseEntity.ok(reportDtos);
+    }
+
+    @PostMapping
+    public ResponseEntity<ReportDto> createReport(@Valid @RequestBody ReportDto reportDto, HttpServletRequest request) {
+        ReportDto report = reportService.createReport(reportDto, request);
+        return  ResponseEntity.ok(report);
     }
 }
