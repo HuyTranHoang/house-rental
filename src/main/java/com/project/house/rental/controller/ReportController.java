@@ -32,4 +32,10 @@ public class ReportController {
         ReportDto report = reportService.createReport(reportDto, request);
         return  ResponseEntity.ok(report);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReport(@PathVariable Long id) {
+        reportService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

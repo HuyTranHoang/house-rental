@@ -9,9 +9,7 @@ import java.util.Map;
 
 public interface ReportService extends GenericService<Report, ReportDto> {
     Map<String, Object> getAllReportsWithParams(ReportParams reportParams);
-
-//    Report toEntity(ReportDto reportDto, HttpServletRequest request);
-
     ReportDto createReport(ReportDto reportDto, HttpServletRequest request);
+
 
 }
