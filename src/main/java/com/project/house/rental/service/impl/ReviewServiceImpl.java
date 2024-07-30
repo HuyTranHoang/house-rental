@@ -1,8 +1,10 @@
 package com.project.house.rental.service.impl;
 
+import com.project.house.rental.common.PageInfo;
+import com.project.house.rental.dto.CityDto;
 import com.project.house.rental.dto.ReviewDto;
-import com.project.house.rental.entity.Property;
-import com.project.house.rental.entity.Review;
+import com.project.house.rental.dto.params.ReviewParams;
+import com.project.house.rental.entity.*;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.repository.GenericRepository;
@@ -11,8 +13,18 @@ import com.project.house.rental.repository.ReviewRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.ReviewService;
+import com.project.house.rental.specification.ReviewSpecification;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReviewServiceImpl extends GenericServiceImpl<Review, ReviewDto> implements ReviewService {
@@ -37,6 +49,54 @@ public class ReviewServiceImpl extends GenericServiceImpl<Review, ReviewDto> imp
     @Override
     public ReviewDto create(ReviewDto reviewDto) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Map<String, Object> getAllReviewsWithParams(ReviewParams reviewParams) {
+        Specification<Review> spec = ReviewSpecification.filterByRating(reviewParams.getRating())
+                .and(ReviewSpecification.filterByPropertyId(reviewParams.getPropertyId()))
+                .and(ReviewSpecification.filterByUserId(reviewParams.getUserId()));
+
+        if (!StringUtils.hasLength(reviewParams.getSortBy())) {
+            reviewParams.setSortBy("createdAtDesc");
+        }
+
+        Sort sort = switch (reviewParams.getSortBy()) {
+            case "createdAtAsc" -> Sort.by(Review_.CREATED_AT);
+            default -> Sort.by(Review_.CREATED_AT).descending();
+        };
+
+        if (reviewParams.getPageNumber() < 0) {
+            reviewParams.setPageNumber(0);
+        }
+
+        if (reviewParams.getPageSize() <= 0) {
+            reviewParams.setPageSize(10);
+        }
+
+        Pageable pageable = PageRequest.of(
+                reviewParams.getPageNumber(),
+                reviewParams.getPageSize(),
+                sort
+        );
+
+        Page<Review> cityPage = reviewRepository.findAll(spec, pageable);
+
+        PageInfo pageInfo = new PageInfo(
+                cityPage.getNumber(),
+                cityPage.getTotalElements(),
+                cityPage.getTotalPages(),
+                cityPage.getSize()
+        );
+
+        List<ReviewDto> reviewDtoList = cityPage.stream()
+                .map(this::toDto)
+                .toList();
+
+        return Map.of(
+                "pageInfo", pageInfo,
+                "data", reviewDtoList
+        );
     }
 
     @Override

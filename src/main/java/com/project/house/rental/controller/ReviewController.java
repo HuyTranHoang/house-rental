@@ -1,6 +1,7 @@
 package com.project.house.rental.controller;
 
 import com.project.house.rental.dto.ReviewDto;
+import com.project.house.rental.dto.params.ReviewParams;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.service.ReviewService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/review")
@@ -17,6 +19,12 @@ public class ReviewController {
 
     public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
+    }
+
+    @GetMapping({"", "/"})
+    public ResponseEntity<Map<String, Object>> getAllReviewsWithParams(@ModelAttribute ReviewParams reviewParams) {
+        Map<String, Object> reviewsWithParams = reviewService.getAllReviewsWithParams(reviewParams);
+        return ResponseEntity.ok(reviewsWithParams);
     }
 
     @GetMapping("/all")
