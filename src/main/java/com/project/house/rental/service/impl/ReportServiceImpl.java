@@ -1,10 +1,12 @@
 package com.project.house.rental.service.impl;
 
+import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.common.email.EmailSenderService;
 import com.project.house.rental.dto.ReportDto;
 import com.project.house.rental.dto.params.ReportParams;
 import com.project.house.rental.entity.Property;
 import com.project.house.rental.entity.Report;
+import com.project.house.rental.entity.Report_;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.repository.GenericRepository;
 import com.project.house.rental.repository.PropertyRepository;
@@ -12,11 +14,19 @@ import com.project.house.rental.repository.ReportRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.ReportService;
+import com.project.house.rental.specification.ReportSpecification;
 import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -36,7 +46,7 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
     }
 
     @Override
-    protected GenericRepository<Report> getRepository() {
+    protected ReportRepository getRepository() {
         return reportRepository;
     }
 
@@ -100,7 +110,48 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
 
     @Override
     public Map<String, Object> getAllReportsWithParams(ReportParams reportParams) {
-        return null;
+        Specification<Report> specification = ReportSpecification.filterByUsername(reportParams.getUsername());
+
+        if (!StringUtils.hasLength(reportParams.getSortBy())) {
+            reportParams.setSortBy("createdAtDesc");
+        }
+
+        Sort sort = switch (reportParams.getSortBy()) {
+            case "createdAtAsc" -> Sort.by(Report_.CREATED_AT);
+            default ->  Sort.by(Report_.CREATED_AT).descending();
+        };
+
+        if (reportParams.getPageNumber() < 0) {
+            reportParams.setPageNumber(0);
+        }
+
+        if (reportParams.getPageSize() <= 0) {
+            reportParams.setPageSize(10);
+        }
+
+        Pageable pageable = PageRequest.of(
+                reportParams.getPageNumber(),
+                reportParams.getPageSize(),
+                sort
+        );
+
+        Page<Report> reportPage = reportRepository.findAll(specification, pageable);
+
+        PageInfo pageInfo = new PageInfo(
+                reportPage.getTotalPages(),
+                reportPage.getTotalElements(),
+                reportPage.getNumber(),
+                reportPage.getSize()
+        );
+
+        List<ReportDto> reportDtoList = reportPage.stream()
+                .map(this::toDto)
+                .toList();
+
+        return Map.of(
+                "pageInfo", pageInfo,
+                "data", reportDtoList
+        );
     }
 
     private String getUsernameFromToken(HttpServletRequest request) {
@@ -110,5 +161,14 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
             return jwtTokenProvider.getSubject(token);
         }
         return null;
+    }
+
+    public List<ReportDto> getAllWithFilter(String username) {
+        Specification<Report> specification = ReportSpecification.filterByUsername(username);
+
+        return getRepository().findAll(specification)
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 }

@@ -1,0 +1,21 @@
+meta {
+  name: Get All Reports With Params
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{host}}/api/reports?sortBy=createdAtDesc&pageNumber=1&pageSize=20
+  body: none
+  auth: bearer
+}
+
+params:query {
+  sortBy: createdAtDesc
+  pageNumber: 1
+  pageSize: 20
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

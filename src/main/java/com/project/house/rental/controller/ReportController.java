@@ -1,7 +1,7 @@
 package com.project.house.rental.controller;
 
-import com.project.house.rental.common.email.EmailSenderService;
 import com.project.house.rental.dto.ReportDto;
+import com.project.house.rental.dto.params.ReportParams;
 import com.project.house.rental.service.ReportService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/reports")
@@ -21,10 +22,22 @@ public class ReportController {
         this.reportService = reportService;
     }
 
+    @GetMapping({"/", ""})
+    public ResponseEntity<Map<String, Object>> getAllReports(@ModelAttribute ReportParams reportParams) {
+        Map<String, Object> reportsWithPagination = reportService.getAllReportsWithParams(reportParams);
+        return ResponseEntity.ok(reportsWithPagination);
+    }
+
     @GetMapping("/all")
-    public ResponseEntity<List<ReportDto>> getAllReports() {
-        List<ReportDto> reportDtos = reportService.getAll();
+    public ResponseEntity<List<ReportDto>> getAllReports(@RequestParam(required = false) String username) {
+        List<ReportDto> reportDtos = reportService.getAllWithFilter(username);
         return ResponseEntity.ok(reportDtos);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ReportDto> getDistrictById(@PathVariable long id){
+        ReportDto reportDto = reportService.getById(id);
+        return ResponseEntity.ok(reportDto);
     }
 
     @PostMapping
