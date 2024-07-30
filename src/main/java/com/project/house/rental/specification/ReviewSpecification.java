@@ -1,6 +1,9 @@
 package com.project.house.rental.specification;
 
+import com.project.house.rental.entity.Property_;
 import com.project.house.rental.entity.Review;
+import com.project.house.rental.entity.Review_;
+import com.project.house.rental.entity.auth.UserEntity_;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ReviewSpecification {
@@ -10,7 +13,7 @@ public class ReviewSpecification {
             if (rating == 0)
                 return cb.conjunction();
 
-            return cb.equal(root.get("rating"), rating);
+            return cb.equal(root.get(Review_.RATING), rating);
         };
     }
 
@@ -19,7 +22,7 @@ public class ReviewSpecification {
             if (propertyId == 0)
                 return cb.conjunction();
 
-            return cb.equal(root.get("property").get("id"), propertyId);
+            return cb.equal(root.get(Review_.PROPERTY).get(Property_.ID), propertyId);
         };
     }
 
@@ -28,7 +31,7 @@ public class ReviewSpecification {
             if (userId == 0)
                 return cb.conjunction();
 
-            return cb.equal(root.get("user").get("id"), userId);
+            return cb.equal(root.get(Review_.USER).get(UserEntity_.ID), userId);
         };
     }
 }
