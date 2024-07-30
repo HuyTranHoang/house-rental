@@ -1,10 +1,9 @@
 package com.project.house.rental.entity.auth;
 
+import com.project.house.rental.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Date;
 
 @Getter
 @Setter
@@ -14,20 +13,6 @@ import java.util.Date;
 @Entity
 @Table(name = "authorities")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Authority {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-
+public class Authority extends BaseEntity {
     String privilege;
-
-    @Column(name = "is_deleted")
-    boolean isDeleted;
-
-    @Column(name = "created_at")
-    Date createdAt;
-
-    @Column(name = "updated_at")
-    Date updatedAt;
 }

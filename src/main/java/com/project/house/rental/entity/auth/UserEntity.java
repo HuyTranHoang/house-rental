@@ -1,15 +1,13 @@
 package com.project.house.rental.entity.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.house.rental.entity.BaseEntity;
 import com.project.house.rental.entity.Property;
 import com.project.house.rental.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -20,11 +18,7 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+public class UserEntity extends BaseEntity {
 
     String username;
 
@@ -50,17 +44,6 @@ public class UserEntity {
 
     @Column(name = "is_non_locked")
     boolean isNonLocked;
-
-    @Column(name = "is_deleted")
-    boolean isDeleted;
-
-    @Column(name = "created_at")
-    @CreationTimestamp
-    Date createdAt;
-
-    @Column(name = "updated_at")
-    @UpdateTimestamp
-    Date updatedAt;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
