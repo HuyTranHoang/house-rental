@@ -104,4 +104,22 @@ public class JWTTokenProvider {
         return usernamePasswordAuthenticationToken;
     }
 
+    public String generatePasswordResetToken(String username) {
+        return JWT.create()
+                .withIssuer(SecurityConstant.COMPANY)
+                .withAudience(SecurityConstant.APPLICATION_NAME)
+                .withIssuedAt(new Date())
+                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.PASSWORD_RESET_EXPIRATION_TIME))
+                .withSubject(username)
+                .sign(Algorithm.HMAC512(secret.getBytes()));
+    }
+
+    public Date getPasswordResetTokenExpiration() {
+        return new Date(System.currentTimeMillis() + SecurityConstant.PASSWORD_RESET_EXPIRATION_TIME);
+    }
+
+    public Date getCurrentDate() {
+        return new Date();
+    }
+
 }

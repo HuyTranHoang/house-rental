@@ -91,4 +91,24 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             throw new RuntimeException("Failed to send email");
         }
     }
+
+    @Override
+    public void sendResetPasswordHTMLMail(String to, String token) {
+        try {
+            Context context = new Context();
+            context.setVariable("email", to);
+            context.setVariable("token", token);
+            String text = templateEngine.process("reset-password-email-template", context);
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setPriority(1);
+            helper.setSubject("Mogu - Đặt lại mật khẩu");
+            helper.setFrom("huy.th878@aptechlearning.edu.vn");
+            helper.setTo(to);
+            helper.setText(text, true);
+            javaMailSender.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email");
+        }
+    }
 }

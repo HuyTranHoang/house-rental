@@ -9,4 +9,6 @@ public interface EmailSenderService {
 
     void sendContactHTMLMail(ContactDto contactDto);
 
+    void sendResetPasswordHTMLMail(String to, String token);
+
 }

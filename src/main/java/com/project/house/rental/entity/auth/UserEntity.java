@@ -80,4 +80,7 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user")
     List<Property> properties;
+
+    @OneToOne(mappedBy = "user")
+    PasswordReset passwordReset;
 }
