@@ -214,7 +214,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new CustomRuntimeException("Không tìm thấy tài khoản!");
         }
 
-        Map cloudinaryResponse = cloudinaryService.upload(avatar, String.format("avatar/%s", user.getUsername()));
+        Map cloudinaryResponse = cloudinaryService.upload(avatar, String.format("house-rental/avatar/%s", user.getUsername()));
         String avatarUrl = (String) cloudinaryResponse.get("url");
         user.setAvatarUrl(avatarUrl);
 

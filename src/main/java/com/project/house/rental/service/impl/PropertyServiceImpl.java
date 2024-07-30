@@ -6,11 +6,16 @@ import com.project.house.rental.entity.*;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.repository.*;
 import com.project.house.rental.repository.auth.UserRepository;
+import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.service.PropertyService;
 import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -22,14 +27,18 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
     private final UserRepository userRepository;
     private final DistrictRepository districtRepository;
     private final AmenityRepository amenityRepository;
+    private final PropertyImageRepository propertyImageRepository;
+    private final CloudinaryService cloudinaryService;
 
-    public PropertyServiceImpl(PropertyRepository propertyRepository, CityRepository cityRepository, RoomTypeRepository roomTypeRepository, UserRepository userRepository, DistrictRepository districtRepository, AmenityRepository amenityRepository) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, CityRepository cityRepository, RoomTypeRepository roomTypeRepository, UserRepository userRepository, DistrictRepository districtRepository, AmenityRepository amenityRepository, PropertyImageRepository propertyImageRepository, CloudinaryService cloudinaryService) {
         this.propertyRepository = propertyRepository;
         this.cityRepository = cityRepository;
         this.roomTypeRepository = roomTypeRepository;
         this.userRepository = userRepository;
         this.districtRepository = districtRepository;
         this.amenityRepository = amenityRepository;
+        this.propertyImageRepository = propertyImageRepository;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @Override
@@ -38,10 +47,49 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
     }
 
     @Override
+    public PropertyDto create(PropertyDto propertyDto) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public PropertyDto create(PropertyDto propertyDto, MultipartFile[] images) throws IOException {
+        Map<String, String> cloudinaryResponse = cloudinaryService.uploadImages(images);
+        List<PropertyImage> propertyImages = new ArrayList<>();
+        List<String> propertyImagesUrl = new ArrayList<>();
+
+        for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
+            PropertyImage propertyImage = PropertyImage.builder()
+                    .imageUrl(entry.getValue())
+                    .publicId(entry.getKey())
+                    .build();
+            propertyImages.add(propertyImage);
+            propertyImagesUrl.add(entry.getValue());
+        }
+
+        propertyImageRepository.saveAll(propertyImages);
+        propertyDto.setPropertyImages(propertyImagesUrl);
+
+        Property property = toEntity(propertyDto);
+        property = propertyRepository.save(property);
+
+        for (PropertyImage propertyImage : propertyImages) {
+            propertyImage.setProperty(property);
+        }
+        propertyImageRepository.saveAll(propertyImages);
+
+        return toDto(property);
+    }
+
+    @Override
     public PropertyDto toDto(Property property) {
         List<String> amenities = property.getAmenities()
                 .stream()
                 .map(Amenity::getName)
+                .toList();
+
+        List<String> propertyImages = property.getPropertyImages()
+                .stream()
+                .map(PropertyImage::getImageUrl)
                 .toList();
 
         return PropertyDto.builder()
@@ -62,6 +110,7 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
                 .districtId(property.getDistrict().getId())
                 .districtName(property.getDistrict().getName())
                 .amenities(amenities)
+                .propertyImages(propertyImages)
                 .build();
     }
 
@@ -78,6 +127,10 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
 
         List<Amenity> amenities = propertyDto.getAmenities().stream()
                 .map(amenityRepository::findByNameIgnoreCase)
+                .toList();
+
+        List<PropertyImage> propertyImages = propertyDto.getPropertyImages().stream()
+                .map(propertyImageRepository::findByImageUrl)
                 .toList();
 
         if (!propertyDto.getStatus().equals("PENDING") && !propertyDto.getStatus().equals("RESOLVED")) {
@@ -98,6 +151,7 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
                 .user(user)
                 .district(district)
                 .amenities(amenities)
+                .propertyImages(propertyImages)
                 .build();
     }
 
@@ -117,6 +171,10 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
                 .map(amenityRepository::findByNameIgnoreCase)
                 .toList();
 
+        List<PropertyImage> propertyImages = propertyDto.getPropertyImages().stream()
+                .map(propertyImageRepository::findByImageUrl)
+                .toList();
+
         if (!propertyDto.getStatus().equals("PENDING") && !propertyDto.getStatus().equals("RESOLVED")) {
             throw new NoResultException("Status phải là PENDING hoặc RESOLVED");
         }
@@ -133,5 +191,7 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
         property.setUser(user);
         property.setRoomType(roomType);
         property.setAmenities(amenities);
+        property.setPropertyImages(propertyImages);
     }
+
 }
