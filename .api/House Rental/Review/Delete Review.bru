@@ -1,0 +1,15 @@
+meta {
+  name: Delete Review
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{host}}/api/review/2
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

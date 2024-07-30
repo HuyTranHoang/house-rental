@@ -1,0 +1,23 @@
+meta {
+  name: Add Review
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{host}}/api/review
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "rating": 5,
+    "comment": "Test comment here",
+    "propertyId": 1
+  }
+}

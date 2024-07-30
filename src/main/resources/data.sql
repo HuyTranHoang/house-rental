@@ -132,3 +132,18 @@ VALUES (1, 1),
 INSERT IGNORE INTO user_roles (user_id, role_id)
 VALUES (1, 1),
        (2, 2);
+
+
+INSERT IGNORE INTO properties(id, title, description, price, location, area, num_rooms, status, user_id, city_id, district_id, room_type_id, is_deleted, created_at, updated_at)
+VALUES (1, 'test title', 'test description', 300000, 'test location', 111, 1, 'PENDING', 1, 1, 1, 1, 0, now(), now());
+
+INSERT IGNORE INTO property_amenities(property_id, amenity_id)
+VALUES (1, 1),
+       (1, 2),
+       (1, 3);
+
+# INSERT IGNORE INTO property_images(property_id, image_url)
+# VALUES (1, 'http://localhost:8080/api/property/image/1');
+
+INSERT IGNORE INTO reviews(id, user_id, property_id, rating, comment, is_deleted, created_at, updated_at)
+VALUES (1, 1, 1, 5, 'test comment', 0, now(), now());

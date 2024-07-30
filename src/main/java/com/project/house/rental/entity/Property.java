@@ -75,6 +75,9 @@ public class Property {
     )
     List<Amenity> amenities;
 
+    @OneToMany(mappedBy = "property")
+    List<Review> reviews;
+
     @Column(name = "is_deleted")
     boolean isDeleted = Boolean.FALSE;
 

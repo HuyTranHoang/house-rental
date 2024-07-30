@@ -2,6 +2,7 @@ package com.project.house.rental.entity.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.house.rental.entity.Property;
+import com.project.house.rental.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -83,4 +84,7 @@ public class UserEntity {
 
     @OneToOne(mappedBy = "user")
     PasswordReset passwordReset;
+
+    @OneToMany(mappedBy = "user")
+    List<Review> reviews;
 }
