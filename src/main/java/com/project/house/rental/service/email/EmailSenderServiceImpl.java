@@ -1,5 +1,6 @@
-package com.project.house.rental.common.email;
+package com.project.house.rental.service.email;
 
+import com.project.house.rental.dto.email.ContactDto;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,6 +9,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 @Service
 public class EmailSenderServiceImpl implements EmailSenderService {
@@ -46,11 +51,42 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setPriority(1);
-            helper.setSubject("Register successfully");
+            helper.setSubject("Chào mừng bạn đến với Mogu");
             helper.setFrom("huy.th878@aptechlearning.edu.vn");
             helper.setTo(to);
             helper.setText(text, true);
             javaMailSender.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email");
+        }
+    }
+
+    @Override
+    @Async
+    public void sendContactHTMLMail(ContactDto contactDto) {
+        try {
+            String name = contactDto.getName();
+            String email = contactDto.getEmail();
+            String message = contactDto.getMessage();
+
+            Context context = new Context();
+            context.setVariable("name", name);
+            context.setVariable("email", email);
+            context.setVariable("message", message);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", new Locale("vi", "VN"));
+            String formattedDate = dateFormat.format(new Date());
+            context.setVariable("sendDate", formattedDate);
+
+            String text = templateEngine.process("contact-email-template", context);
+            MimeMessage mailMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mailMessage, true, "UTF-8");
+            helper.setPriority(1);
+            helper.setSubject("Mogu - Liên hệ từ " + name);
+            helper.setFrom(email);
+            helper.setTo("huy.th878@aptechlearning.edu.vn");
+            helper.setText(text, true);
+            javaMailSender.send(mailMessage);
         } catch (Exception e) {
             throw new RuntimeException("Failed to send email");
         }
