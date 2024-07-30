@@ -10,8 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class CloudinaryServiceImpl implements CloudinaryService {
@@ -39,6 +38,26 @@ public class CloudinaryServiceImpl implements CloudinaryService {
         Map result = cloudinary.uploader().upload(fileToUpload, uploadParams);
         if (!Files.deleteIfExists(fileToUpload.toPath())) {
             throw new IOException("Failed to delete file" );
+        }
+
+        return result;
+    }
+
+    @Override
+    public Map<String, String> uploadImages(MultipartFile[] files) throws IOException {
+        Map<String, String> result = new HashMap<>();
+
+        for (MultipartFile file : files) {
+            File fileToUpload = convertMultiPartToFile(file);
+            Map<String, Object> uploadParams = Map.of("folder", "house-rental");
+            Map uploadResult = cloudinary.uploader().upload(fileToUpload, uploadParams);
+            if (!Files.deleteIfExists(fileToUpload.toPath())) {
+                throw new IOException("Failed to delete file");
+            }
+
+            String publicId = (String) uploadResult.get("public_id");
+            String url = (String) uploadResult.get("url");
+            result.put(publicId, url);
         }
 
         return result;

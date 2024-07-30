@@ -18,9 +18,19 @@ public class CloudinaryController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<Map> upload(MultipartFile file, @RequestParam String publicId) {
+    public ResponseEntity<Map> upload(@RequestParam MultipartFile file, @RequestParam String publicId) {
         try {
             Map result = cloudinaryService.upload(file, "house-rental/" + publicId);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/uploadImages")
+    public ResponseEntity<Map> uploadImages(@RequestParam("files") MultipartFile[] files) {
+        try {
+            Map result = cloudinaryService.uploadImages(files);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

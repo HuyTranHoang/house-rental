@@ -58,4 +58,6 @@ public class PropertyDto {
     String roomTypeName;
 
     List<String> amenities;
+
+    List<String> propertyImages;
 }
