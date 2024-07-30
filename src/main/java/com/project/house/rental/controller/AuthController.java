@@ -2,6 +2,7 @@ package com.project.house.rental.controller;
 
 import com.project.house.rental.constant.SecurityConstant;
 import com.project.house.rental.dto.auth.LoginDto;
+import com.project.house.rental.dto.auth.ResetPasswordDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.entity.auth.UserPrincipal;
@@ -11,6 +12,7 @@ import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.auth.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -73,6 +75,18 @@ public class AuthController {
         return ResponseEntity.ok()
                 .headers(jwtHeader)
                 .body(userService.toDto(loginUser));
+    }
+
+    @PostMapping("/send-reset-password-email")
+    public ResponseEntity<String> sendResetPasswordEmail(@RequestParam @NotEmpty(message = "Vui lòng nhập email") String email) throws CustomRuntimeException {
+        userService.sendEmailResetPassword(email);
+        return ResponseEntity.ok("Email sent successfully");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<UserEntityDto> resetPassword(@RequestBody @Valid ResetPasswordDto resetPasswordDto) throws CustomRuntimeException {
+        UserEntityDto userEntityDto = userService.resetPassword(resetPasswordDto);
+        return ResponseEntity.ok(userEntityDto);
     }
 
     private String extractToken(HttpServletRequest request) {

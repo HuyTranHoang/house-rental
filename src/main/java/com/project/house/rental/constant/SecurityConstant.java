@@ -6,6 +6,8 @@ public class SecurityConstant {
 
     public static final long EXPIRATION_TIME = 432_000_000; // 5 days expressed in milliseconds
 
+    public static final long PASSWORD_RESET_EXPIRATION_TIME= 3_600_000; // 1 hour expressed in milliseconds
+
     public static final String COMPANY = "HOUSE RENTAL";
 
     public static final String APPLICATION_NAME = "House Rental API";
@@ -16,8 +18,9 @@ public class SecurityConstant {
             "/api/auth/login",
             "/api/auth/register",
             "/api/auth/refresh-token",
-            "/api/user/resetPassword/**",
-            "/api/contact"
+            "/api/auth/send-reset-password-email",
+            "/api/auth/reset-password",
+            "/api/contact",
     };
 
     public static final String[] API_PUBLIC_GET_URLS = {

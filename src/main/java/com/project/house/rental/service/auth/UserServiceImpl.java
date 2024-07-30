@@ -1,13 +1,12 @@
 package com.project.house.rental.service.auth;
 
+import com.project.house.rental.dto.auth.ResetPasswordDto;
+import com.project.house.rental.entity.auth.*;
+import com.project.house.rental.repository.auth.PasswordResetRepository;
 import com.project.house.rental.service.email.EmailSenderService;
 import com.project.house.rental.dto.auth.ChangePasswordDto;
 import com.project.house.rental.dto.auth.ProfileDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
-import com.project.house.rental.entity.auth.Authority;
-import com.project.house.rental.entity.auth.Role;
-import com.project.house.rental.entity.auth.UserEntity;
-import com.project.house.rental.entity.auth.UserPrincipal;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.repository.auth.RoleRepository;
 import com.project.house.rental.repository.auth.UserRepository;
@@ -38,14 +37,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final JWTTokenProvider jwtTokenProvider;
     private final CloudinaryService cloudinaryService;
+    private final PasswordResetRepository passwordResetRepository;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, EmailSenderService emailSenderService, PasswordEncoder passwordEncoder, JWTTokenProvider jwtTokenProvider, CloudinaryService cloudinaryService) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, EmailSenderService emailSenderService, PasswordEncoder passwordEncoder, JWTTokenProvider jwtTokenProvider, CloudinaryService cloudinaryService, PasswordResetRepository passwordResetRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.emailSenderService = emailSenderService;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.cloudinaryService = cloudinaryService;
+        this.passwordResetRepository = passwordResetRepository;
     }
 
     @Override
@@ -59,8 +60,60 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void resetPassword(String email) throws CustomRuntimeException {
+    public void sendEmailResetPassword(String email) throws CustomRuntimeException {
+        UserEntity user = userRepository.findUserByEmail(email);
 
+        if (user == null) {
+            throw new CustomRuntimeException("Không tìm thấy tài khoản với email này!");
+        }
+
+        PasswordReset passwordReset = passwordResetRepository.findByUserId(user.getId());
+
+        if (passwordReset != null) {
+            passwordResetRepository.delete(passwordReset);
+        }
+
+        PasswordReset newPasswordReset = PasswordReset.builder()
+                .token(jwtTokenProvider.generatePasswordResetToken(user.getUsername()))
+                .user(user)
+                .expiresAt(jwtTokenProvider.getPasswordResetTokenExpiration())
+                .isUsed(false)
+                .build();
+
+        passwordResetRepository.save(newPasswordReset);
+        emailSenderService.sendResetPasswordHTMLMail(user.getEmail(), newPasswordReset.getToken());
+    }
+
+    @Override
+    public UserEntityDto resetPassword(ResetPasswordDto resetPasswordDto) throws CustomRuntimeException {
+        String token = resetPasswordDto.getToken();
+        String password = resetPasswordDto.getNewPassword();
+
+        PasswordReset passwordReset = passwordResetRepository.findByToken(token);
+
+        if (passwordReset == null) {
+            throw new CustomRuntimeException("Token không hợp lệ!");
+        }
+
+        if (passwordReset.isUsed()) {
+            throw new CustomRuntimeException("Token đã được sử dụng!");
+        }
+
+        if (passwordReset.getExpiresAt().before(jwtTokenProvider.getCurrentDate())) {
+            throw new CustomRuntimeException("Token đã hết hạn!");
+        }
+
+        UserEntity user = passwordReset.getUser();
+
+        if (resetPasswordDto.getEmail() != null && !resetPasswordDto.getEmail().equals(user.getEmail())) {
+            throw new CustomRuntimeException("Email không khớp với tài khoản!");
+        }
+
+        user.setPassword(passwordEncoder.encode(password));
+        passwordReset.setUsed(true);
+        passwordResetRepository.save(passwordReset);
+
+        return toDto(userRepository.save(user));
     }
 
     @Override
