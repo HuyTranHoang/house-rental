@@ -1,6 +1,7 @@
 package com.project.house.rental.service.impl;
 
 import com.project.house.rental.common.PageInfo;
+import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.CityDto;
 import com.project.house.rental.dto.params.CityParams;
 import com.project.house.rental.entity.City;
@@ -8,79 +9,101 @@ import com.project.house.rental.entity.City_;
 import com.project.house.rental.repository.CityRepository;
 import com.project.house.rental.service.CityService;
 import com.project.house.rental.specification.CitySpecification;
+import com.project.house.rental.utils.HibernateFilterHelper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
-public class CityServiceImpl extends GenericServiceImpl<City, CityDto> implements CityService {
+public class CityServiceImpl implements CityService {
     private final CityRepository cityRepository;
+    private final HibernateFilterHelper hibernateFilterHelper;
 
-    public CityServiceImpl(CityRepository cityRepository) {
+    public CityServiceImpl(CityRepository cityRepository, HibernateFilterHelper hibernateFilterHelper) {
         this.cityRepository = cityRepository;
+        this.hibernateFilterHelper = hibernateFilterHelper;
     }
 
     @Override
-    public CityRepository getRepository() {
-        return cityRepository;
+    public List<CityDto> getAllCities() {
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_CITY_FILTER);
+
+        List<City> cityList = cityRepository.findAll();
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_CITY_FILTER);
+
+        return cityList.stream()
+                .map(this::toDto)
+                .toList();
     }
 
     @Override
-    public CityDto toDto(City city) {
-        return CityDto.builder()
-                .id(city.getId())
-                .name(city.getName())
-                .build();
+    public CityDto getCityById(long id) {
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_CITY_FILTER);
+
+        City city = cityRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy 'City' với id = " + id));
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_CITY_FILTER);
+
+        return toDto(city);
     }
 
     @Override
-    public City toEntity(CityDto cityDto) {
-        return City.builder()
-                .name(cityDto.getName())
-                .build();
-    }
-
-    @Override
-    public void updateEntityFromDto(City city, CityDto cityDto) {
-        city.setName(cityDto.getName());
-    }
-
-    @Override
-    public CityDto create(CityDto cityDto) {
+    public CityDto createCity(CityDto cityDto) {
         City existingCity = cityRepository.findByNameIgnoreCase(cityDto.getName());
 
-        if (existingCity != null) {
-            throw new IllegalArgumentException("City with name " + cityDto.getName() + " already exists");
+        if (existingCity != null && existingCity.isDeleted()) {
+            existingCity.setDeleted(false);
+            existingCity = cityRepository.save(existingCity);
+            return toDto(existingCity);
         }
 
-        return super.create(cityDto);
+        if (existingCity != null) {
+            throw new RuntimeException("Tên 'City' đã tồn tại");
+        }
+
+        City city = toEntity(cityDto);
+        city = cityRepository.save(city);
+        return toDto(city);
     }
 
     @Override
-    public CityDto update(long id, CityDto cityDto) {
+    public CityDto updateCity(long id, CityDto cityDto) {
+        City city = cityRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy 'City' với id = " + id));
+
         City existingCity = cityRepository.findByNameIgnoreCase(cityDto.getName());
 
         if (existingCity != null && existingCity.getId() != id) {
-            throw new IllegalArgumentException("City with name " + cityDto.getName() + " already exists");
+            throw new RuntimeException("Tên 'City' đã tồn tại");
         }
 
-        return super.update(id, cityDto);
+        updateEntityFromDto(city, cityDto);
+        city = cityRepository.save(city);
+
+        return toDto(city);
+    }
+
+    @Override
+    public void deleteCityById(long id) {
+        City city = cityRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy 'City' với id = " + id));
+
+        cityRepository.deleteById(city.getId());
     }
 
     @Override
     public Map<String, Object> getAllCitiesWithParams(CityParams cityParams) {
         Specification<City> spec = CitySpecification.searchByName(cityParams.getName());
-
-        if (!StringUtils.hasLength(cityParams.getSortBy())) {
-            cityParams.setSortBy("createdAtDesc");
-        }
 
         Sort sort = switch (cityParams.getSortBy()) {
             case "nameAsc" -> Sort.by(City_.NAME);
@@ -103,7 +126,11 @@ public class CityServiceImpl extends GenericServiceImpl<City, CityDto> implement
                 sort
         );
 
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_CITY_FILTER);
+
         Page<City> cityPage = cityRepository.findAll(spec, pageable);
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_CITY_FILTER);
 
         PageInfo pageInfo = new PageInfo(
                 cityPage.getNumber(),
@@ -120,6 +147,23 @@ public class CityServiceImpl extends GenericServiceImpl<City, CityDto> implement
                 "pageInfo", pageInfo,
                 "data", cityDtoList
         );
+    }
+
+    public CityDto toDto(City city) {
+        return CityDto.builder()
+                .id(city.getId())
+                .name(city.getName())
+                .build();
+    }
+
+    public City toEntity(CityDto cityDto) {
+        return City.builder()
+                .name(cityDto.getName())
+                .build();
+    }
+
+    public void updateEntityFromDto(City city, CityDto cityDto) {
+        city.setName(cityDto.getName());
     }
 
 

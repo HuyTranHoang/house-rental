@@ -28,31 +28,31 @@ public class CityController {
 
     @GetMapping("/all")
     public ResponseEntity<List<CityDto>> getAllCitiesNoPaging() {
-        List<CityDto> cities = cityService.getAll();
+        List<CityDto> cities = cityService.getAllCities();
         return ResponseEntity.ok(cities);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CityDto> getCityById(@PathVariable long id) {
-        CityDto city = cityService.getById(id);
+        CityDto city = cityService.getCityById(id);
         return ResponseEntity.ok(city);
     }
 
     @PostMapping({"/", ""})
     public ResponseEntity<CityDto> createCity(@RequestBody @Valid CityDto cityDto) {
-        CityDto city = cityService.create(cityDto);
+        CityDto city = cityService.createCity(cityDto);
         return ResponseEntity.ok(city);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CityDto> updateCity(@PathVariable long id, @RequestBody @Valid CityDto cityDto) {
-        CityDto city = cityService.update(id, cityDto);
+        CityDto city = cityService.updateCity(id, cityDto);
         return ResponseEntity.ok(city);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCity(@PathVariable long id) {
-        cityService.deleteById(id);
+        cityService.deleteCityById(id);
         return ResponseEntity.noContent().build();
     }
 }
