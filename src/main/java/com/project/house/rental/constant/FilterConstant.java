@@ -6,4 +6,5 @@ public class FilterConstant {
     public static final String CONDITION = "is_deleted = :isDeleted";
     public static final String DELETE_CITY_FILTER = "deletedCityFilter";
     public static final String DELETE_DISTRICT_FILTER = "deletedDistrictFilter";
+    public static final String DELETE_AMENITY_FILTER = "deletedAmenityFilter";
 }
