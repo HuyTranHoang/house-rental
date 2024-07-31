@@ -1,0 +1,15 @@
+meta {
+  name: Delete Report
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{host}}/api/reports/4
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

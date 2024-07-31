@@ -1,0 +1,22 @@
+meta {
+  name: Add New Report
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{host}}/api/reports
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "propertyId": 1,
+      "reason": "This is reason"
+  }
+}

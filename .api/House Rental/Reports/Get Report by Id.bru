@@ -1,0 +1,15 @@
+meta {
+  name: Get Report by Id
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{host}}/api/reports/5
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
