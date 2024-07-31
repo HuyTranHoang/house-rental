@@ -42,7 +42,7 @@ public class ReportController {
 
     @PostMapping
     public ResponseEntity<ReportDto> createReport(@Valid @RequestBody ReportDto reportDto, HttpServletRequest request) {
-        ReportDto report = reportService.createReport(reportDto, request);
+        ReportDto report = reportService.create(reportDto, request);
         return  ResponseEntity.ok(report);
     }
 

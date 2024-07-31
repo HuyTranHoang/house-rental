@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface ReportService extends GenericService<Report, ReportDto> {
     Map<String, Object> getAllReportsWithParams(ReportParams reportParams);
-    ReportDto createReport(ReportDto reportDto, HttpServletRequest request);
+    ReportDto create(ReportDto reportDto, HttpServletRequest request);
 
     List<ReportDto> getAllWithFilter(String filter);
 }

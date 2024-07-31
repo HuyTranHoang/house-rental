@@ -8,7 +8,6 @@ import com.project.house.rental.entity.Property;
 import com.project.house.rental.entity.Report;
 import com.project.house.rental.entity.Report_;
 import com.project.house.rental.entity.auth.UserEntity;
-import com.project.house.rental.repository.GenericRepository;
 import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.repository.ReportRepository;
 import com.project.house.rental.repository.auth.UserRepository;
@@ -17,6 +16,7 @@ import com.project.house.rental.service.ReportService;
 import com.project.house.rental.specification.ReportSpecification;
 import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.NotSupportedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -80,7 +80,7 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
     }
 
     @Override
-    public ReportDto createReport(ReportDto reportDto, HttpServletRequest request) {
+    public ReportDto create(ReportDto reportDto, HttpServletRequest request) {
         String username = getUsernameFromToken(request);
         UserEntity currentUser = userRepository.findUserByUsername(username);
 
@@ -88,13 +88,8 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
             throw new UsernameNotFoundException("Không tìm thấy tài khoản!");
         }
 
-        Property currentProperty = propertyRepository.findById(reportDto.getPropertyId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng này!"));
-
         reportDto.setUserId(currentUser.getId());
         reportDto.setUsername(currentUser.getUsername());
-        reportDto.setPropertyId(currentProperty.getId());
-        reportDto.setTitle(currentProperty.getTitle());
 
         Report newReport = toEntity(reportDto);
 
@@ -105,7 +100,11 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
 
     @Override
     public void updateEntityFromDto(Report report, ReportDto reportDto) {
-    //Ko update
+        try {
+            throw new NotSupportedException("Không sử dụng hàm này !");
+        } catch (NotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
