@@ -24,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
 import java.util.List;
 import java.util.Map;
 
@@ -68,8 +69,7 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
 
         Report newReport = toEntity(reportDto);
 
-        //TODO: Gửi email thông báo với form từ HMTL
-        //emailSenderService.sendEmail(currentUser.getEmail(), "Thông báo Report", reportDto.getReason());
+        emailSenderService.sendReportHTMLMail(currentUser.getEmail(), currentUser.getUsername(), newReport.getProperty().getTitle());
 
         return toDto(reportRepository.save(newReport));
     }

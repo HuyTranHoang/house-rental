@@ -11,4 +11,6 @@ public interface EmailSenderService {
 
     void sendResetPasswordHTMLMail(String to, String token);
 
+    void sendReportHTMLMail(String to, String username, String propertyTitle);
+
 }

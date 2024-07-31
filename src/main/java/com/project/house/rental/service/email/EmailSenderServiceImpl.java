@@ -111,4 +111,24 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             throw new RuntimeException("Failed to send email");
         }
     }
+
+    @Override
+    public void sendReportHTMLMail(String to, String username, String propertyTitle) {
+        try {
+            Context context = new Context();
+            context.setVariable("username", username);
+            context.setVariable("propertyTitle", propertyTitle);
+            String text = templateEngine.process("report-email-template", context);
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setPriority(1);
+            helper.setSubject("Mogu - Báo cáo bài đăng");
+            helper.setFrom("huy.th878@aptechlearning.edu.vn");
+            helper.setTo(to);
+            helper.setText(text, true);
+            javaMailSender.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email");
+        }
+    }
 }

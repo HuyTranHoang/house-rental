@@ -20,7 +20,11 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SQLDelete(sql = "UPDATE reports SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
-public class Report extends BaseEntity {
+public class Report {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
