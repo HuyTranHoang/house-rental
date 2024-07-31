@@ -1,12 +1,12 @@
 package com.project.house.rental.entity;
 
+import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.entity.auth.UserEntity;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.*;
 
 import java.util.Date;
 
@@ -19,7 +19,8 @@ import java.util.Date;
 @Table(name = "reports")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SQLDelete(sql = "UPDATE reports SET is_deleted = true WHERE id = ?")
-@SQLRestriction("is_deleted = false")
+@FilterDef(name = FilterConstant.DELETE_REPORT_FILTER, parameters = @ParamDef(name = FilterConstant.IS_DELETED, type = Boolean.class))
+@Filter(name = FilterConstant.DELETE_REPORT_FILTER, condition = FilterConstant.CONDITION)
 public class Report {
 
     @Id

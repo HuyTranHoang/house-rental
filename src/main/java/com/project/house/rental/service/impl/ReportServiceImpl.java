@@ -1,6 +1,7 @@
 package com.project.house.rental.service.impl;
 
 import com.project.house.rental.common.PageInfo;
+import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.ReportDto;
 import com.project.house.rental.dto.params.ReportParams;
 import com.project.house.rental.entity.Property;
@@ -14,6 +15,7 @@ import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.ReportService;
 import com.project.house.rental.service.email.EmailSenderService;
 import com.project.house.rental.specification.ReportSpecification;
+import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
@@ -23,46 +25,62 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
 
 
 @Service
-public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> implements ReportService {
+public class ReportServiceImpl implements ReportService {
 
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
     private final PropertyRepository propertyRepository;
     private final EmailSenderService emailSenderService;
+    private final HibernateFilterHelper hibernateFilterHelper;
 
-    public ReportServiceImpl(ReportRepository reportRepository, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, PropertyRepository propertyRepository, EmailSenderService emailSenderService) {
+    public ReportServiceImpl(ReportRepository reportRepository, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, PropertyRepository propertyRepository, EmailSenderService emailSenderService, HibernateFilterHelper hibernateFilterHelper) {
         this.reportRepository = reportRepository;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.propertyRepository = propertyRepository;
         this.emailSenderService = emailSenderService;
+        this.hibernateFilterHelper = hibernateFilterHelper;
+    }
+
+    public List<ReportDto> getAllReports(String username) {
+        Specification<Report> specification = ReportSpecification.filterByUsername(username);
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_REPORT_FILTER);
+
+        List<Report> reportList = reportRepository.findAll(specification);
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_REPORT_FILTER);
+
+        return reportList.stream()
+                .map(this::toDto)
+                .toList();
     }
 
     @Override
-    protected ReportRepository getRepository() {
-        return reportRepository;
+    public ReportDto getReportById(long id) {
+        Report report = reportRepository.findByIdWithFilter(id);
+
+        if (report == null) {
+            throw new NoResultException("Không tìm thấy report với id: " + id);
+        }
+
+        return toDto(report);
     }
 
     @Override
-    public ReportDto create(ReportDto reportDto) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public ReportDto create(ReportDto reportDto, HttpServletRequest request) {
+    public ReportDto createReport(ReportDto reportDto, HttpServletRequest request) {
         String username = getUsernameFromToken(request);
         UserEntity currentUser = userRepository.findUserByUsername(username);
 
         if (currentUser == null) {
-            throw new UsernameNotFoundException("Không tìm thấy tài khoản!");
+            throw new UsernameNotFoundException("Không tìm thấy tài khoản với username: " + username);
         }
 
         reportDto.setUserId(currentUser.getId());
@@ -75,12 +93,17 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
     }
 
     @Override
+    public void deleteReportById(long id) {
+        Report report = reportRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy report với id: " + id));
+
+        reportRepository.delete(report);
+    }
+
+
+    @Override
     public Map<String, Object> getAllReportsWithParams(ReportParams reportParams) {
         Specification<Report> specification = ReportSpecification.filterByUsername(reportParams.getUsername());
-
-        if (!StringUtils.hasLength(reportParams.getSortBy())) {
-            reportParams.setSortBy("createdAtDesc");
-        }
 
         Sort sort = switch (reportParams.getSortBy()) {
             case "createdAtAsc" -> Sort.by(Report_.CREATED_AT);
@@ -101,7 +124,11 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
                 sort
         );
 
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_REPORT_FILTER);
+
         Page<Report> reportPage = reportRepository.findAll(specification, pageable);
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_REPORT_FILTER);
 
         PageInfo pageInfo = new PageInfo(
                 reportPage.getTotalPages(),
@@ -118,6 +145,38 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
                 "pageInfo", pageInfo,
                 "data", reportDtoList
         );
+    }
+
+
+    @Override
+    public void updateReportStatus(long reportId, String status) {
+
+        Report report = reportRepository.findByIdWithFilter(reportId);
+
+        if (report == null) {
+            throw new NoResultException("Không tìm thấy report!");
+        }
+
+        //TODO: check if property is deleted --- Cần custom hàm findByIdWithFilter để check property có bị xóa không
+        Property property = propertyRepository.findById(report.getProperty().getId())
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng!"));
+
+        if (!isValidReportStatus(status)) {
+            throw new IllegalArgumentException("Trạng thái [" + status + "] không hợp lệ");
+        }
+
+        report.setStatus(Report.ReportStatus.valueOf(status));
+
+        reportRepository.save(report);
+    }
+
+    private boolean isValidReportStatus(String status) {
+        try {
+            Report.ReportStatus.valueOf(status);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     /*
@@ -138,22 +197,19 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
 
     @Override
     public Report toEntity(ReportDto reportDto) {
+        //TODO: check if user is deleted bằng hàm custom
+
         UserEntity currentUser = userRepository.findById(reportDto.getUserId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy user này!"));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy user với id: " + reportDto.getUserId()));
 
         Property currentProperty = propertyRepository.findById(reportDto.getPropertyId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng này!"));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng với id: " + reportDto.getPropertyId()));
 
         return Report.builder()
                 .user(currentUser)
                 .property(currentProperty)
                 .reason(reportDto.getReason())
                 .build();
-    }
-
-    @Override
-    public void updateEntityFromDto(Report report, ReportDto reportDto) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private String getUsernameFromToken(HttpServletRequest request) {
@@ -163,41 +219,5 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
             return jwtTokenProvider.getSubject(token);
         }
         return null;
-    }
-
-    public List<ReportDto> getAllWithFilter(String username) {
-        Specification<Report> specification = ReportSpecification.filterByUsername(username);
-
-        return getRepository().findAll(specification)
-                .stream()
-                .map(this::toDto)
-                .toList();
-    }
-
-    @Override
-    public void updateReportStatus(long reportId, String status) {
-
-        Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new NoResultException("Không tìm thấy report!"));
-
-        Property property = propertyRepository.findById(report.getProperty().getId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng!"));
-
-        if (!isValidReportStatus(status)) {
-            throw new IllegalArgumentException("Trạng thái [" + status + "] không hợp lệ");
-        }
-
-        report.setStatus(Report.ReportStatus.valueOf(status));
-
-        reportRepository.save(report);
-    }
-
-    private boolean isValidReportStatus(String status) {
-        try {
-            Report.ReportStatus.valueOf(status);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
     }
 }

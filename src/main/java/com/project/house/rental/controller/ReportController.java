@@ -30,25 +30,25 @@ public class ReportController {
 
     @GetMapping("/all")
     public ResponseEntity<List<ReportDto>> getAllReports(@RequestParam(required = false) String username) {
-        List<ReportDto> reportDtos = reportService.getAllWithFilter(username);
+        List<ReportDto> reportDtos = reportService.getAllReports(username);
         return ResponseEntity.ok(reportDtos);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ReportDto> getDistrictById(@PathVariable long id){
-        ReportDto reportDto = reportService.getById(id);
+        ReportDto reportDto = reportService.getReportById(id);
         return ResponseEntity.ok(reportDto);
     }
 
     @PostMapping
     public ResponseEntity<ReportDto> createReport(@Valid @RequestBody ReportDto reportDto, HttpServletRequest request) {
-        ReportDto report = reportService.create(reportDto, request);
+        ReportDto report = reportService.createReport(reportDto, request);
         return  ResponseEntity.ok(report);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReport(@PathVariable Long id) {
-        reportService.deleteById(id);
+        reportService.deleteReportById(id);
         return ResponseEntity.noContent().build();
     }
 

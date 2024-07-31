@@ -8,10 +8,25 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
-public interface ReportService extends GenericService<Report, ReportDto> {
+public interface ReportService {
+
+    List<ReportDto> getAllReports(String username);
+
+    ReportDto getReportById(long id);
+
+    ReportDto createReport(ReportDto reportDto, HttpServletRequest request);
+
+//    ReportDto updateReport(long id, ReportDto reportDto);
+
+    void deleteReportById(long id);
+
     Map<String, Object> getAllReportsWithParams(ReportParams reportParams);
-    ReportDto create(ReportDto reportDto, HttpServletRequest request);
-    List<ReportDto> getAllWithFilter(String filter);
 
     void updateReportStatus(long reportId, String status);
+
+    ReportDto toDto(Report report);
+
+    Report toEntity(ReportDto reportDto);
+
+//    void updateEntityFromDto(Report report, ReportDto reportDto);
 }
