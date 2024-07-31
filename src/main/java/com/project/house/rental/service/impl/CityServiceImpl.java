@@ -59,16 +59,15 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public CityDto createCity(CityDto cityDto) {
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_CITY_FILTER);
+
         City existingCity = cityRepository.findByNameIgnoreCase(cityDto.getName());
 
-        if (existingCity != null && existingCity.isDeleted()) {
-            existingCity.setDeleted(false);
-            existingCity = cityRepository.save(existingCity);
-            return toDto(existingCity);
-        }
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_CITY_FILTER);
 
         if (existingCity != null) {
-            throw new RuntimeException("Tên 'City' đã tồn tại");
+            throw new RuntimeException("Tên thành phố đã tồn tại");
         }
 
         City city = toEntity(cityDto);
@@ -78,13 +77,17 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public CityDto updateCity(long id, CityDto cityDto) {
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_CITY_FILTER);
+
         City city = cityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy 'City' với id = " + id));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thành phố với id = " + id));
 
         City existingCity = cityRepository.findByNameIgnoreCase(cityDto.getName());
 
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_CITY_FILTER);
+
         if (existingCity != null && existingCity.getId() != id) {
-            throw new RuntimeException("Tên 'City' đã tồn tại");
+            throw new RuntimeException("Tên thành phố đã tồn tại");
         }
 
         updateEntityFromDto(city, cityDto);

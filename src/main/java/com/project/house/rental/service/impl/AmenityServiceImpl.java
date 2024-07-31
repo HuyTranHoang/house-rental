@@ -50,7 +50,7 @@ public class AmenityServiceImpl implements AmenityService {
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_AMENITY_FILTER);
 
         Amenity amenities = amenitiesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy 'Amenity' với id = " + id));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tiện ích với id = " + id));
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_AMENITY_FILTER);
 
@@ -67,7 +67,7 @@ public class AmenityServiceImpl implements AmenityService {
     @Override
     public AmenityDto updateAmenity(long id, AmenityDto amenityDto) {
         Amenity amenities = amenitiesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy 'Amenity' với id = " + id));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tiện ích với id = " + id));
 
         updateEntityFromDto(amenities, amenityDto);
         amenities = amenitiesRepository.save(amenities);
@@ -78,7 +78,7 @@ public class AmenityServiceImpl implements AmenityService {
     @Override
     public void deleteAmenityById(long id) {
         Amenity amenities = amenitiesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy 'Amenity' với id = " + id));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tiện ích với id = " + id));
 
         amenitiesRepository.deleteById(amenities.getId());
     }

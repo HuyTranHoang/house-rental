@@ -1,40 +1,113 @@
 package com.project.house.rental.service.impl;
 
 import com.project.house.rental.common.PageInfo;
+import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.RoomTypeDto;
 import com.project.house.rental.dto.params.RoomTypeParams;
 import com.project.house.rental.entity.RoomType;
 import com.project.house.rental.entity.RoomType_;
-import com.project.house.rental.repository.GenericRepository;
 import com.project.house.rental.repository.RoomTypeRepository;
 import com.project.house.rental.service.RoomTypeService;
 import com.project.house.rental.specification.RoomTypeSpecification;
+import com.project.house.rental.utils.HibernateFilterHelper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
-public class RoomTypeServiceImpl extends GenericServiceImpl<RoomType, RoomTypeDto> implements RoomTypeService {
+public class RoomTypeServiceImpl implements RoomTypeService {
     private final RoomTypeRepository roomTypeRepository;
+    private final HibernateFilterHelper hibernateFilterHelper;
 
-    public RoomTypeServiceImpl(RoomTypeRepository roomTypeRepository) {
+    public RoomTypeServiceImpl(RoomTypeRepository roomTypeRepository, HibernateFilterHelper hibernateFilterHelper) {
         this.roomTypeRepository = roomTypeRepository;
+        this.hibernateFilterHelper = hibernateFilterHelper;
+    }
+
+    @Override
+    public List<RoomTypeDto> getAllRoomTypes() {
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
+
+        List<RoomType> roomTypeList = roomTypeRepository.findAll();
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
+
+        return roomTypeList.stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    @Override
+    public RoomTypeDto getRoomTypeById(long id) {
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
+
+        RoomType roomType = roomTypeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy loại phòng với id = " + id));
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
+
+        return toDto(roomType);
+    }
+
+    @Override
+    public RoomTypeDto createRoomType(RoomTypeDto roomTypeDto) {
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
+
+        RoomType existingRoomType = roomTypeRepository.findByNameIgnoreCase(roomTypeDto.getName());
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
+
+        if (existingRoomType != null) {
+            throw new RuntimeException("Loại phòng đã tồn tại");
+        }
+
+        RoomType roomType = toEntity(roomTypeDto);
+
+        roomType = roomTypeRepository.save(roomType);
+
+        return toDto(roomType);
+    }
+
+    @Override
+    public RoomTypeDto updateRoomType(long id, RoomTypeDto roomTypeDto) {
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
+
+        RoomType roomType = roomTypeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy loại phòng với id = " + id));
+
+        RoomType existingRoomType = roomTypeRepository.findByNameIgnoreCase(roomTypeDto.getName());
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
+
+
+        if (existingRoomType != null && existingRoomType.getId() != id) {
+            throw new RuntimeException("Loại phòng đã tồn tại");
+        }
+
+        updateEntityFromDto(roomType, roomTypeDto);
+
+        roomType = roomTypeRepository.save(roomType);
+
+        return toDto(roomType);
+    }
+
+    @Override
+    public void deleteRoomTypeById(long id) {
+        RoomType roomType = roomTypeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy loại phòng với id = " + id));
+
+        roomTypeRepository.deleteById(roomType.getId());
     }
 
     @Override
     public Map<String, Object> getAllRoomTypesWithParams(RoomTypeParams roomTypeParams) {
         Specification<RoomType> specification = RoomTypeSpecification.searchByName(roomTypeParams.getName());
-
-        if (!StringUtils.hasLength(roomTypeParams.getSortBy())) {
-            roomTypeParams.setSortBy("createdAtDesc");
-        }
 
         Sort sort = switch (roomTypeParams.getSortBy()) {
             case "nameAsc" -> Sort.by(RoomType_.NAME);
@@ -77,11 +150,6 @@ public class RoomTypeServiceImpl extends GenericServiceImpl<RoomType, RoomTypeDt
     }
 
     @Override
-    protected GenericRepository<RoomType> getRepository() {
-        return roomTypeRepository;
-    }
-
-    @Override
     public RoomTypeDto toDto(RoomType roomType) {
         return RoomTypeDto.builder()
                 .id(roomType.getId())
@@ -100,27 +168,4 @@ public class RoomTypeServiceImpl extends GenericServiceImpl<RoomType, RoomTypeDt
     public void updateEntityFromDto(RoomType roomType, RoomTypeDto roomTypeDto) {
         roomType.setName(roomTypeDto.getName());
     }
-
-    @Override
-    public RoomTypeDto create(RoomTypeDto roomTypeDto) {
-        RoomType existingRoomType = roomTypeRepository.findByNameIgnoreCase(roomTypeDto.getName());
-
-        if (existingRoomType != null) {
-            throw new IllegalArgumentException("Room type with name " + roomTypeDto.getName() + " already exists");
-        }
-
-        return super.create(roomTypeDto);
-    }
-
-    @Override
-    public RoomTypeDto update(long id, RoomTypeDto roomTypeDto) {
-        RoomType existingRoomType = roomTypeRepository.findByNameIgnoreCase(roomTypeDto.getName());
-
-        if (existingRoomType != null) {
-            throw new IllegalArgumentException("Room type with name " + roomTypeDto.getName() + " already exists");
-        }
-
-        return super.update(id, roomTypeDto);
-    }
-
 }

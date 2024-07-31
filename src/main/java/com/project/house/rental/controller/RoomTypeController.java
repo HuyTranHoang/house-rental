@@ -27,31 +27,31 @@ public class RoomTypeController {
 
     @GetMapping("/all")
     public ResponseEntity<List<RoomTypeDto>> getAllRoomTypesNoPaging() {
-        List<RoomTypeDto> roomTypeDtoList = roomTypeService.getAll();
+        List<RoomTypeDto> roomTypeDtoList = roomTypeService.getAllRoomTypes();
         return ResponseEntity.ok(roomTypeDtoList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RoomTypeDto> getRoomTypeById(@PathVariable long id) {
-        RoomTypeDto roomTypeDto = roomTypeService.getById(id);
+        RoomTypeDto roomTypeDto = roomTypeService.getRoomTypeById(id);
         return ResponseEntity.ok(roomTypeDto);
     }
 
     @PostMapping({"/", ""})
     public ResponseEntity<RoomTypeDto> createRoomType(@RequestBody @Valid RoomTypeDto roomTypeDto) {
-        RoomTypeDto roomType = roomTypeService.create(roomTypeDto);
+        RoomTypeDto roomType = roomTypeService.createRoomType(roomTypeDto);
         return ResponseEntity.ok(roomType);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RoomTypeDto> updateRoomType(@PathVariable long id, @RequestBody @Valid RoomTypeDto roomTypeDto) {
-        RoomTypeDto roomType = roomTypeService.update(id, roomTypeDto);
+        RoomTypeDto roomType = roomTypeService.updateRoomType(id, roomTypeDto);
         return ResponseEntity.ok(roomType);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoomType(@PathVariable long id) {
-        roomTypeService.deleteById(id);
+        roomTypeService.deleteRoomTypeById(id);
         return ResponseEntity.noContent().build();
     }
 }

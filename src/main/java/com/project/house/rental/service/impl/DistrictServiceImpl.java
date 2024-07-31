@@ -58,7 +58,7 @@ public class DistrictServiceImpl implements DistrictService {
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_DISTRICT_FILTER);
 
         District district = districtRepository.findById(id)
-                .orElseThrow(() -> new NoResultException("Không tìm thấy 'District' với id: " + id));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy quận với id: " + id));
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_DISTRICT_FILTER);
 
@@ -77,7 +77,7 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public DistrictDto updateDistrict(long id, DistrictDto districtDto) {
         District district = districtRepository.findById(id)
-                .orElseThrow(() -> new NoResultException("Không tìm thấy 'District' với id: " + id));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy quận với id: " + id));
 
         updateEntityFromDto(district, districtDto);
 
@@ -89,7 +89,7 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public void deleteDistrictById(long id) {
         District district = districtRepository.findById(id)
-                .orElseThrow(() -> new NoResultException("Không tìm thấy 'Disitrct' với id: " + id));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy quận với id: " + id));
 
         districtRepository.deleteById(district.getId());
     }
