@@ -1,11 +1,12 @@
 package com.project.house.rental.entity;
 
 
+import com.project.house.rental.constant.FilterConstant;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.*;
 
 import java.util.List;
 
@@ -17,8 +18,9 @@ import java.util.List;
 @Entity
 @Table(name = "districts")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@SQLDelete(sql = "UPDATE cities SET is_deleted = true WHERE id = ?")
-@SQLRestriction("is_deleted = false")
+@SQLDelete(sql = "UPDATE districts SET is_deleted = true WHERE id = ?")
+@FilterDef(name = FilterConstant.DELETE_DISTRICT_FILTER, parameters = @ParamDef(name = FilterConstant.IS_DELETED, type = Boolean.class))
+@Filter(name = FilterConstant.DELETE_DISTRICT_FILTER, condition = FilterConstant.CONDITION)
 public class District extends BaseEntity {
 
     String name;

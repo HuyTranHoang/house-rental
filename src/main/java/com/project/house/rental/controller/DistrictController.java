@@ -29,31 +29,31 @@ public class DistrictController {
 
     @GetMapping("/all")
     public ResponseEntity<List<DistrictDto>> getAllDistrictsNoPaging(@RequestParam(required = false) String city) {
-        List<DistrictDto> districts = districtService.getAllWithFilter(city);
+        List<DistrictDto> districts = districtService.getAllDistricts(city);
         return ResponseEntity.ok(districts);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DistrictDto> getDistrictById(@PathVariable long id){
-        DistrictDto district = districtService.getById(id);
+        DistrictDto district = districtService.getDistrictById(id);
         return ResponseEntity.ok(district);
     }
 
     @PostMapping({"/", ""})
     public ResponseEntity<DistrictDto> createDistrict(@RequestBody @Valid DistrictDto districtDto){
-        DistrictDto district = districtService.create(districtDto);
+        DistrictDto district = districtService.createDistrict(districtDto);
         return ResponseEntity.ok(district);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<DistrictDto> updateDistrict(@PathVariable long id, @RequestBody @Valid DistrictDto districtDto){
-        DistrictDto district = districtService.update(id, districtDto);
+        DistrictDto district = districtService.updateDistrict(id, districtDto);
         return ResponseEntity.ok(district);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDistrict(@PathVariable long id){
-        districtService.deleteById(id);
+        districtService.deleteDistrictById(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -7,7 +7,23 @@ import com.project.house.rental.entity.District;
 import java.util.List;
 import java.util.Map;
 
-public interface DistrictService extends GenericService<District, DistrictDto> {
+public interface DistrictService {
+
+    List<DistrictDto> getAllDistricts(String cityName);
+
+    DistrictDto getDistrictById(long id);
+
+    DistrictDto createDistrict(DistrictDto districtDto);
+
+    DistrictDto updateDistrict(long id, DistrictDto districtDto);
+
+    void deleteDistrictById(long id);
+
     Map<String, Object> getAllDistrictsWithParams(DistrictParams districtParams);
-    List<DistrictDto> getAllWithFilter(String filter);
+
+    DistrictDto toDto(District district);
+
+    District toEntity(DistrictDto districtDto);
+
+    void updateEntityFromDto(District district, DistrictDto districtDto);
 }
