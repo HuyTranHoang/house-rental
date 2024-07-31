@@ -1,7 +1,6 @@
 package com.project.house.rental.service.impl;
 
 import com.project.house.rental.common.PageInfo;
-import com.project.house.rental.common.email.EmailSenderService;
 import com.project.house.rental.dto.ReportDto;
 import com.project.house.rental.dto.params.ReportParams;
 import com.project.house.rental.entity.Property;
@@ -13,10 +12,13 @@ import com.project.house.rental.repository.ReportRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.ReportService;
+import com.project.house.rental.service.email.EmailSenderService;
 import com.project.house.rental.specification.ReportSpecification;
 import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.NotSupportedException;
+import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +30,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
+
 
 @Service
 public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> implements ReportService {
@@ -169,5 +172,33 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
                 .stream()
                 .map(this::toDto)
                 .toList();
+    }
+
+    @Override
+    public void updateReportStatus(long reportId, String status) {
+
+        Report report = reportRepository.getById(reportId);
+        if (report == null) {
+            throw new NoResultException("Không tìm thấy báo cáo!");
+        }
+
+        Property property = propertyRepository.getById(report.getProperty().getId());
+        if (property == null) {
+            throw new NoResultException("Không tìm thấy bài đăng!");
+        }
+
+        // PENDING', 'APPROVED', 'REJECTED'
+        if ("APPROVED".equalsIgnoreCase(status)) {
+            report.setStatus(Report.ReportStatus.APPROVED);
+        } else if ("REJECTED".equalsIgnoreCase(status)) {
+            report.setStatus(Report.ReportStatus.REJECTED);
+        } else if ("PENDING".equalsIgnoreCase(status)) {
+            report.setStatus(Report.ReportStatus.PENDING);
+        } else {
+            throw new IllegalArgumentException("Trạng thái không hợp lệ!");
+
+        }
+
+        reportRepository.save(report);
     }
 }

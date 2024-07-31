@@ -36,10 +36,20 @@ public class Report {
     @Column(name = "reason", columnDefinition = "TEXT")
     String reason;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    ReportStatus status = ReportStatus.PENDING;
+
     @Column(name = "is_deleted")
     boolean isDeleted = Boolean.FALSE;
 
     @Column(name = "created_at")
     @CreationTimestamp
     Date createdAt;
+
+    public enum ReportStatus {
+        PENDING,
+        APPROVED,
+        REJECTED
+    }
 }

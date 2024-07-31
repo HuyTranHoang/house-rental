@@ -11,6 +11,7 @@ import java.util.Map;
 public interface ReportService extends GenericService<Report, ReportDto> {
     Map<String, Object> getAllReportsWithParams(ReportParams reportParams);
     ReportDto create(ReportDto reportDto, HttpServletRequest request);
-
     List<ReportDto> getAllWithFilter(String filter);
+
+    void updateReportStatus(long reportId, String status);
 }

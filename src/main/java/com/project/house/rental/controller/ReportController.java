@@ -51,4 +51,10 @@ public class ReportController {
         reportService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateReportStatus(@PathVariable Long id,@RequestParam String status) {
+        reportService.updateReportStatus(id, status);
+        return ResponseEntity.noContent().build();
+    }
 }
