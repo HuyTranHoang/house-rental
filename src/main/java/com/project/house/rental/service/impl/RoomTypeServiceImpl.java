@@ -45,12 +45,12 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
     @Override
     public RoomTypeDto getRoomTypeById(long id) {
-        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
 
-        RoomType roomType = roomTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy loại phòng với id = " + id));
+        RoomType roomType = roomTypeRepository.findByIdWithFilter(id);
 
-        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
+        if (roomType == null) {
+            throw new RuntimeException("Không tìm thấy loại phòng với id = " + id);
+        }
 
         return toDto(roomType);
     }
@@ -78,8 +78,11 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     public RoomTypeDto updateRoomType(long id, RoomTypeDto roomTypeDto) {
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
 
-        RoomType roomType = roomTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy loại phòng với id = " + id));
+        RoomType roomType = roomTypeRepository.findByIdWithFilter(id);
+
+        if (roomType == null) {
+            throw new RuntimeException("Không tìm thấy loại phòng với id = " + id);
+        }
 
         RoomType existingRoomType = roomTypeRepository.findByNameIgnoreCase(roomTypeDto.getName());
 
@@ -130,7 +133,11 @@ public class RoomTypeServiceImpl implements RoomTypeService {
                 sort
         );
 
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
+
         Page<RoomType> roomTypePage = roomTypeRepository.findAll(specification, pageable);
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
 
         PageInfo pageInfo = new PageInfo(
           roomTypePage.getNumber(),

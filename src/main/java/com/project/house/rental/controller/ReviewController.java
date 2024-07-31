@@ -29,31 +29,31 @@ public class ReviewController {
 
     @GetMapping("/all")
     public ResponseEntity<List<ReviewDto>> getAllReviews() {
-        List<ReviewDto> reviewDtoList = reviewService.getAll();
+        List<ReviewDto> reviewDtoList = reviewService.getAllReviews();
         return ResponseEntity.ok(reviewDtoList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ReviewDto> getReviewById(@PathVariable Long id) {
-        ReviewDto reviewDto = reviewService.getById(id);
+        ReviewDto reviewDto = reviewService.getReviewById(id);
         return ResponseEntity.ok(reviewDto);
     }
 
     @PostMapping({"", "/"})
     public ResponseEntity<ReviewDto> addReview(@RequestBody ReviewDto reviewDto, HttpServletRequest request) throws CustomRuntimeException {
-        ReviewDto newReview = reviewService.create(reviewDto, request);
+        ReviewDto newReview = reviewService.createReview(reviewDto, request);
         return ResponseEntity.ok(newReview);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ReviewDto> updateReview(@PathVariable Long id, @RequestBody ReviewDto reviewDto) {
-        ReviewDto updatedReview = reviewService.update(id, reviewDto);
+        ReviewDto updatedReview = reviewService.updateReview(id, reviewDto);
         return ResponseEntity.ok(updatedReview);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteReview(@PathVariable Long id) {
-        reviewService.deleteById(id);
+        reviewService.deleteReviewById(id);
         return ResponseEntity.noContent().build();
     }
 }

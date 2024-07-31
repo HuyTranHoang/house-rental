@@ -1,19 +1,19 @@
 package com.project.house.rental.service.impl;
 
 import com.project.house.rental.common.PageInfo;
-import com.project.house.rental.dto.CityDto;
+import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.ReviewDto;
 import com.project.house.rental.dto.params.ReviewParams;
 import com.project.house.rental.entity.*;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.exception.CustomRuntimeException;
-import com.project.house.rental.repository.GenericRepository;
 import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.repository.ReviewRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.ReviewService;
 import com.project.house.rental.specification.ReviewSpecification;
+import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,34 +21,95 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
-public class ReviewServiceImpl extends GenericServiceImpl<Review, ReviewDto> implements ReviewService {
+public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final PropertyRepository propertyRepository;
     private final JWTTokenProvider jwtTokenProvider;
+    private final HibernateFilterHelper hibernateFilterHelper;
 
-    public ReviewServiceImpl(ReviewRepository reviewRepository, UserRepository userRepository, PropertyRepository propertyRepository, JWTTokenProvider jwtTokenProvider) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository, UserRepository userRepository, PropertyRepository propertyRepository, JWTTokenProvider jwtTokenProvider, HibernateFilterHelper hibernateFilterHelper) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.hibernateFilterHelper = hibernateFilterHelper;
+    }
+
+
+    @Override
+    public List<ReviewDto> getAllReviews() {
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_REVIEW_FILTER);
+
+        List<Review> reviews = reviewRepository.findAll();
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_REVIEW_FILTER);
+
+        return reviews.stream()
+                .map(this::toDto)
+                .toList();
     }
 
     @Override
-    protected GenericRepository<Review> getRepository() {
-        return reviewRepository;
+    public ReviewDto getReviewById(long id) {
+
+        Review review = reviewRepository.findByIdWithFilter(id);
+
+        if (review == null) {
+            throw new RuntimeException("Không tìm thấy nhận xét với id = " + id);
+        }
+
+        return toDto(review);
+
     }
 
     @Override
-    public ReviewDto create(ReviewDto reviewDto) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ReviewDto createReview(ReviewDto reviewDto, HttpServletRequest request) throws CustomRuntimeException {
+        String username = getUsernameFromToken(request);
+        if (username == null) {
+            throw new CustomRuntimeException("Vui lòng đăng nhập để nhận xét!");
+        }
+
+        UserEntity user = userRepository.findUserByUsername(username);
+        if (user == null) {
+            throw new CustomRuntimeException("Không tìm thấy tài khoản!");
+        }
+
+        reviewDto.setUserId(user.getId());
+
+        Review review = toEntity(reviewDto);
+        review = reviewRepository.save(review);
+        return toDto(review);
+    }
+
+    @Override
+    public ReviewDto updateReview(long id, ReviewDto reviewDto) {
+        Review review = reviewRepository.findByIdWithFilter(id);
+
+        if (review == null) {
+            throw new RuntimeException("Không tìm thấy nhận xét");
+        }
+
+        updateEntityFromDto(review, reviewDto);
+        review = reviewRepository.save(review);
+        return toDto(review);
+    }
+
+    @Override
+    public void deleteReviewById(long id) {
+        Review review = reviewRepository.findByIdWithFilter(id);
+
+        if (review == null) {
+            throw new RuntimeException("Không tìm thấy nhận xét");
+        }
+
+        reviewRepository.deleteById(review.getId());
     }
 
     @Override
@@ -56,10 +117,6 @@ public class ReviewServiceImpl extends GenericServiceImpl<Review, ReviewDto> imp
         Specification<Review> spec = ReviewSpecification.filterByRating(reviewParams.getRating())
                 .and(ReviewSpecification.filterByPropertyId(reviewParams.getPropertyId()))
                 .and(ReviewSpecification.filterByUserId(reviewParams.getUserId()));
-
-        if (!StringUtils.hasLength(reviewParams.getSortBy())) {
-            reviewParams.setSortBy("createdAtDesc");
-        }
 
         Sort sort = switch (reviewParams.getSortBy()) {
             case "createdAtAsc" -> Sort.by(Review_.CREATED_AT);
@@ -80,7 +137,11 @@ public class ReviewServiceImpl extends GenericServiceImpl<Review, ReviewDto> imp
                 sort
         );
 
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_REVIEW_FILTER);
+
         Page<Review> cityPage = reviewRepository.findAll(spec, pageable);
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_REVIEW_FILTER);
 
         PageInfo pageInfo = new PageInfo(
                 cityPage.getNumber(),
@@ -97,23 +158,6 @@ public class ReviewServiceImpl extends GenericServiceImpl<Review, ReviewDto> imp
                 "pageInfo", pageInfo,
                 "data", reviewDtoList
         );
-    }
-
-    @Override
-    public ReviewDto create(ReviewDto reviewDto, HttpServletRequest request) throws CustomRuntimeException {
-        String username = getUsernameFromToken(request);
-        if (username == null) {
-            throw new CustomRuntimeException("Vui lòng đăng nhập để thay đổi ảnh đại diện!");
-        }
-
-        UserEntity user = userRepository.findUserByUsername(username);
-        if (user == null) {
-            throw new CustomRuntimeException("Không tìm thấy tài khoản!");
-        }
-
-        reviewDto.setUserId(user.getId());
-
-        return super.create(reviewDto);
     }
 
     /*

@@ -47,12 +47,11 @@ public class CityServiceImpl implements CityService {
     @Override
     public CityDto getCityById(long id) {
 
-        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_CITY_FILTER);
+        City city = cityRepository.findByIdWithFilter(id);
 
-        City city = cityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy 'City' với id = " + id));
-
-        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_CITY_FILTER);
+        if (city == null) {
+            throw new RuntimeException("Không tìm thấy 'City' với id = " + id);
+        }
 
         return toDto(city);
     }
@@ -79,8 +78,11 @@ public class CityServiceImpl implements CityService {
     public CityDto updateCity(long id, CityDto cityDto) {
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_CITY_FILTER);
 
-        City city = cityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy thành phố với id = " + id));
+        City city = cityRepository.findByIdWithFilter(id);
+
+        if (city == null) {
+            throw new RuntimeException("Không tìm thấy thành phố với id = " + id);
+        }
 
         City existingCity = cityRepository.findByNameIgnoreCase(cityDto.getName());
 

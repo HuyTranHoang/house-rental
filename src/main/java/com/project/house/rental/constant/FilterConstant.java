@@ -8,4 +8,5 @@ public class FilterConstant {
     public static final String DELETE_DISTRICT_FILTER = "deletedDistrictFilter";
     public static final String DELETE_AMENITY_FILTER = "deletedAmenityFilter";
     public static final String DELETE_ROOM_TYPE_FILTER = "deletedRoomTypeFilter";
+    public static final String DELETE_REVIEW_FILTER = "deletedReviewFilter";
 }

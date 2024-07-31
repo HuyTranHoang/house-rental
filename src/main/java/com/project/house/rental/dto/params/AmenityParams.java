@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class AmenityParams extends PaginationParams {
     private String name;
-    private String sortBy;
+    private String sortBy = "createdAtDesc";
 }

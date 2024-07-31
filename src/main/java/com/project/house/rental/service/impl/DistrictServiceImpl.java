@@ -55,12 +55,12 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public DistrictDto getDistrictById(long id) {
-        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_DISTRICT_FILTER);
 
-        District district = districtRepository.findById(id)
-                .orElseThrow(() -> new NoResultException("Không tìm thấy quận với id: " + id));
+        District district = districtRepository.findByIdWithFilter(id);
 
-        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_DISTRICT_FILTER);
+        if (district == null) {
+            throw new NoResultException("Không tìm thấy quận với id: " + id);
+        }
 
         return toDto(district);
     }
@@ -76,8 +76,11 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public DistrictDto updateDistrict(long id, DistrictDto districtDto) {
-        District district = districtRepository.findById(id)
-                .orElseThrow(() -> new NoResultException("Không tìm thấy quận với id: " + id));
+        District district = districtRepository.findByIdWithFilter(id);
+
+        if (district == null) {
+            throw new NoResultException("Không tìm thấy quận với id: " + id);
+        }
 
         updateEntityFromDto(district, districtDto);
 

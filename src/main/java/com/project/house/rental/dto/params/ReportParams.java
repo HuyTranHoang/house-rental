@@ -10,5 +10,5 @@ public class ReportParams extends PaginationParams {
 
     private String title;
 
-    private String sortBy;
+    private String sortBy = "createdAtDesc";
 }

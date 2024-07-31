@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class RoomTypeParams extends PaginationParams {
     private String name;
-    private String sortBy;
+    private String sortBy = "createdAtDesc";
 }

@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class DistrictParams extends  PaginationParams{
     private String name;
-    private String sortBy;
+    private String sortBy = "createdAtDesc";
     private String cityName;
 }

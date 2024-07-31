@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -24,11 +23,11 @@ import java.util.Map;
 @Service
 public class AmenityServiceImpl implements AmenityService {
 
-    private final AmenityRepository amenitiesRepository;
+    private final AmenityRepository amenityRepository;
     private final HibernateFilterHelper hibernateFilterHelper;
 
     public AmenityServiceImpl(AmenityRepository amenitiesRepository, HibernateFilterHelper hibernateFilterHelper) {
-        this.amenitiesRepository = amenitiesRepository;
+        this.amenityRepository = amenitiesRepository;
         this.hibernateFilterHelper = hibernateFilterHelper;
     }
 
@@ -36,7 +35,7 @@ public class AmenityServiceImpl implements AmenityService {
     public List<AmenityDto> getAllAmenities() {
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_AMENITY_FILTER);
 
-        List<Amenity> amenities = amenitiesRepository.findAll();
+        List<Amenity> amenities = amenityRepository.findAll();
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_AMENITY_FILTER);
 
@@ -47,40 +46,54 @@ public class AmenityServiceImpl implements AmenityService {
 
     @Override
     public AmenityDto getAmenityById(long id) {
-        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_AMENITY_FILTER);
+        Amenity amenity = amenityRepository.findByIdWithFilter(id);
 
-        Amenity amenities = amenitiesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy tiện ích với id = " + id));
+        if (amenity == null) {
+            throw new RuntimeException("Không tìm thấy tiện ích với id = " + id);
+        }
 
-        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_AMENITY_FILTER);
-
-        return toDto(amenities);
+        return toDto(amenity);
     }
 
     @Override
     public AmenityDto createAmenity(AmenityDto amenityDto) {
+        Amenity existingAmenity = amenityRepository.findByNameIgnoreCase(amenityDto.getName());
+
+        if (existingAmenity != null) {
+            throw new RuntimeException("Tiện ích đã tồn tại");
+        }
+
         Amenity amenities = toEntity(amenityDto);
-        amenities = amenitiesRepository.save(amenities);
+        amenities = amenityRepository.save(amenities);
         return toDto(amenities);
     }
 
     @Override
     public AmenityDto updateAmenity(long id, AmenityDto amenityDto) {
-        Amenity amenities = amenitiesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy tiện ích với id = " + id));
+        Amenity amenities = amenityRepository.findByIdWithFilter(id);
+
+        if (amenities == null) {
+            throw new RuntimeException("Không tìm thấy tiện ích với id = " + id);
+        }
+
+        Amenity existingAmenity = amenityRepository.findByNameIgnoreCase(amenityDto.getName());
+
+        if (existingAmenity != null && existingAmenity.getId() != id) {
+            throw new RuntimeException("Tiện ích đã tồn tại");
+        }
 
         updateEntityFromDto(amenities, amenityDto);
-        amenities = amenitiesRepository.save(amenities);
+        amenities = amenityRepository.save(amenities);
 
         return toDto(amenities);
     }
 
     @Override
     public void deleteAmenityById(long id) {
-        Amenity amenities = amenitiesRepository.findById(id)
+        Amenity amenities = amenityRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tiện ích với id = " + id));
 
-        amenitiesRepository.deleteById(amenities.getId());
+        amenityRepository.deleteById(amenities.getId());
     }
 
     @Override
@@ -108,7 +121,7 @@ public class AmenityServiceImpl implements AmenityService {
                 sort
         );
 
-        Page<Amenity> amenityPage = amenitiesRepository.findAll(spec, pageable);
+        Page<Amenity> amenityPage = amenityRepository.findAll(spec, pageable);
 
         PageInfo pageInfo = new PageInfo(
                 amenityPage.getNumber(),

@@ -12,5 +12,5 @@ public class ReviewParams extends PaginationParams {
 
     long propertyId;
 
-    String sortBy;
+    private String sortBy = "createdAtDesc";
 }

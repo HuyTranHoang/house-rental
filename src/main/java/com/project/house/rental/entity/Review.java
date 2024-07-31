@@ -1,5 +1,6 @@
 package com.project.house.rental.entity;
 
+import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.entity.auth.UserEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -7,8 +8,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.*;
 
 @Getter
 @Setter
@@ -19,7 +19,8 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(name = "reviews")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SQLDelete(sql = "UPDATE reviews SET is_deleted = true WHERE id = ?")
-@SQLRestriction("is_deleted = false")
+@FilterDef(name = FilterConstant.DELETE_REVIEW_FILTER, parameters = @ParamDef(name = FilterConstant.IS_DELETED, type = Boolean.class))
+@Filter(name = FilterConstant.DELETE_REVIEW_FILTER, condition = FilterConstant.CONDITION)
 public class Review extends BaseEntity {
 
     int rating;
