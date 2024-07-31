@@ -17,7 +17,7 @@ import java.util.List;
 @Entity
 @Table(name = "districts")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@SQLDelete(sql = "UPDATE cities SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE districts SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 public class District extends BaseEntity {
 
