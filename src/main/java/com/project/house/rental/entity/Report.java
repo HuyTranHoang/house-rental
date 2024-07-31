@@ -4,7 +4,6 @@ import com.project.house.rental.entity.auth.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -20,10 +19,7 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SQLDelete(sql = "UPDATE reports SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
-public class Report {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+public class Report extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -36,10 +32,4 @@ public class Report {
     @Column(name = "reason", columnDefinition = "TEXT")
     String reason;
 
-    @Column(name = "is_deleted")
-    boolean isDeleted = Boolean.FALSE;
-
-    @Column(name = "created_at")
-    @CreationTimestamp
-    Date createdAt;
 }

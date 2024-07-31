@@ -1,7 +1,6 @@
 package com.project.house.rental.service.impl;
 
 import com.project.house.rental.common.PageInfo;
-import com.project.house.rental.common.email.EmailSenderService;
 import com.project.house.rental.dto.ReportDto;
 import com.project.house.rental.dto.params.ReportParams;
 import com.project.house.rental.entity.Property;
@@ -13,10 +12,10 @@ import com.project.house.rental.repository.ReportRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.ReportService;
+import com.project.house.rental.service.email.EmailSenderService;
 import com.project.house.rental.specification.ReportSpecification;
 import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.NotSupportedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,32 +50,8 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
     }
 
     @Override
-    public ReportDto toDto(Report report) {
-        return ReportDto.builder()
-                .id(report.getId())
-                .userId(report.getUser().getId())
-                .username(report.getUser().getUsername())
-                .propertyId(report.getProperty().getId())
-                .title(report.getProperty().getTitle())
-                .reason(report.getReason())
-                .build();
-    }
-
-
-
-    @Override
-    public Report toEntity(ReportDto reportDto) {
-        UserEntity currentUser = userRepository.findById(reportDto.getUserId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy user này!"));
-
-        Property currentProperty = propertyRepository.findById(reportDto.getPropertyId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng này!"));
-
-        return Report.builder()
-                .user(currentUser)
-                .property(currentProperty)
-                .reason(reportDto.getReason())
-                .build();
+    public ReportDto create(ReportDto reportDto) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -89,22 +64,13 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
         }
 
         reportDto.setUserId(currentUser.getId());
-        reportDto.setUsername(currentUser.getUsername());
 
         Report newReport = toEntity(reportDto);
 
-        emailSenderService.sendEmail(currentUser.getEmail(), "Thông báo Report", reportDto.getReason());
+        //TODO: Gửi email thông báo với form từ HMTL
+        //emailSenderService.sendEmail(currentUser.getEmail(), "Thông báo Report", reportDto.getReason());
 
         return toDto(reportRepository.save(newReport));
-    }
-
-    @Override
-    public void updateEntityFromDto(Report report, ReportDto reportDto) {
-        try {
-            throw new NotSupportedException("Không sử dụng hàm này !");
-        } catch (NotSupportedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
@@ -151,6 +117,42 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
                 "pageInfo", pageInfo,
                 "data", reportDtoList
         );
+    }
+
+    /*
+        Helper method
+     */
+
+    @Override
+    public ReportDto toDto(Report report) {
+        return ReportDto.builder()
+                .id(report.getId())
+                .userId(report.getUser().getId())
+                .username(report.getUser().getUsername())
+                .propertyId(report.getProperty().getId())
+                .title(report.getProperty().getTitle())
+                .reason(report.getReason())
+                .build();
+    }
+
+    @Override
+    public Report toEntity(ReportDto reportDto) {
+        UserEntity currentUser = userRepository.findById(reportDto.getUserId())
+                .orElseThrow(() -> new NoResultException("Không tìm thấy user này!"));
+
+        Property currentProperty = propertyRepository.findById(reportDto.getPropertyId())
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng này!"));
+
+        return Report.builder()
+                .user(currentUser)
+                .property(currentProperty)
+                .reason(reportDto.getReason())
+                .build();
+    }
+
+    @Override
+    public void updateEntityFromDto(Report report, ReportDto reportDto) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private String getUsernameFromToken(HttpServletRequest request) {
