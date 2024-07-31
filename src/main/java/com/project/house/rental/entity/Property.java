@@ -41,7 +41,7 @@ public class Property extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", columnDefinition = "ENUM('PENDING', 'RESOLVED') DEFAULT 'PENDING'")
-    PropertyStatus status;
+    PropertyStatus status = PropertyStatus.PENDING;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

@@ -53,6 +53,9 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
 
     @Override
     public PropertyDto create(PropertyDto propertyDto, MultipartFile[] images) throws IOException {
+        Property property = toEntity(propertyDto);
+        property = propertyRepository.save(property);
+
         Map<String, String> cloudinaryResponse = cloudinaryService.uploadImages(images);
         List<PropertyImage> propertyImages = new ArrayList<>();
         List<String> propertyImagesUrl = new ArrayList<>();
@@ -61,6 +64,7 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
             PropertyImage propertyImage = PropertyImage.builder()
                     .imageUrl(entry.getValue())
                     .publicId(entry.getKey())
+                    .property(property) // Set the property for each image
                     .build();
             propertyImages.add(propertyImage);
             propertyImagesUrl.add(entry.getValue());
@@ -68,14 +72,6 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
 
         propertyImageRepository.saveAll(propertyImages);
         propertyDto.setPropertyImages(propertyImagesUrl);
-
-        Property property = toEntity(propertyDto);
-        property = propertyRepository.save(property);
-
-        for (PropertyImage propertyImage : propertyImages) {
-            propertyImage.setProperty(property);
-        }
-        propertyImageRepository.saveAll(propertyImages);
 
         return toDto(property);
     }
@@ -129,14 +125,17 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
                 .map(amenityRepository::findByNameIgnoreCase)
                 .toList();
 
-        List<PropertyImage> propertyImages = propertyDto.getPropertyImages().stream()
-                .map(propertyImageRepository::findByImageUrl)
-                .toList();
+        List<PropertyImage> propertyImages = new ArrayList<>();
 
-        if (!propertyDto.getStatus().equals("PENDING") && !propertyDto.getStatus().equals("RESOLVED")) {
-            throw new NoResultException("Status phải là PENDING hoặc RESOLVED");
+        if (propertyDto.getPropertyImages() != null) {
+            propertyImages = propertyDto.getPropertyImages().stream()
+                    .map(propertyImageRepository::findByImageUrl)
+                    .toList();
         }
 
+        if (!isValidPropertyStatus(propertyDto.getStatus())) {
+            throw new IllegalArgumentException("Trạng thái [" + propertyDto.getStatus() + "] không hợp lệ!");
+        }
 
         return Property.builder()
                 .title(propertyDto.getTitle())
@@ -175,8 +174,8 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
                 .map(propertyImageRepository::findByImageUrl)
                 .toList();
 
-        if (!propertyDto.getStatus().equals("PENDING") && !propertyDto.getStatus().equals("RESOLVED")) {
-            throw new NoResultException("Status phải là PENDING hoặc RESOLVED");
+        if (!isValidPropertyStatus(propertyDto.getStatus())) {
+            throw new IllegalArgumentException("Trạng thái [" + propertyDto.getStatus() + "] không hợp lệ!");
         }
 
         property.setTitle(propertyDto.getTitle());
@@ -192,6 +191,15 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
         property.setRoomType(roomType);
         property.setAmenities(amenities);
         property.setPropertyImages(propertyImages);
+    }
+
+    public static boolean isValidPropertyStatus(String status) {
+        try {
+            Property.PropertyStatus.valueOf(status);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
 }

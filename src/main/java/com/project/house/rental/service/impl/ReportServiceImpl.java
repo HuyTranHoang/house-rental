@@ -16,11 +16,6 @@ import com.project.house.rental.service.email.EmailSenderService;
 import com.project.house.rental.specification.ReportSpecification;
 import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.transaction.NotSupportedException;
-import org.apache.logging.log4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,13 +24,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import java.util.List;
 import java.util.Map;
 
 
 @Service
 public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> implements ReportService {
+
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
@@ -89,7 +84,7 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
 
         Sort sort = switch (reportParams.getSortBy()) {
             case "createdAtAsc" -> Sort.by(Report_.CREATED_AT);
-            default ->  Sort.by(Report_.CREATED_AT).descending();
+            default -> Sort.by(Report_.CREATED_AT).descending();
         };
 
         if (reportParams.getPageNumber() < 0) {
@@ -182,28 +177,27 @@ public class ReportServiceImpl extends GenericServiceImpl<Report, ReportDto> imp
     @Override
     public void updateReportStatus(long reportId, String status) {
 
-        Report report = reportRepository.getById(reportId);
-        if (report == null) {
-            throw new NoResultException("Không tìm thấy báo cáo!");
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy report!"));
+
+        Property property = propertyRepository.findById(report.getProperty().getId())
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng!"));
+
+        if (!isValidReportStatus(status)) {
+            throw new IllegalArgumentException("Trạng thái [" + status + "] không hợp lệ");
         }
 
-        Property property = propertyRepository.getById(report.getProperty().getId());
-        if (property == null) {
-            throw new NoResultException("Không tìm thấy bài đăng!");
-        }
-
-        // PENDING', 'APPROVED', 'REJECTED'
-        if ("APPROVED".equalsIgnoreCase(status)) {
-            report.setStatus(Report.ReportStatus.APPROVED);
-        } else if ("REJECTED".equalsIgnoreCase(status)) {
-            report.setStatus(Report.ReportStatus.REJECTED);
-        } else if ("PENDING".equalsIgnoreCase(status)) {
-            report.setStatus(Report.ReportStatus.PENDING);
-        } else {
-            throw new IllegalArgumentException("Trạng thái không hợp lệ!");
-
-        }
+        report.setStatus(Report.ReportStatus.valueOf(status));
 
         reportRepository.save(report);
+    }
+
+    private boolean isValidReportStatus(String status) {
+        try {
+            Report.ReportStatus.valueOf(status);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }
