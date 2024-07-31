@@ -41,6 +41,8 @@ public class PropertyDto {
     @NotEmpty(message = "Vui lòng chọn trạng thái")
     String status;
 
+    boolean isBlocked = Boolean.FALSE;
+
     long userId;
 
     String userName;

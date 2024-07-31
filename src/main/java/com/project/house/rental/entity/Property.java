@@ -28,20 +28,26 @@ public class Property extends BaseEntity {
     String description;
 
     @Column(name = "price")
-    Double price;
+    double price;
 
     @Column(name = "location")
     String location;
 
     @Column(name = "area")
-    Double area;
+    double area;
 
     @Column(name = "num_rooms")
-    Integer numRooms;
+    int numRooms;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", columnDefinition = "ENUM('PENDING', 'RESOLVED') DEFAULT 'PENDING'")
     PropertyStatus status = PropertyStatus.PENDING;
+
+    @Column(name = "is_blocked")
+    boolean isBlocked;
+
+    @Column(name = "is_deleted")
+    boolean isDeleted;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

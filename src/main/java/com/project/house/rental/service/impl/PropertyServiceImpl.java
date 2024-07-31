@@ -96,6 +96,7 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
                 .location(property.getLocation())
                 .numRooms(property.getNumRooms())
                 .status(String.valueOf(property.getStatus()))
+                .isBlocked(property.isBlocked())
                 .area((property.getArea()))
                 .cityId(property.getCity().getId())
                 .cityName(property.getCity().getName())
@@ -143,6 +144,7 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
                 .numRooms(propertyDto.getNumRooms())
                 .location(propertyDto.getLocation())
                 .status(Property.PropertyStatus.valueOf(propertyDto.getStatus()))
+                .isBlocked(propertyDto.isBlocked())
                 .price(propertyDto.getPrice())
                 .area(propertyDto.getArea())
                 .city(city)
@@ -182,6 +184,7 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
         property.setDescription(propertyDto.getDescription());
         property.setArea(propertyDto.getArea());
         property.setStatus(Property.PropertyStatus.valueOf(propertyDto.getStatus()));
+        property.setBlocked(propertyDto.isBlocked());
         property.setLocation(propertyDto.getLocation());
         property.setPrice(propertyDto.getPrice());
         property.setNumRooms(propertyDto.getNumRooms());
