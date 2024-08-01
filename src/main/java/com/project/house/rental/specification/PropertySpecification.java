@@ -10,95 +10,68 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PropertySpecification {
-    public static Specification<Property> searchByCriteria(String districtName, String cityName, Double price, String amenity, String roomType, Double area) {
+    
+    public static Specification<Property> searchByCriteria(Property propertyParams) {
         return (root, query, cb) -> {
             Predicate predicate = cb.conjunction();
 
-            if (StringUtils.hasLength(districtName)) {
+            if (StringUtils.hasLength(propertyParams.getDistrict().getName())) {
                 Join<Property, District> districtJoin = root.join(Property_.DISTRICT);
-                predicate = cb.and(predicate, cb.like(cb.lower(districtJoin.get(District_.NAME)), "%" + districtName.toLowerCase() + "%"));
+                predicate = cb.and(predicate, cb.like(cb.lower(districtJoin.get(District_.NAME)), "%" + propertyParams.getDistrict().getName().toLowerCase() + "%"));
             }
 
-            if (StringUtils.hasLength(cityName)) {
+            if (StringUtils.hasLength(propertyParams.getCity().getName())) {
                 Join<Property, City> cityJoin = root.join(Property_.CITY);
-                predicate = cb.and(predicate, cb.like(cb.lower(cityJoin.get(City_.NAME)), "%" + cityName.toLowerCase() + "%"));
+                predicate = cb.and(predicate, cb.like(cb.lower(cityJoin.get(City_.NAME)), "%" + propertyParams.getCity().getName().toLowerCase() + "%"));
             }
 
-            if (price != null) {
-                predicate = cb.and(predicate, cb.equal(root.get(Property_.PRICE), price));
+            if (propertyParams.getPrice() != null) {
+                predicate = cb.and(predicate, cb.equal(root.get(Property_.PRICE), propertyParams.getPrice()));
             }
 
-            if (StringUtils.hasLength(roomType)) {
+            if (StringUtils.hasLength(propertyParams.getRoomType().getName())) {
                 Join<Property, RoomType> roomTypeJoin = root.join(Property_.ROOM_TYPE);
-                predicate = cb.and(predicate, cb.like(cb.lower(roomTypeJoin.get(RoomType_.NAME)), "%" + roomType.toLowerCase() + "%"));
+                predicate = cb.and(predicate, cb.like(cb.lower(roomTypeJoin.get(RoomType_.NAME)), "%" + propertyParams.getRoomType().getName().toLowerCase() + "%"));
             }
 
-            if (area != null) {
-                predicate = cb.and(predicate, cb.equal(root.get(Property_.AREA), area));
+            if (propertyParams.getArea() != null) {
+                predicate = cb.and(predicate, cb.equal(root.get(Property_.AREA), propertyParams.getArea()));
             }
 
             return predicate;
         };
     }
 
-
-    public static Specification<Property> filterByCriteria(String districtNames, String cityNames, String roomTypeNames, String amenities, Double minPrice, Double maxPrice, Double minArea, Double maxArea) {
+    public static Specification<Property> filterByCriteria(String filter) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (StringUtils.hasLength(districtNames)) {
+            if (StringUtils.hasLength(filter)) {
+                String filterLower = "%" + filter.toLowerCase() + "%";
+
                 Join<Property, District> districtJoin = root.join(Property_.DISTRICT);
-                String[] districtArray = districtNames.split(",");
-                for (String district : districtArray) {
-                    district = district.trim().toLowerCase();
-                    predicates.add(cb.like(cb.lower(districtJoin.get(District_.NAME)), "%" + district + "%"));
-                }
-            }
+                predicates.add(cb.like(cb.lower(districtJoin.get(District_.NAME)), filterLower));
 
-            if (StringUtils.hasLength(cityNames)) {
+                
                 Join<Property, City> cityJoin = root.join(Property_.CITY);
-                String[] cityArray = cityNames.split(",");
-                for (String city : cityArray) {
-                    city = city.trim().toLowerCase();
-                    predicates.add(cb.like(cb.lower(cityJoin.get(City_.NAME)), "%" + city + "%"));
-                }
-            }
+                predicates.add(cb.like(cb.lower(cityJoin.get(City_.NAME)), filterLower));
 
-            if (StringUtils.hasLength(roomTypeNames)) {
+               
                 Join<Property, RoomType> roomTypeJoin = root.join(Property_.ROOM_TYPE);
-                String[] roomTypeArray = roomTypeNames.split(",");
-                for (String roomType : roomTypeArray) {
-                    roomType = roomType.trim().toLowerCase();
-                    predicates.add(cb.like(cb.lower(roomTypeJoin.get(RoomType_.NAME)), "%" + roomType + "%"));
-                }
-            }
+                predicates.add(cb.like(cb.lower(roomTypeJoin.get(RoomType_.NAME)), filterLower));
 
-            if (StringUtils.hasLength(amenities)) {
+               
                 Join<Property, Amenity> amenityJoin = root.join("amenities");
-                String[] amenityArray = amenities.split(",");
-                for (String amenity : amenityArray) {
-                    amenity = amenity.trim().toLowerCase();
-                    predicates.add(cb.like(cb.lower(amenityJoin.get("name")), "%" + amenity + "%"));
-                }
+                predicates.add(cb.like(cb.lower(amenityJoin.get("name")), filterLower));
+
+                
+                predicates.add(cb.like(cb.lower(root.get(Property_.PRICE).as(String.class)), filterLower));
+
+                
+                predicates.add(cb.like(cb.lower(root.get(Property_.AREA).as(String.class)), filterLower));
             }
 
-            if (minPrice != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get(Property_.PRICE), minPrice));
-            }
-
-            if (maxPrice != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get(Property_.PRICE), maxPrice));
-            }
-
-            if (minArea != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get(Property_.AREA), minArea));
-            }
-
-            if (maxArea != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get(Property_.AREA), maxArea));
-            }
-
-            return cb.and(predicates.toArray(new Predicate[0]));
+            return cb.or(predicates.toArray(new Predicate[0]));
         };
     }
 }

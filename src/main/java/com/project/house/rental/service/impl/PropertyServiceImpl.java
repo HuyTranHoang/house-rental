@@ -13,8 +13,13 @@ import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.repository.RoomTypeRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.service.PropertyService;
+import com.project.house.rental.specification.PropertySpecification;
 import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -117,5 +122,26 @@ public class PropertyServiceImpl  extends GenericServiceImpl<Property, PropertyD
         property.setDistrict(district);
         property.setUser(user);
         property.setRoomType(roomType);
+    }
+
+    @Override
+    public Map<String, Object> getAllPropertiesWithParams(Property propertyParams) {
+        List<Property> properties = propertyRepository.findAll(PropertySpecification.searchByCriteria(propertyParams));
+        List<PropertyDto> propertyDtos = properties.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+
+        return Map.of(
+                "total", properties.size(),
+                "properties", propertyDtos
+        );
+    }
+
+    @Override
+    public List<PropertyDto> getAllWithFilter(String filter) {
+        List<Property> properties = propertyRepository.findAll(PropertySpecification.filterByCriteria(filter));
+        return properties.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 }
