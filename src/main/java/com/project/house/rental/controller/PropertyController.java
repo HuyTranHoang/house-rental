@@ -1,6 +1,8 @@
 package com.project.house.rental.controller;
 
+import com.project.house.rental.dto.DistrictDto;
 import com.project.house.rental.dto.PropertyDto;
+import com.project.house.rental.dto.params.PropertyParams;
 import com.project.house.rental.service.PropertyService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/properties")
@@ -23,9 +26,22 @@ public class PropertyController {
         this.propertyService = propertyService;
     }
 
+    @GetMapping({"/", ""})
+    public ResponseEntity<Map<String, Object>> getAllPropertiesWithParams(@ModelAttribute PropertyParams propertyParams) {
+        Map<String, Object> propertyWithParams = propertyService.getAllPropertiesWithParams(propertyParams);
+        return ResponseEntity.ok(propertyWithParams);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<PropertyDto>> getAllProperty() {
         List<PropertyDto> properties = propertyService.getAllProperties();
+        return ResponseEntity.ok(properties);
+    }
+
+    // Find Every entity
+    @GetMapping("/find")
+    public ResponseEntity<List<PropertyDto>> getAllPropertyForFilter(@ModelAttribute PropertyParams propertyParams) {
+        List<PropertyDto> properties = propertyService.getAllPropertiesForFilter(propertyParams);
         return ResponseEntity.ok(properties);
     }
 
