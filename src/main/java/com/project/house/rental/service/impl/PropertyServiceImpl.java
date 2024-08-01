@@ -299,11 +299,12 @@ public class PropertyServiceImpl implements PropertyService {
                 .and(PropertySpecification.searchByArea(propertyParams.getArea()));
 
         Sort sort = switch (propertyParams.getSortBy()) {
-            case "priceDesc" -> Sort.by("price").descending();
-            case "priceAsc" -> Sort.by("price");
-            case "areaDesc" -> Sort.by("area").descending();
-            case "areaAsc" -> Sort.by("area");
-            default -> Sort.by("id").descending();
+            case "priceDesc" -> Sort.by(Property_.PRICE).descending();
+            case "priceAsc" -> Sort.by(Property_.PRICE);
+            case "areaDesc" -> Sort.by(Property_.AREA).descending();
+            case "areaAsc" -> Sort.by(Property_.AREA);
+            case "createdAtAsc" -> Sort.by(Property_.CREATED_AT);
+            default -> Sort.by(Property_.CREATED_AT).descending();
         };
 
         if (propertyParams.getPageNumber() < 0) {
