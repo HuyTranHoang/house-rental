@@ -58,20 +58,19 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
 
         Map<String, String> cloudinaryResponse = cloudinaryService.uploadImages(images);
         List<PropertyImage> propertyImages = new ArrayList<>();
-        List<String> propertyImagesUrl = new ArrayList<>();
 
         for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
             PropertyImage propertyImage = PropertyImage.builder()
                     .imageUrl(entry.getValue())
                     .publicId(entry.getKey())
-                    .property(property) // Set the property for each image
+                    .property(property)
                     .build();
             propertyImages.add(propertyImage);
-            propertyImagesUrl.add(entry.getValue());
         }
 
         propertyImageRepository.saveAll(propertyImages);
-        propertyDto.setPropertyImages(propertyImagesUrl);
+
+        property.setPropertyImages(propertyImages);
 
         return toDto(property);
     }
