@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -321,11 +320,15 @@ public class PropertyServiceImpl implements PropertyService {
                 sort
         );
 
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
+
         Page<Property> propertyPage = propertyRepository.findAll(spec, pageable);
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
 
         List<PropertyDto> propertyDtoList = propertyPage.stream()
                 .map(this::toDto)
-                .collect(Collectors.toList());
+                .toList();
 
         PageInfo pageInfo = new PageInfo(
                 propertyPage.getTotalPages(),

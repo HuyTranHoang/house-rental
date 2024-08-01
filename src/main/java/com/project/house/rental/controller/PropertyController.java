@@ -1,6 +1,5 @@
 package com.project.house.rental.controller;
 
-import com.project.house.rental.dto.DistrictDto;
 import com.project.house.rental.dto.PropertyDto;
 import com.project.house.rental.dto.params.PropertyParams;
 import com.project.house.rental.service.PropertyService;

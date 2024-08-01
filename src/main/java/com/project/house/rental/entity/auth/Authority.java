@@ -1,7 +1,8 @@
 package com.project.house.rental.entity.auth;
 
 import com.project.house.rental.entity.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

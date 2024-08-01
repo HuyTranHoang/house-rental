@@ -2,8 +2,8 @@ package com.project.house.rental.entity;
 
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.entity.auth.UserEntity;
-import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.*;

@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor

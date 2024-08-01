@@ -1,7 +1,5 @@
 package com.project.house.rental.specification;
 
-import com.project.house.rental.entity.City_;
-import com.project.house.rental.entity.District_;
 import com.project.house.rental.entity.Report;
 import com.project.house.rental.entity.Report_;
 import com.project.house.rental.entity.auth.UserEntity_;
