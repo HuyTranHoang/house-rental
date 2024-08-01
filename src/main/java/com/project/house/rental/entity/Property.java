@@ -1,11 +1,13 @@
 package com.project.house.rental.entity;
 
+import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.entity.auth.UserEntity;
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.*;
 
 import java.util.List;
 
@@ -18,7 +20,8 @@ import java.util.List;
 @Table(name = "properties")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SQLDelete(sql = "UPDATE properties SET is_deleted = true WHERE id = ?")
-@SQLRestriction("is_deleted = false")
+@FilterDef(name = FilterConstant.DELETE_PROPERTY_FILTER, parameters = @ParamDef(name = FilterConstant.IS_DELETED, type = Boolean.class))
+@Filter(name = FilterConstant.DELETE_PROPERTY_FILTER, condition = FilterConstant.CONDITION)
 public class Property extends BaseEntity {
 
     @Column(name = "title")

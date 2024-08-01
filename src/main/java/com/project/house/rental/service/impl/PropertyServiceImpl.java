@@ -1,6 +1,7 @@
 package com.project.house.rental.service.impl;
 
 
+import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.PropertyDto;
 import com.project.house.rental.entity.*;
 import com.project.house.rental.entity.auth.UserEntity;
@@ -8,6 +9,7 @@ import com.project.house.rental.repository.*;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.service.PropertyService;
+import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +21,7 @@ import java.util.Map;
 
 
 @Service
-public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDto> implements PropertyService {
+public class PropertyServiceImpl implements PropertyService {
 
     private final PropertyRepository propertyRepository;
     private final CityRepository cityRepository;
@@ -29,8 +31,9 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
     private final AmenityRepository amenityRepository;
     private final PropertyImageRepository propertyImageRepository;
     private final CloudinaryService cloudinaryService;
+    private final HibernateFilterHelper hibernateFilterHelper;
 
-    public PropertyServiceImpl(PropertyRepository propertyRepository, CityRepository cityRepository, RoomTypeRepository roomTypeRepository, UserRepository userRepository, DistrictRepository districtRepository, AmenityRepository amenityRepository, PropertyImageRepository propertyImageRepository, CloudinaryService cloudinaryService) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, CityRepository cityRepository, RoomTypeRepository roomTypeRepository, UserRepository userRepository, DistrictRepository districtRepository, AmenityRepository amenityRepository, PropertyImageRepository propertyImageRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper) {
         this.propertyRepository = propertyRepository;
         this.cityRepository = cityRepository;
         this.roomTypeRepository = roomTypeRepository;
@@ -39,40 +42,97 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
         this.amenityRepository = amenityRepository;
         this.propertyImageRepository = propertyImageRepository;
         this.cloudinaryService = cloudinaryService;
+        this.hibernateFilterHelper = hibernateFilterHelper;
+    }
+
+
+    @Override
+    public List<PropertyDto> getAllProperties() {
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
+
+        List<Property> properties = propertyRepository.findAll();
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
+
+        return properties.stream()
+                .map(this::toDto)
+                .toList();
     }
 
     @Override
-    protected PropertyRepository getRepository() {
-        return propertyRepository;
+    public PropertyDto getPropertyById(long id) {
+        Property property = propertyRepository.findByIdWithFilter(id);
+
+        if (property == null) {
+            throw new NoResultException("Không tìm thấy tin đăng với id: " + id);
+        }
+
+        return toDto(property);
     }
 
     @Override
-    public PropertyDto create(PropertyDto propertyDto) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public PropertyDto create(PropertyDto propertyDto, MultipartFile[] images) throws IOException {
+    public PropertyDto createProperty(PropertyDto propertyDto, MultipartFile[] images) throws IOException {
         Property property = toEntity(propertyDto);
         property = propertyRepository.save(property);
 
-        Map<String, String> cloudinaryResponse = cloudinaryService.uploadImages(images);
         List<PropertyImage> propertyImages = new ArrayList<>();
 
-        for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
-            PropertyImage propertyImage = PropertyImage.builder()
-                    .imageUrl(entry.getValue())
-                    .publicId(entry.getKey())
-                    .property(property)
-                    .build();
-            propertyImages.add(propertyImage);
-        }
+        if (images != null && images.length > 0) {
+            Map<String, String> cloudinaryResponse = cloudinaryService.uploadImages(images);
 
-        propertyImageRepository.saveAll(propertyImages);
+            for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
+                PropertyImage propertyImage = PropertyImage.builder()
+                        .imageUrl(entry.getValue())
+                        .publicId(entry.getKey())
+                        .property(property)
+                        .build();
+                propertyImages.add(propertyImage);
+            }
+            propertyImageRepository.saveAll(propertyImages);
+        }
 
         property.setPropertyImages(propertyImages);
 
         return toDto(property);
+    }
+
+    @Override
+    public PropertyDto updateProperty(long id, PropertyDto propertyDto, MultipartFile[] images) throws IOException {
+        Property property = propertyRepository.findByIdWithFilter(id);
+
+        if (property == null) {
+            throw new NoResultException("Không tìm thấy tin đăng với id: " + id);
+        }
+
+        if (images != null && images.length > 0) {
+            Map<String, String> cloudinaryResponse = cloudinaryService.uploadImages(images);
+
+            for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
+                PropertyImage propertyImage = PropertyImage.builder()
+                        .imageUrl(entry.getValue())
+                        .publicId(entry.getKey())
+                        .property(property)
+                        .build();
+                property.getPropertyImages().add(propertyImage);
+            }
+            propertyImageRepository.saveAll(property.getPropertyImages());
+        }
+
+
+        updateEntityFromDto(property, propertyDto);
+
+        propertyRepository.save(property);
+
+        return toDto(property);
+    }
+
+    @Override
+    public void deletePropertyById(long id) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy tin đăng với id: " + id));
+
+        propertyRepository.deleteById(property.getId());
     }
 
     @Override
@@ -82,8 +142,8 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
                 .map(Amenity::getName)
                 .toList();
 
-        List<String> propertyImages = property.getPropertyImages()
-                .stream()
+        List<String> propertyImages = property.getPropertyImages().stream()
+                .filter(image -> !image.isDeleted())
                 .map(PropertyImage::getImageUrl)
                 .toList();
 
@@ -157,7 +217,6 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
 
     @Override
     public void updateEntityFromDto(Property property, PropertyDto propertyDto) {
-
         City city = cityRepository.findById(propertyDto.getCityId())
                 .orElseThrow(() -> new NoResultException("Không tìm thấy id thành phố: " + propertyDto.getCityId()));
         RoomType roomType = roomTypeRepository.findById(propertyDto.getRoomTypeId())
@@ -167,13 +226,20 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
         District district = districtRepository.findById(propertyDto.getDistrictId())
                 .orElseThrow(() -> new NoResultException("Không tìm thấy id Quận: " + propertyDto.getDistrictId()));
 
-        List<Amenity> amenities = propertyDto.getAmenities().stream()
-                .map(amenityRepository::findByNameIgnoreCase)
-                .toList();
+        List<Amenity> amenities = new ArrayList<>();
+        if (propertyDto.getAmenities() != null) {
+            amenities = propertyDto.getAmenities().stream()
+                    .map(amenityRepository::findByNameIgnoreCase)
+                    .toList();
+        }
 
-        List<PropertyImage> propertyImages = propertyDto.getPropertyImages().stream()
-                .map(propertyImageRepository::findByImageUrl)
-                .toList();
+
+//        List<PropertyImage> propertyImages = new ArrayList<>();
+//        if (propertyDto.getPropertyImages() != null) {
+//            propertyImages = propertyDto.getPropertyImages().stream()
+//                    .map(propertyImageRepository::findByImageUrl)
+//                    .toList();
+//        }
 
         if (!isValidPropertyStatus(propertyDto.getStatus())) {
             throw new IllegalArgumentException("Trạng thái [" + propertyDto.getStatus() + "] không hợp lệ!");
@@ -191,8 +257,8 @@ public class PropertyServiceImpl extends GenericServiceImpl<Property, PropertyDt
         property.setDistrict(district);
         property.setUser(user);
         property.setRoomType(roomType);
-        property.setAmenities(amenities);
-        property.setPropertyImages(propertyImages);
+        property.setAmenities(new ArrayList<>(amenities));
+//        property.setPropertyImages(propertyImages);
     }
 
     public static boolean isValidPropertyStatus(String status) {

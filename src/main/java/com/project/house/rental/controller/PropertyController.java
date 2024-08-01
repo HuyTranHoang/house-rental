@@ -25,31 +25,31 @@ public class PropertyController {
 
     @GetMapping("/all")
     public ResponseEntity<List<PropertyDto>> getAllProperty() {
-        List<PropertyDto> properties = propertyService.getAll();
+        List<PropertyDto> properties = propertyService.getAllProperties();
         return ResponseEntity.ok(properties);
     }
 
     @PostMapping
     public ResponseEntity<PropertyDto> createProperty(@Valid @ModelAttribute PropertyDto propertyDto, @RequestParam MultipartFile[] images) throws IOException {
-        PropertyDto createdProperty = propertyService.create(propertyDto, images);
+        PropertyDto createdProperty = propertyService.createProperty(propertyDto, images);
         return ResponseEntity.ok(createdProperty);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PropertyDto> getPropertyById(@PathVariable Long id) {
-        PropertyDto propertyDto = propertyService.getById(id);
+        PropertyDto propertyDto = propertyService.getPropertyById(id);
         return ResponseEntity.ok(propertyDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PropertyDto> updateProperty(@PathVariable Long id, @Valid @RequestBody PropertyDto propertyDto) {
-        PropertyDto updatedProperty = propertyService.update(id, propertyDto);
+    public ResponseEntity<PropertyDto> updateProperty(@PathVariable Long id, @Valid @ModelAttribute PropertyDto propertyDto, @RequestParam(required = false) MultipartFile[] images) throws IOException {
+        PropertyDto updatedProperty = propertyService.updateProperty(id, propertyDto, images);
         return ResponseEntity.ok(updatedProperty);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProperty(@PathVariable Long id) {
-        propertyService.deleteById(id);
+        propertyService.deletePropertyById(id);
         return ResponseEntity.noContent().build();
     }
 

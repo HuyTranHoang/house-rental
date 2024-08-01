@@ -5,8 +5,23 @@ import com.project.house.rental.entity.Property;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
-public interface PropertyService extends GenericService<Property, PropertyDto> {
+public interface PropertyService {
 
-    PropertyDto create(PropertyDto propertyDto, MultipartFile[] images) throws IOException;
+    List<PropertyDto> getAllProperties();
+
+    PropertyDto getPropertyById(long id);
+
+    PropertyDto createProperty(PropertyDto propertyDto, MultipartFile[] images) throws IOException;
+
+    PropertyDto updateProperty(long id, PropertyDto propertyDto, MultipartFile[] images) throws IOException;
+
+    void deletePropertyById(long id);
+
+    PropertyDto toDto(Property property);
+
+    Property toEntity(PropertyDto propertyDto);
+
+    void updateEntityFromDto(Property property, PropertyDto propertyDto);
 }

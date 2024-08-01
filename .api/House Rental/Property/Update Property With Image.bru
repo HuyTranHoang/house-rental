@@ -1,0 +1,30 @@
+meta {
+  name: Update Property With Image
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{host}}/api/properties/13
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  title: Test Title UPDATE
+  description: Test Description
+  price: 123
+  location: Đường ABC XYZ
+  area: 55
+  numRooms: 1
+  userId: 1
+  cityId: 1
+  districtId: 1
+  roomTypeId: 1
+  images: @file(C:\Users\nhokp\OneDrive\Pictures\441462845_463961832773559_7146590754921959712_n.jpg)
+  images: @file(C:\Users\nhokp\OneDrive\Pictures\ahko meme copy.jpg)
+  status: PENDING
+  isBlocked: 0
+  amenities: Máy lạnh
+  amenities: Bếp ga
+}
