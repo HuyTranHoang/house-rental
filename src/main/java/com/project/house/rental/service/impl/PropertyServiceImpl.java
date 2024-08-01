@@ -1,16 +1,24 @@
 package com.project.house.rental.service.impl;
 
 
+import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.PropertyDto;
+import com.project.house.rental.dto.params.PropertyParams;
 import com.project.house.rental.entity.*;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.repository.*;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.service.PropertyService;
+import com.project.house.rental.specification.PropertySpecification;
 import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.persistence.NoResultException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -45,6 +54,26 @@ public class PropertyServiceImpl implements PropertyService {
         this.hibernateFilterHelper = hibernateFilterHelper;
     }
 
+    @Override
+    public List<PropertyDto> getAllPropertiesForFilter(PropertyParams propertyParams) {
+        Specification<Property> spec = Specification
+                .where(PropertySpecification.filterByCriteria(propertyParams.getFilter()))
+                .and(PropertySpecification.searchByDistrictName(propertyParams.getDistrictName()))
+                .and(PropertySpecification.searchByCityName(propertyParams.getCityName()))
+                .and(PropertySpecification.searchByPrice(propertyParams.getPrice()))
+                .and(PropertySpecification.searchByRoomTypeName(propertyParams.getRoomTypeName()))
+                .and(PropertySpecification.searchByArea(propertyParams.getArea()));
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
+
+        List<Property> properties = propertyRepository.findAll(spec);
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
+
+        return properties.stream()
+                .map(this::toDto)
+                .toList();
+    }
 
     @Override
     public List<PropertyDto> getAllProperties() {
@@ -261,6 +290,57 @@ public class PropertyServiceImpl implements PropertyService {
 //        property.setPropertyImages(propertyImages);
     }
 
+    @Override
+    public Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams) {
+        Specification<Property> spec = Specification
+                .where(PropertySpecification.searchByDistrictName(propertyParams.getDistrictName()))
+                .and(PropertySpecification.searchByCityName(propertyParams.getCityName()))
+                .and(PropertySpecification.searchByPrice(propertyParams.getPrice()))
+                .and(PropertySpecification.searchByRoomTypeName(propertyParams.getRoomTypeName()))
+                .and(PropertySpecification.searchByArea(propertyParams.getArea()));
+
+        Sort sort = switch (propertyParams.getSortBy()) {
+            case "priceDesc" -> Sort.by("price").descending();
+            case "priceAsc" -> Sort.by("price");
+            case "areaDesc" -> Sort.by("area").descending();
+            case "areaAsc" -> Sort.by("area");
+            default -> Sort.by("id").descending();
+        };
+
+        if (propertyParams.getPageNumber() < 0) {
+            propertyParams.setPageNumber(0);
+        }
+
+        if (propertyParams.getPageSize() <= 0) {
+            propertyParams.setPageSize(10);
+        }
+
+        Pageable pageable = PageRequest.of(
+                propertyParams.getPageNumber(),
+                propertyParams.getPageSize(),
+                sort
+        );
+
+        Page<Property> propertyPage = propertyRepository.findAll(spec, pageable);
+
+        List<PropertyDto> propertyDtoList = propertyPage.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+
+        PageInfo pageInfo = new PageInfo(
+                propertyPage.getTotalPages(),
+                propertyPage.getTotalElements(),
+                propertyPage.getNumber(),
+                propertyPage.getSize()
+        );
+
+        return Map.of(
+                "pageInfo", pageInfo,
+                "data", propertyDtoList
+        );
+    }
+
+
     public static boolean isValidPropertyStatus(String status) {
         try {
             Property.PropertyStatus.valueOf(status);
@@ -269,5 +349,6 @@ public class PropertyServiceImpl implements PropertyService {
             return false;
         }
     }
+
 
 }

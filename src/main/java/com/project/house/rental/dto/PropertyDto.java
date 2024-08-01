@@ -62,4 +62,5 @@ public class PropertyDto {
     List<String> amenities;
 
     List<String> propertyImages;
+
 }
