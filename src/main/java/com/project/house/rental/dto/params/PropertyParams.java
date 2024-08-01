@@ -2,14 +2,26 @@ package com.project.house.rental.dto.params;
 
 import lombok.Getter;
 import lombok.Setter;
+
 @Getter
 @Setter
-public class PropertyParams extends  PaginationParams{
-    private String districtName;
-    private String cityName;
-    private Double price;
-    private String roomTypeName;
-    private Double area;
-    private String filter;
+public class PropertyParams extends PaginationParams {
+
+    private String search;
+
+    private long cityId;
+
+    private long districtId;
+
+    private long roomTypeId;
+
+    private double minPrice;
+
+    private double maxPrice;
+
+    private double minArea;
+
+    private double maxArea;
+
     private String sortBy = "createdAtDesc";
 }

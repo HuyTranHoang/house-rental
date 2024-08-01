@@ -54,27 +54,6 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public List<PropertyDto> getAllPropertiesForFilter(PropertyParams propertyParams) {
-        Specification<Property> spec = Specification
-                .where(PropertySpecification.filterByCriteria(propertyParams.getFilter()))
-                .and(PropertySpecification.searchByDistrictName(propertyParams.getDistrictName()))
-                .and(PropertySpecification.searchByCityName(propertyParams.getCityName()))
-                .and(PropertySpecification.searchByPrice(propertyParams.getPrice()))
-                .and(PropertySpecification.searchByRoomTypeName(propertyParams.getRoomTypeName()))
-                .and(PropertySpecification.searchByArea(propertyParams.getArea()));
-
-        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
-
-        List<Property> properties = propertyRepository.findAll(spec);
-
-        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
-
-        return properties.stream()
-                .map(this::toDto)
-                .toList();
-    }
-
-    @Override
     public List<PropertyDto> getAllProperties() {
 
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
@@ -291,12 +270,12 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams) {
-        Specification<Property> spec = Specification
-                .where(PropertySpecification.searchByDistrictName(propertyParams.getDistrictName()))
-                .and(PropertySpecification.searchByCityName(propertyParams.getCityName()))
-                .and(PropertySpecification.searchByPrice(propertyParams.getPrice()))
-                .and(PropertySpecification.searchByRoomTypeName(propertyParams.getRoomTypeName()))
-                .and(PropertySpecification.searchByArea(propertyParams.getArea()));
+        Specification<Property> spec = PropertySpecification.searchByCityDistrictLocation(propertyParams.getSearch())
+                .and(PropertySpecification.filterByCityId(propertyParams.getCityId()))
+                .and(PropertySpecification.filterByDistrictId(propertyParams.getDistrictId()))
+                .and(PropertySpecification.filterByRoomTypeId(propertyParams.getRoomTypeId()))
+                .and(PropertySpecification.filterByPrice(propertyParams.getMinPrice(), propertyParams.getMaxPrice()))
+                .and(PropertySpecification.filterByArea(propertyParams.getMinArea(), propertyParams.getMaxArea()));
 
         Sort sort = switch (propertyParams.getSortBy()) {
             case "priceDesc" -> Sort.by(Property_.PRICE).descending();
@@ -332,9 +311,9 @@ public class PropertyServiceImpl implements PropertyService {
                 .toList();
 
         PageInfo pageInfo = new PageInfo(
-                propertyPage.getTotalPages(),
-                propertyPage.getTotalElements(),
                 propertyPage.getNumber(),
+                propertyPage.getTotalElements(),
+                propertyPage.getTotalPages(),
                 propertyPage.getSize()
         );
 

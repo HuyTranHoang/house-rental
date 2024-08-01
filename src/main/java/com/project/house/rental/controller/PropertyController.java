@@ -37,13 +37,6 @@ public class PropertyController {
         return ResponseEntity.ok(properties);
     }
 
-    // Find Every entity
-    @GetMapping("/find")
-    public ResponseEntity<List<PropertyDto>> getAllPropertyForFilter(@ModelAttribute PropertyParams propertyParams) {
-        List<PropertyDto> properties = propertyService.getAllPropertiesForFilter(propertyParams);
-        return ResponseEntity.ok(properties);
-    }
-
     @PostMapping
     public ResponseEntity<PropertyDto> createProperty(@Valid @ModelAttribute PropertyDto propertyDto, @RequestParam MultipartFile[] images) throws IOException {
         PropertyDto createdProperty = propertyService.createProperty(propertyDto, images);

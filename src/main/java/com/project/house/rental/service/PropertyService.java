@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface PropertyService {
-
-    List<PropertyDto> getAllPropertiesForFilter(PropertyParams propertyParams);
-
+    
     List<PropertyDto> getAllProperties();
 
     PropertyDto getPropertyById(long id);
