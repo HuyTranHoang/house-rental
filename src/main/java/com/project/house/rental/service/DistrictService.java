@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface DistrictService {
 
-    List<DistrictDto> getAllDistricts(String cityName);
+    List<DistrictDto> getAllDistricts(long cityId);
 
     DistrictDto getDistrictById(long id);
 

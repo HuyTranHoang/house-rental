@@ -5,8 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DistrictParams extends  PaginationParams{
+public class DistrictParams extends PaginationParams {
     private String name;
+
+    private long cityId;
+
     private String sortBy = "createdAtDesc";
-    private String cityName;
 }

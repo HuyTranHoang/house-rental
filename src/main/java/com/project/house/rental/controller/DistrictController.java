@@ -28,8 +28,8 @@ public class DistrictController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<DistrictDto>> getAllDistrictsNoPaging(@RequestParam(required = false) String city) {
-        List<DistrictDto> districts = districtService.getAllDistricts(city);
+    public ResponseEntity<List<DistrictDto>> getAllDistrictsNoPaging(@RequestParam(required = false) long cityId) {
+        List<DistrictDto> districts = districtService.getAllDistricts(cityId);
         return ResponseEntity.ok(districts);
     }
 

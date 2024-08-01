@@ -39,8 +39,8 @@ public class DistrictServiceImpl implements DistrictService {
 
 
     @Override
-    public List<DistrictDto> getAllDistricts(String cityName) {
-        Specification<District> spec = DistrictSpecification.filterByCities(cityName);
+    public List<DistrictDto> getAllDistricts(long cityId) {
+        Specification<District> spec = DistrictSpecification.filterByCity(cityId);
 
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_DISTRICT_FILTER);
 
@@ -98,9 +98,8 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     public Map<String, Object> getAllDistrictsWithParams(DistrictParams districtParams) {
-        Specification<District> spec = Specification
-                .where(DistrictSpecification.filterByCities(districtParams.getCityName()))
-                .and(DistrictSpecification.searchByName(districtParams.getName()));
+        Specification<District> spec = DistrictSpecification.searchByName(districtParams.getName())
+                .and(DistrictSpecification.filterByCity(districtParams.getCityId()));
 
         Sort sort = switch (districtParams.getSortBy()) {
             case "nameDesc" -> Sort.by(District_.NAME).descending();

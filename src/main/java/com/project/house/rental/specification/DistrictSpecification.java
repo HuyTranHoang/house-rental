@@ -20,19 +20,12 @@ public class DistrictSpecification {
         };
     }
 
-    public static Specification<District> filterByCities(String cityName) {
+    public static Specification<District> filterByCity(long cityId) {
         return (root, query, cb) -> {
-            if (!StringUtils.hasLength(cityName)) {
+            if(cityId == 0)
                 return cb.conjunction();
-            }
 
-            List<Predicate> predicates = new ArrayList<>();
-            String[] citiesName = cityName.split(",");
-            for (String city : citiesName) {
-                city = city.trim().toLowerCase();
-                predicates.add(cb.like(cb.lower(root.get(District_.CITY).get(City_.NAME)), "%" + city + "%"));
-            }
-            return cb.or(predicates.toArray(new Predicate[0]));
+            return cb.equal(root.get(District_.CITY).get(City_.ID), cityId);
         };
     }
 }
