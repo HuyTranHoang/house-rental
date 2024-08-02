@@ -5,16 +5,16 @@ meta {
 }
 
 get {
-  url: {{host}}/api/properties?sortBy=priceAsc&pageNumber=0&search=update&roomTypeId=1
+  url: {{host}}/api/properties
   body: none
   auth: none
 }
 
 params:query {
-  sortBy: priceAsc
-  pageNumber: 0
-  search: update
-  roomTypeId: 1
+  ~sortBy: priceAsc
+  ~pageNumber: 0
+  ~search: update
+  ~roomTypeId: 1
   ~minPrice: 2000
   ~maxPrice: 123
   ~minArea: 

@@ -117,9 +117,11 @@ VALUES (1, 1),
 INSERT IGNORE INTO users (id, username, password, email, phone_number, first_name, last_name, avatar_url, is_active,
                           is_non_locked, is_deleted, created_at, updated_at)
 
-VALUES (1, 'user', 'password1', 'user@gmail.com', '0123456789', 'User', 'Test',
+VALUES (1, 'user', '$2a$10$aPFK5XoRGGEu/zMu/P11z.yO/QxtJyVUQD4euihW.A428tTVHt3je', 'user@gmail.com', '0123456789',
+        'User', 'Test',
         'http://localhost:8080/api/user/image/profile/user@email.com', 1, 1, 0, now(), now()),
-       (2, 'admin', 'password1', 'admin@gmail.com', '0123456789', 'Admin', 'Test',
+       (2, 'admin', '$2a$10$aPFK5XoRGGEu/zMu/P11z.yO/QxtJyVUQD4euihW.A428tTVHt3je', 'admin@gmail.com', '0123456789',
+        'Admin', 'Test',
         'http://localhost:8080/api/user/image/profile/admin@email.com', 1, 1, 0, now(), now());
 
 INSERT IGNORE INTO user_authorities (user_id, authority_id)
@@ -134,16 +136,45 @@ VALUES (1, 1),
        (2, 2);
 
 
-INSERT IGNORE INTO properties(id, title, description, price, location, area, num_rooms, status, user_id, city_id, district_id, room_type_id, is_deleted, created_at, updated_at)
-VALUES (1, 'test title', 'test description', 300000, 'test location', 111, 1, 'PENDING', 1, 1, 1, 1, 0, now(), now());
+INSERT IGNORE INTO properties(id, title, description, price, location, area, num_rooms, status, user_id, city_id,
+                              district_id, room_type_id, is_deleted, created_at, updated_at)
+VALUES (1, 'test title', 'test description', 300000, 'test location', 111, 1, 'PENDING', 1, 1, 1, 1, 0, now(), now()),
+       (2, 'Phòng rất đẹp 7A/9 Thành Thái, P.14, Quận 10 (Khoá Vân Tay, giờ tự do)', 'Phòng cho thuê thiết kế rất đẹp có nhiều tiện ích tuyệt vời ngay trung tâm Quận 10, địa chỉ: 7A/9 Thành Thái, Phường 14, Quận 10, TP. HCM. (Hẻm 7 Thành Thái, Cư xá Đồng Tiến, vào 500m có đường 7A Thành Thái).
++ DT: 20m2, Phòng đẹp thiết kế đẹp với nhiều tiện ích tuyệt vời: có Máy Lạnh, kệ bếp đá hoa cương có bồn rửa chén, Wc riêng.
++ Có Máy lạnh tiết kiệm điện.
++ WC riêng rộng rãi, cửa sổ thoáng mát.
++ Có người dọn vệ sinh hành lang hàng tuần, có internet cáp quang.
++ Có bảo vệ 24/24h, giờ giấc tự do cho bạn cảm giác như ở nhà mình.
++ Máy giặt miễn phí cho toà nhà thuận tiện cho bạn.
++ Khoá vân tay, camera an ninh khắp toà nhà, cho bạn cảm giác thoải mái như chính nhà mình.
++ Nhà mặt tiền đường xe hơi trong khu dân cư an ninh sầm uất khu dân trí cao, tiện đi lại mọi nơi trong thành phố,
+
++ Gần chợ Thành Thái, siêu thị, nhà sách. Gần nhiều trường đại học: ĐH Bách Khoa (300m), ĐH Kinh Tế, ĐH Y Khoa Phạm Ngọc Thạch, ĐH Ngoại Ngữ - Tin Học, ĐH Hoa Sen.
++ Gần bệnh viện đa khoa Quận 10, bệnh viện 115, bệnh Viện Nhi Đồng (600m).
+- Là chỗ ở lý tưởng cho gia đình, nhân viên văn phòng, sinh viên ở.
+
+Giá rất hợp lý mùa dịch: 3.2 Triệu/tháng.
+Liên Hệ: 0937554570 (A.Thái)
+
+TIỀN PHÒNG GIẢM SÂU VÀ KHÔNG TĂNG GIÁ.', 3200000, '7A/9 Thành Thái, P.14, Quận 10', 20, 1, 'PENDING', 3, 1, 10, 1, 0,
+        now(),
+        now());
 
 INSERT IGNORE INTO property_amenities(property_id, amenity_id)
 VALUES (1, 1),
        (1, 2),
-       (1, 3);
+       (1, 3),
+       (2, 2),
+       (2, 3),
+       (2, 4),
+       (2, 5);
 
-# INSERT IGNORE INTO property_images(property_id, image_url)
-# VALUES (1, 'http://localhost:8080/api/property/image/1');
+INSERT IGNORE INTO property_images(property_id, image_url)
+VALUES (1, 'http://localhost:8080/api/property/image/1'),
+       (2, 'https://cloud.mogi.vn/images/2024/05/13/006/8c555c3ed46846f28e6ce640cd8be5de.jpg'),
+       (2, 'https://cloud.mogi.vn/images/2024/06/13/145/cb463a3f4d604ac5ab75db9870b2b2b5.jpg'),
+       (2, 'https://cloud.mogi.vn/images/2024/06/13/146/52e87e84b654415b8d0d5330add313e4.jpg'),
+       (2, 'https://cloud.mogi.vn/images/2024/06/13/147/e1070de59c4d483f87450a497adef8b8.jpg');
 
 INSERT IGNORE INTO reviews(id, user_id, property_id, rating, comment, is_deleted, created_at, updated_at)
 VALUES (1, 1, 1, 5, 'test comment', 0, now(), now());
