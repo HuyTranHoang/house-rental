@@ -15,13 +15,14 @@ public class PropertySpecification {
                 return cb.conjunction();
             }
 
-            Join<Property, City> cityJoin = root.join(Property_.city);
-            Join<Property, District> districtJoin = root.join(Property_.district);
+            Join<Property, City> cityJoin = root.join(Property_.CITY);
+            Join<Property, District> districtJoin = root.join(Property_.DISTRICT);
 
             return cb.or(
-                    cb.like(cb.lower(cityJoin.get(City_.name)), "%" + search.toLowerCase() + "%"),
-                    cb.like(cb.lower(districtJoin.get(District_.name)), "%" + search.toLowerCase() + "%"),
-                    cb.like(cb.lower(root.get(Property_.location)), "%" + search.toLowerCase() + "%")
+                    cb.like(cb.lower(cityJoin.get(City_.NAME)), "%" + search.toLowerCase() + "%"),
+                    cb.like(cb.lower(districtJoin.get(District_.NAME)), "%" + search.toLowerCase() + "%"),
+                    cb.like(cb.lower(root.get(Property_.LOCATION)), "%" + search.toLowerCase() + "%"),
+                    cb.like(cb.lower(root.get(Property_.TITLE)), "%" + search.toLowerCase() + "%")
             );
 
         };
@@ -33,7 +34,7 @@ public class PropertySpecification {
                 return cb.conjunction();
             }
 
-            return cb.equal(root.get(Property_.city).get(City_.id), cityId);
+            return cb.equal(root.get(Property_.CITY).get(City_.ID), cityId);
         };
     }
 
@@ -43,7 +44,7 @@ public class PropertySpecification {
                 return cb.conjunction();
             }
 
-            return cb.equal(root.get(Property_.district).get(District_.id), districtId);
+            return cb.equal(root.get(Property_.DISTRICT).get(District_.ID), districtId);
         };
     }
 
@@ -53,7 +54,7 @@ public class PropertySpecification {
                 return cb.conjunction();
             }
 
-            return cb.equal(root.get(Property_.roomType).get(RoomType_.id), roomTypeId);
+            return cb.equal(root.get(Property_.ROOM_TYPE).get(RoomType_.ID), roomTypeId);
         };
     }
 
@@ -64,14 +65,14 @@ public class PropertySpecification {
             }
 
             if (minPrice == 0) {
-                return cb.lessThanOrEqualTo(root.get(Property_.price), maxPrice);
+                return cb.lessThanOrEqualTo(root.get(Property_.PRICE), maxPrice);
             }
 
             if (maxPrice == 0) {
-                return cb.greaterThanOrEqualTo(root.get(Property_.price), minPrice);
+                return cb.greaterThanOrEqualTo(root.get(Property_.PRICE), minPrice);
             }
 
-            return cb.between(root.get(Property_.price), minPrice, maxPrice);
+            return cb.between(root.get(Property_.PRICE), minPrice, maxPrice);
         };
     }
 
@@ -82,14 +83,14 @@ public class PropertySpecification {
             }
 
             if (minArea == 0) {
-                return cb.lessThanOrEqualTo(root.get(Property_.area), maxArea);
+                return cb.lessThanOrEqualTo(root.get(Property_.AREA), maxArea);
             }
 
             if (maxArea == 0) {
-                return cb.greaterThanOrEqualTo(root.get(Property_.area), minArea);
+                return cb.greaterThanOrEqualTo(root.get(Property_.AREA), minArea);
             }
 
-            return cb.between(root.get(Property_.area), minArea, maxArea);
+            return cb.between(root.get(Property_.AREA), minArea, maxArea);
         };
     }
 
