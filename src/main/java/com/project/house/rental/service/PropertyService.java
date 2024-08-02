@@ -30,4 +30,6 @@ public interface PropertyService {
     Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams);
 
     PropertyDto blockProperty(long id);
+    List<PropertyDto> getAllPropertiesForClient();
+    Map<String, Object> getAllPropertiesWithParamsForClient(PropertyParams propertyParams);
 }

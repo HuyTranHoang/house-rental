@@ -25,15 +25,27 @@ public class PropertyController {
         this.propertyService = propertyService;
     }
 
-    @GetMapping({"/", ""})
+    @GetMapping({"/admin"})
     public ResponseEntity<Map<String, Object>> getAllPropertiesWithParams(@ModelAttribute PropertyParams propertyParams) {
         Map<String, Object> propertyWithParams = propertyService.getAllPropertiesWithParams(propertyParams);
         return ResponseEntity.ok(propertyWithParams);
     }
 
-    @GetMapping("/all")
+    @GetMapping({"/", ""})
+    public ResponseEntity<Map<String, Object>> getAllPropertiesWithParamsForClient(@ModelAttribute PropertyParams propertyParams) {
+        Map<String, Object> propertyWithParams = propertyService.getAllPropertiesWithParamsForClient(propertyParams);
+        return ResponseEntity.ok(propertyWithParams);
+    }
+
+    @GetMapping("/all/admin")
     public ResponseEntity<List<PropertyDto>> getAllProperty() {
         List<PropertyDto> properties = propertyService.getAllProperties();
+        return ResponseEntity.ok(properties);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PropertyDto>> getAllPropertiesForClient() {
+        List<PropertyDto> properties = propertyService.getAllPropertiesForClient();
         return ResponseEntity.ok(properties);
     }
 
