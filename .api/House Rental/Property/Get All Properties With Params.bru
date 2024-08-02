@@ -5,15 +5,16 @@ meta {
 }
 
 get {
-  url: {{host}}/api/properties
+  url: {{host}}/api/properties?numOfDays=1
   body: none
   auth: none
 }
 
 params:query {
+  numOfDays: 1
   ~sortBy: priceAsc
   ~pageNumber: 0
-  ~search: update
+  ~search: qqq
   ~roomTypeId: 1
   ~minPrice: 2000
   ~maxPrice: 123

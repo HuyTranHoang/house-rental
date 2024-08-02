@@ -23,5 +23,7 @@ public class PropertyParams extends PaginationParams {
 
     private double maxArea;
 
+    private int numOfDays;
+
     private String sortBy = "createdAtDesc";
 }

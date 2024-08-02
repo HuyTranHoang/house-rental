@@ -5,6 +5,8 @@ import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
+import java.sql.Date;
+import java.time.LocalDate;
 
 
 public class PropertySpecification {
@@ -91,6 +93,19 @@ public class PropertySpecification {
             }
 
             return cb.between(root.get(Property_.AREA), minArea, maxArea);
+        };
+    }
+
+    public static Specification<Property> filterByCreatedDate(int numOfDays) {
+        return (root, query, cb) -> {
+            if (numOfDays == 0) {
+                return cb.conjunction();
+            }
+
+            LocalDate dateThreshold = LocalDate.now().minusDays(numOfDays);
+            Date sqlDateThreshold = Date.valueOf(dateThreshold);
+
+            return cb.greaterThanOrEqualTo(root.get(Property_.CREATED_AT), sqlDateThreshold);
         };
     }
 

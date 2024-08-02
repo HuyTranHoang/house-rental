@@ -276,7 +276,8 @@ public class PropertyServiceImpl implements PropertyService {
                 .and(PropertySpecification.filterByDistrictId(propertyParams.getDistrictId()))
                 .and(PropertySpecification.filterByRoomTypeId(propertyParams.getRoomTypeId()))
                 .and(PropertySpecification.filterByPrice(propertyParams.getMinPrice(), propertyParams.getMaxPrice()))
-                .and(PropertySpecification.filterByArea(propertyParams.getMinArea(), propertyParams.getMaxArea()));
+                .and(PropertySpecification.filterByArea(propertyParams.getMinArea(), propertyParams.getMaxArea()))
+                .and(PropertySpecification.filterByCreatedDate(propertyParams.getNumOfDays()));
 
         Sort sort = switch (propertyParams.getSortBy()) {
             case "priceDesc" -> Sort.by(Property_.PRICE).descending();
