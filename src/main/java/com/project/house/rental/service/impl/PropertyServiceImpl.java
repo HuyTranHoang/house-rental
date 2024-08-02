@@ -325,6 +325,17 @@ public class PropertyServiceImpl implements PropertyService {
         );
     }
 
+    @Override
+    public PropertyDto blockProperty(long id) {
+        Property property = propertyRepository.findById(id).orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
+
+        property.setBlocked(true);
+
+        propertyRepository.save(property);
+
+        return toDto(property);
+    }
+
 
     public static boolean isValidPropertyStatus(String status) {
         try {

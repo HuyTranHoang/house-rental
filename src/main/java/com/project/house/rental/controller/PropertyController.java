@@ -61,4 +61,10 @@ public class PropertyController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/block/{id}")
+    public ResponseEntity<PropertyDto> blockProperty(@PathVariable Long id) {
+        PropertyDto propertyDto = propertyService.blockProperty(id);
+        return ResponseEntity.ok(propertyDto);
+    }
+
 }

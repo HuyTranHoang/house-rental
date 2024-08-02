@@ -28,4 +28,6 @@ public interface PropertyService {
     void updateEntityFromDto(Property property, PropertyDto propertyDto);
 
     Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams);
+
+    PropertyDto blockProperty(long id);
 }

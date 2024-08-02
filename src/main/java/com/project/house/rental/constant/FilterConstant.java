@@ -12,4 +12,5 @@ public class FilterConstant {
     public static final String DELETE_REPORT_FILTER = "deletedReportFilter";
     public static final String DELETE_PROPERTY_IMAGE_FILTER = "deletedPropertyImageFilter";
     public static final String DELETE_PROPERTY_FILTER = "deletedPropertyFilter";
+    public static final String BLOCK_PROPERTY_FILTER = "blockedPropertyFilter";
 }

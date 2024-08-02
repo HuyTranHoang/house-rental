@@ -1,0 +1,31 @@
+meta {
+  name: Block Property
+  type: http
+  seq: 9
+}
+
+put {
+  url: {{host}}/api/properties/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "title": "Phong 50tr",
+    "description": "123456",
+    "price": 30.0,
+    "location": "quan 5",
+    "area": 3.0,
+    "numRooms": 3,
+    "status": "1",
+    "userId": 3,
+    "cityId": 2,
+    "districtId": 2,
+    "roomTypeId": 2
+  }
+}
