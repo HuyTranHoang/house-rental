@@ -174,6 +174,7 @@ public class PropertyServiceImpl implements PropertyService {
                 .districtName(property.getDistrict().getName())
                 .amenities(amenities)
                 .propertyImages(propertyImages)
+                .createdAt(property.getCreatedAt())
                 .build();
     }
 

@@ -3,12 +3,8 @@ package com.project.house.rental.specification;
 import com.project.house.rental.entity.City_;
 import com.project.house.rental.entity.District;
 import com.project.house.rental.entity.District_;
-import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DistrictSpecification {
     public static Specification<District> searchByName(String name) {

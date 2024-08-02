@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -62,5 +63,7 @@ public class PropertyDto {
     List<String> amenities;
 
     List<String> propertyImages;
+
+    Date createdAt;
 
 }

@@ -40,6 +40,7 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public List<DistrictDto> getAllDistricts(long cityId) {
+
         Specification<District> spec = DistrictSpecification.filterByCity(cityId);
 
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_DISTRICT_FILTER);

@@ -28,7 +28,7 @@ public class DistrictController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<DistrictDto>> getAllDistrictsNoPaging(@RequestParam(required = false) long cityId) {
+    public ResponseEntity<List<DistrictDto>> getAllDistrictsNoPaging(@RequestParam(required = false, defaultValue = "0") long cityId) {
         List<DistrictDto> districts = districtService.getAllDistricts(cityId);
         return ResponseEntity.ok(districts);
     }
