@@ -157,15 +157,22 @@ public class ReportServiceImpl implements ReportService {
             throw new NoResultException("Không tìm thấy report!");
         }
 
-        //TODO: check if property is deleted --- Cần custom hàm findByIdWithFilter để check property có bị xóa không
-        Property property = propertyRepository.findById(report.getProperty().getId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng!"));
+        Property property = propertyRepository.findByIdWithFilter(report.getProperty().getId());
+
+        if (property == null) {
+            throw new NoResultException("Không tìm thấy bài đăng!");
+        }
 
         if (!isValidReportStatus(status)) {
             throw new IllegalArgumentException("Trạng thái [" + status + "] không hợp lệ");
         }
 
         report.setStatus(Report.ReportStatus.valueOf(status));
+
+        if (status.equals("APPROVED")) {
+            property.setBlocked(true);
+            propertyRepository.save(property);
+        }
 
         reportRepository.save(report);
     }
@@ -202,8 +209,10 @@ public class ReportServiceImpl implements ReportService {
         UserEntity currentUser = userRepository.findById(reportDto.getUserId())
                 .orElseThrow(() -> new NoResultException("Không tìm thấy user với id: " + reportDto.getUserId()));
 
-        Property currentProperty = propertyRepository.findById(reportDto.getPropertyId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng với id: " + reportDto.getPropertyId()));
+        Property currentProperty = propertyRepository.findByIdWithFilter(reportDto.getPropertyId());
+        if (currentProperty == null) {
+            throw new NoResultException("Không tìm thấy bài đăng!");
+        }
 
         return Report.builder()
                 .user(currentUser)
