@@ -1,17 +1,17 @@
 meta {
-  name: Get All_Params_Client
+  name: [Admin] Get All Properties With Params
   type: http
-  seq: 4
+  seq: 3
 }
 
 get {
-  url: {{host}}/api/properties?numOfDays=1
+  url: {{host}}/api/properties/admin
   body: none
   auth: none
 }
 
 params:query {
-  numOfDays: 1
+  ~numOfDays: 1
   ~sortBy: priceAsc
   ~pageNumber: 0
   ~search: qqq

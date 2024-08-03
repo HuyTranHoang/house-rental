@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface PropertyService {
-    
-    List<PropertyDto> getAllProperties();
 
     PropertyDto getPropertyById(long id);
 
@@ -30,6 +28,6 @@ public interface PropertyService {
     Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams);
 
     PropertyDto blockProperty(long id);
-    List<PropertyDto> getAllPropertiesForClient();
+
     Map<String, Object> getAllPropertiesWithParamsForClient(PropertyParams propertyParams);
 }

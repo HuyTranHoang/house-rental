@@ -54,38 +54,6 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public List<PropertyDto> getAllProperties() {
-
-        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
-
-        List<Property> properties = propertyRepository.findAll();
-
-        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
-
-        return properties.stream()
-                .map(this::toDto)
-                .toList();
-    }
-
-    @Override
-    public List<PropertyDto> getAllPropertiesForClient() {
-
-        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
-        hibernateFilterHelper.enableFilter(FilterConstant.BLOCK_PROPERTY_FILTER);
-        hibernateFilterHelper.enableFilter(FilterConstant.STATUS_PROPERTY_FILTER);
-
-        List<Property> properties = propertyRepository.findAll();
-
-        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
-        hibernateFilterHelper.disableFilter(FilterConstant.BLOCK_PROPERTY_FILTER);
-        hibernateFilterHelper.disableFilter(FilterConstant.STATUS_PROPERTY_FILTER);
-
-        return properties.stream()
-                .map(this::toDto)
-                .toList();
-    }
-
-    @Override
     public PropertyDto getPropertyById(long id) {
         Property property = propertyRepository.findByIdWithFilter(id);
 
@@ -287,8 +255,7 @@ public class PropertyServiceImpl implements PropertyService {
 //        property.setPropertyImages(propertyImages);
     }
 
-    @Override
-    public Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams) {
+    private Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams, boolean forClient) {
         Specification<Property> spec = PropertySpecification.searchByCityDistrictLocation(propertyParams.getSearch())
                 .and(PropertySpecification.filterByCityId(propertyParams.getCityId()))
                 .and(PropertySpecification.filterByDistrictId(propertyParams.getDistrictId()))
@@ -321,10 +288,18 @@ public class PropertyServiceImpl implements PropertyService {
         );
 
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
+        if (forClient) {
+            hibernateFilterHelper.enableFilter(FilterConstant.BLOCK_PROPERTY_FILTER);
+            hibernateFilterHelper.enableFilter(FilterConstant.STATUS_PROPERTY_FILTER);
+        }
 
         Page<Property> propertyPage = propertyRepository.findAll(spec, pageable);
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
+        if (forClient) {
+            hibernateFilterHelper.disableFilter(FilterConstant.BLOCK_PROPERTY_FILTER);
+            hibernateFilterHelper.disableFilter(FilterConstant.STATUS_PROPERTY_FILTER);
+        }
 
         List<PropertyDto> propertyDtoList = propertyPage.stream()
                 .map(this::toDto)
@@ -341,70 +316,22 @@ public class PropertyServiceImpl implements PropertyService {
                 "pageInfo", pageInfo,
                 "data", propertyDtoList
         );
+    }
+
+    @Override
+    public Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams) {
+        return getAllPropertiesWithParams(propertyParams, false);
     }
 
     @Override
     public Map<String, Object> getAllPropertiesWithParamsForClient(PropertyParams propertyParams) {
-        Specification<Property> spec = PropertySpecification.searchByCityDistrictLocation(propertyParams.getSearch())
-                .and(PropertySpecification.filterByCityId(propertyParams.getCityId()))
-                .and(PropertySpecification.filterByDistrictId(propertyParams.getDistrictId()))
-                .and(PropertySpecification.filterByRoomTypeId(propertyParams.getRoomTypeId()))
-                .and(PropertySpecification.filterByPrice(propertyParams.getMinPrice(), propertyParams.getMaxPrice()))
-                .and(PropertySpecification.filterByArea(propertyParams.getMinArea(), propertyParams.getMaxArea()))
-                .and(PropertySpecification.filterByCreatedDate(propertyParams.getNumOfDays()));
-
-        Sort sort = switch (propertyParams.getSortBy()) {
-            case "priceDesc" -> Sort.by(Property_.PRICE).descending();
-            case "priceAsc" -> Sort.by(Property_.PRICE);
-            case "areaDesc" -> Sort.by(Property_.AREA).descending();
-            case "areaAsc" -> Sort.by(Property_.AREA);
-            case "createdAtAsc" -> Sort.by(Property_.CREATED_AT);
-            default -> Sort.by(Property_.CREATED_AT).descending();
-        };
-
-        if (propertyParams.getPageNumber() < 0) {
-            propertyParams.setPageNumber(0);
-        }
-
-        if (propertyParams.getPageSize() <= 0) {
-            propertyParams.setPageSize(10);
-        }
-
-        Pageable pageable = PageRequest.of(
-                propertyParams.getPageNumber(),
-                propertyParams.getPageSize(),
-                sort
-        );
-
-        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
-        hibernateFilterHelper.enableFilter(FilterConstant.BLOCK_PROPERTY_FILTER);
-        hibernateFilterHelper.enableFilter(FilterConstant.STATUS_PROPERTY_FILTER);
-
-        Page<Property> propertyPage = propertyRepository.findAll(spec, pageable);
-
-        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
-        hibernateFilterHelper.disableFilter(FilterConstant.BLOCK_PROPERTY_FILTER);
-        hibernateFilterHelper.disableFilter(FilterConstant.STATUS_PROPERTY_FILTER);
-
-        List<PropertyDto> propertyDtoList = propertyPage.stream()
-                .map(this::toDto)
-                .toList();
-
-        PageInfo pageInfo = new PageInfo(
-                propertyPage.getNumber(),
-                propertyPage.getTotalElements(),
-                propertyPage.getTotalPages(),
-                propertyPage.getSize()
-        );
-
-        return Map.of(
-                "pageInfo", pageInfo,
-                "data", propertyDtoList
-        );
+        return getAllPropertiesWithParams(propertyParams, true);
     }
+
     @Override
     public PropertyDto blockProperty(long id) {
-        Property property = propertyRepository.findById(id).orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
 
         property.setBlocked(true);
 

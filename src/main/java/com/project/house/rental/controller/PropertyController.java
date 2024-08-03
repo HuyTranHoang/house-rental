@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -35,18 +34,6 @@ public class PropertyController {
     public ResponseEntity<Map<String, Object>> getAllPropertiesWithParamsForClient(@ModelAttribute PropertyParams propertyParams) {
         Map<String, Object> propertyWithParams = propertyService.getAllPropertiesWithParamsForClient(propertyParams);
         return ResponseEntity.ok(propertyWithParams);
-    }
-
-    @GetMapping("/all/admin")
-    public ResponseEntity<List<PropertyDto>> getAllProperty() {
-        List<PropertyDto> properties = propertyService.getAllProperties();
-        return ResponseEntity.ok(properties);
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<PropertyDto>> getAllPropertiesForClient() {
-        List<PropertyDto> properties = propertyService.getAllPropertiesForClient();
-        return ResponseEntity.ok(properties);
     }
 
     @PostMapping
