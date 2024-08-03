@@ -57,4 +57,5 @@ public class ReportController {
         reportService.updateReportStatus(id, status);
         return ResponseEntity.noContent().build();
     }
+
 }

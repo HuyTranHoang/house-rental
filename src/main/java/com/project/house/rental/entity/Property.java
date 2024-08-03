@@ -23,6 +23,10 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE properties SET is_deleted = true WHERE id = ?")
 @FilterDef(name = FilterConstant.DELETE_PROPERTY_FILTER, parameters = @ParamDef(name = FilterConstant.IS_DELETED, type = Boolean.class))
 @Filter(name = FilterConstant.DELETE_PROPERTY_FILTER, condition = FilterConstant.CONDITION)
+@FilterDef(name = FilterConstant.BLOCK_PROPERTY_FILTER, parameters = @ParamDef(name = FilterConstant.IS_BLOCKED, type = Boolean.class))
+@Filter(name = FilterConstant.BLOCK_PROPERTY_FILTER, condition = FilterConstant.BLOCKED_CONDITION)
+@FilterDef(name = FilterConstant.STATUS_PROPERTY_FILTER, parameters = @ParamDef(name = FilterConstant.STATUS, type = String.class))
+@Filter(name = FilterConstant.STATUS_PROPERTY_FILTER, condition = FilterConstant.STATUS_CONDITION)
 public class Property extends BaseEntity {
 
     @Column(name = "title")

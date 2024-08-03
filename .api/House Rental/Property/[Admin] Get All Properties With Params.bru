@@ -1,0 +1,26 @@
+meta {
+  name: [Admin] Get All Properties With Params
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{host}}/api/properties/admin
+  body: none
+  auth: none
+}
+
+params:query {
+  ~numOfDays: 1
+  ~sortBy: priceAsc
+  ~pageNumber: 0
+  ~search: qqq
+  ~roomTypeId: 1
+  ~minPrice: 2000
+  ~maxPrice: 123
+  ~minArea: 
+  ~maxArea: 
+  ~pageSize: 1
+  ~cityId: 2
+  ~districtId: 12
+}

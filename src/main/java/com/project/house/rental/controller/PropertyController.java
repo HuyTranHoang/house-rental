@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -25,16 +24,16 @@ public class PropertyController {
         this.propertyService = propertyService;
     }
 
-    @GetMapping({"/", ""})
+    @GetMapping({"/admin"})
     public ResponseEntity<Map<String, Object>> getAllPropertiesWithParams(@ModelAttribute PropertyParams propertyParams) {
         Map<String, Object> propertyWithParams = propertyService.getAllPropertiesWithParams(propertyParams);
         return ResponseEntity.ok(propertyWithParams);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<PropertyDto>> getAllProperty() {
-        List<PropertyDto> properties = propertyService.getAllProperties();
-        return ResponseEntity.ok(properties);
+    @GetMapping({"/", ""})
+    public ResponseEntity<Map<String, Object>> getAllPropertiesWithParamsForClient(@ModelAttribute PropertyParams propertyParams) {
+        Map<String, Object> propertyWithParams = propertyService.getAllPropertiesWithParamsForClient(propertyParams);
+        return ResponseEntity.ok(propertyWithParams);
     }
 
     @PostMapping
@@ -59,6 +58,12 @@ public class PropertyController {
     public ResponseEntity<Void> deleteProperty(@PathVariable Long id) {
         propertyService.deletePropertyById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/block/{id}")
+    public ResponseEntity<PropertyDto> blockProperty(@PathVariable Long id) {
+        PropertyDto propertyDto = propertyService.blockProperty(id);
+        return ResponseEntity.ok(propertyDto);
     }
 
 }

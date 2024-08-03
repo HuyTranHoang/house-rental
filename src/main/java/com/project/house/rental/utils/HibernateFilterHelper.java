@@ -18,7 +18,13 @@ public class HibernateFilterHelper {
     public void enableFilter(String filterName) {
         Session session = entityManager.unwrap(Session.class);
         Filter filter = session.enableFilter(filterName);
-        filter.setParameter(FilterConstant.IS_DELETED, false);
+        if (FilterConstant.DELETE_PROPERTY_FILTER.equals(filterName)) {
+            filter.setParameter(FilterConstant.IS_DELETED, false);
+        } else if (FilterConstant.BLOCK_PROPERTY_FILTER.equals(filterName)) {
+            filter.setParameter(FilterConstant.IS_BLOCKED, false);
+        } else if (FilterConstant.STATUS_PROPERTY_FILTER.equals(filterName)) {
+            filter.setParameter(FilterConstant.STATUS, "RESOLVED");
+        }
     }
 
     public void disableFilter(String filterName) {

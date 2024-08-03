@@ -54,20 +54,6 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public List<PropertyDto> getAllProperties() {
-
-        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
-
-        List<Property> properties = propertyRepository.findAll();
-
-        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
-
-        return properties.stream()
-                .map(this::toDto)
-                .toList();
-    }
-
-    @Override
     public PropertyDto getPropertyById(long id) {
         Property property = propertyRepository.findByIdWithFilter(id);
 
@@ -269,8 +255,7 @@ public class PropertyServiceImpl implements PropertyService {
 //        property.setPropertyImages(propertyImages);
     }
 
-    @Override
-    public Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams) {
+    private Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams, boolean forClient) {
         Specification<Property> spec = PropertySpecification.searchByCityDistrictLocation(propertyParams.getSearch())
                 .and(PropertySpecification.filterByCityId(propertyParams.getCityId()))
                 .and(PropertySpecification.filterByDistrictId(propertyParams.getDistrictId()))
@@ -303,10 +288,18 @@ public class PropertyServiceImpl implements PropertyService {
         );
 
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
+        if (forClient) {
+            hibernateFilterHelper.enableFilter(FilterConstant.BLOCK_PROPERTY_FILTER);
+            hibernateFilterHelper.enableFilter(FilterConstant.STATUS_PROPERTY_FILTER);
+        }
 
         Page<Property> propertyPage = propertyRepository.findAll(spec, pageable);
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
+        if (forClient) {
+            hibernateFilterHelper.disableFilter(FilterConstant.BLOCK_PROPERTY_FILTER);
+            hibernateFilterHelper.disableFilter(FilterConstant.STATUS_PROPERTY_FILTER);
+        }
 
         List<PropertyDto> propertyDtoList = propertyPage.stream()
                 .map(this::toDto)
@@ -323,6 +316,28 @@ public class PropertyServiceImpl implements PropertyService {
                 "pageInfo", pageInfo,
                 "data", propertyDtoList
         );
+    }
+
+    @Override
+    public Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams) {
+        return getAllPropertiesWithParams(propertyParams, false);
+    }
+
+    @Override
+    public Map<String, Object> getAllPropertiesWithParamsForClient(PropertyParams propertyParams) {
+        return getAllPropertiesWithParams(propertyParams, true);
+    }
+
+    @Override
+    public PropertyDto blockProperty(long id) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
+
+        property.setBlocked(true);
+
+        propertyRepository.save(property);
+
+        return toDto(property);
     }
 
 
