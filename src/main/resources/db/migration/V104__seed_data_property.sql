@@ -57,7 +57,12 @@ VALUES (1, 1),
        (2, 2),
        (2, 3),
        (2, 4),
-       (2, 5);
+       (2, 5),
+       (3, 2),
+       (3, 3),
+       (3, 15),
+       (3, 17),
+       (3, 31);
 
 INSERT IGNORE INTO property_images(property_id, image_url)
 VALUES (1, 'https://cloud.mogi.vn/images/2024/08/02/452/2fe40f6efd024a938d725676e7eb33b5.jpg'),
