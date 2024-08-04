@@ -2,6 +2,7 @@ package com.project.house.rental.entity.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.house.rental.entity.BaseEntity;
+import com.project.house.rental.entity.Favorite;
 import com.project.house.rental.entity.Property;
 import com.project.house.rental.entity.Review;
 import jakarta.persistence.*;
@@ -70,4 +71,7 @@ public class UserEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     List<Review> reviews;
+
+    @OneToMany(mappedBy = "user")
+    List<Favorite> favorites;
 }

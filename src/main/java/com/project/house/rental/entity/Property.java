@@ -87,6 +87,9 @@ public class Property extends BaseEntity {
     @OneToMany(mappedBy = "property")
     List<PropertyImage> propertyImages;
 
+    @OneToMany(mappedBy = "property")
+    List<Favorite> favorites;
+
     public enum PropertyStatus {
         PENDING,
         RESOLVED
