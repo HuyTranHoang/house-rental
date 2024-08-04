@@ -1,6 +1,5 @@
 package com.project.house.rental.dto;
 
-import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
