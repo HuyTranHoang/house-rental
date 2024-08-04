@@ -32,6 +32,7 @@ public class SecurityConstant {
             "/api/properties/**",
             "/api/review/**",
             "/api/property-images/**",
+            "/api/favorite/**",
     };
 
     public static final String[] RESOURCE_URLS = {

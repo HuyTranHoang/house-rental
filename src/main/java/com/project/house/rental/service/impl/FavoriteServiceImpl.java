@@ -9,9 +9,11 @@ import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
 import com.project.house.rental.repository.FavoriteRepository;
 import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.repository.auth.UserRepository;
+import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.FavoriteService;
 import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.persistence.NoResultException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,12 +25,14 @@ public class FavoriteServiceImpl implements FavoriteService {
     private final UserRepository userRepository;
     private final PropertyRepository propertyRepository;
     private final HibernateFilterHelper hibernateFilterHelper;
+    private final JWTTokenProvider jwtTokenProvider;
 
-    public FavoriteServiceImpl(FavoriteRepository favoriteRepository, UserRepository userRepository, PropertyRepository propertyRepository, HibernateFilterHelper hibernateFilterHelper) {
+    public FavoriteServiceImpl(FavoriteRepository favoriteRepository, UserRepository userRepository, PropertyRepository propertyRepository, HibernateFilterHelper hibernateFilterHelper, JWTTokenProvider jwtTokenProvider) {
         this.favoriteRepository = favoriteRepository;
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
         this.hibernateFilterHelper = hibernateFilterHelper;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -83,7 +87,32 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
 
     @Override
-    public FavoriteDto createFavorite(FavoriteDto favoriteDto) {
+    public FavoriteDto createFavorite(FavoriteDto favoriteDto, HttpServletRequest request) {
+        String username = jwtTokenProvider.getUsernameFromToken(request);
+
+        if (username == null) {
+            throw new RuntimeException("Không tìm thấy người dùng");
+        }
+
+        UserEntity currentUser = userRepository.findUserByUsername(username);
+
+        if (currentUser == null) {
+            throw new RuntimeException("Không tìm thấy người dùng với username: " + username);
+        }
+
+        favoriteDto.setUserId(currentUser.getId());
+
+        Favorite existingFavorite = favoriteRepository.findByCompositeKey(FavoritePrimaryKey.builder()
+                .userId(favoriteDto.getUserId())
+                .propertyId(favoriteDto.getPropertyId())
+                .build());
+
+        if (existingFavorite != null && !existingFavorite.isDeleted()) {
+            existingFavorite.setDeleted(false);
+            favoriteRepository.save(existingFavorite);
+            return toDto(existingFavorite);
+        }
+
         Favorite favorite = toEntity(favoriteDto);
         favorite = favoriteRepository.save(favorite);
         return toDto(favorite);

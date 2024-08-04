@@ -1,0 +1,17 @@
+meta {
+  name: Add Favorite
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{host}}/api/favorite
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "propertyId": 1
+  }
+}

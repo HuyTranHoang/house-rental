@@ -76,7 +76,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ReportDto createReport(ReportDto reportDto, HttpServletRequest request) {
-        String username = getUsernameFromToken(request);
+        String username = jwtTokenProvider.getUsernameFromToken(request);
         UserEntity currentUser = userRepository.findUserByUsername(username);
 
         if (currentUser == null) {
@@ -219,14 +219,5 @@ public class ReportServiceImpl implements ReportService {
                 .property(currentProperty)
                 .reason(reportDto.getReason())
                 .build();
-    }
-
-    private String getUsernameFromToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            String token = bearerToken.substring(7);
-            return jwtTokenProvider.getSubject(token);
-        }
-        return null;
     }
 }

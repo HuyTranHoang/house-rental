@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserEntityDto updateProfile(ProfileDto profileDto, HttpServletRequest request) throws CustomRuntimeException {
-        String username = getUsernameFromToken(request);
+        String username = jwtTokenProvider.getUsernameFromToken(request);
         if (username == null) {
             throw new CustomRuntimeException("Vui lòng đăng nhập để thay đổi thông tin tài khoản!");
         }
@@ -183,7 +183,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserEntityDto changePassword(ChangePasswordDto changePasswordDto, HttpServletRequest request) throws CustomRuntimeException {
-        String username = getUsernameFromToken(request);
+        String username = jwtTokenProvider.getUsernameFromToken(request);
         if (username == null) {
             throw new CustomRuntimeException("Vui lòng đăng nhập để thay đổi mật khẩu!");
         }
@@ -204,7 +204,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserEntityDto updateAvatar(MultipartFile avatar, HttpServletRequest request) throws CustomRuntimeException, IOException {
-        String username = getUsernameFromToken(request);
+        String username = jwtTokenProvider.getUsernameFromToken(request);
         if (username == null) {
             throw new CustomRuntimeException("Vui lòng đăng nhập để thay đổi ảnh đại diện!");
         }
@@ -299,14 +299,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setNonLocked(userDto.isNonLocked());
         user.setRoles(roles);
         user.setAuthorities(authorities);
-    }
-
-    private String getUsernameFromToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            String token = bearerToken.substring(7);
-            return jwtTokenProvider.getSubject(token);
-        }
-        return null;
     }
 }
