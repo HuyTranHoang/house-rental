@@ -22,4 +22,5 @@ public class FilterConstant {
     public static final String BLOCK_PROPERTY_FILTER = "blockedPropertyFilter";
     public static final String STATUS_PROPERTY_FILTER = "statusPropertyFilter";
     public static final String DELETE_FAVORITE_FILTER = "deletedFavoriteFilter";
+    public static final String DELETE_ROLE_FILTER = "deletedRoleFilter";
 }

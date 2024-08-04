@@ -1,9 +1,14 @@
 package com.project.house.rental.entity.auth;
 
+import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
 
 import java.util.List;
 
@@ -15,6 +20,9 @@ import java.util.List;
 @Entity
 @Table(name = "roles")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SQLDelete(sql = "UPDATE roles SET is_deleted = true WHERE id = ?")
+@FilterDef(name = FilterConstant.DELETE_ROLE_FILTER, parameters = @ParamDef(name = FilterConstant.IS_DELETED, type = Boolean.class))
+@Filter(name = FilterConstant.DELETE_ROLE_FILTER, condition = FilterConstant.CONDITION)
 public class Role extends BaseEntity {
 
     String name;

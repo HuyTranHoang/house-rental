@@ -100,7 +100,35 @@ INSERT IGNORE INTO authorities(id, privilege)
 VALUES (1, 'user:read'),
        (2, 'user:update'),
        (3, 'user:create'),
-       (4, 'user:delete');
+       (4, 'user:delete'),
+       (5, 'property:read'),
+       (6, 'property:update'),
+       (7, 'property:create'),
+       (8, 'property:delete'),
+       (9, 'review:read'),
+       (10, 'review:update'),
+       (11, 'review:create'),
+       (12, 'review:delete'),
+       (13, 'city:read'),
+       (14, 'city:update'),
+       (15, 'city:create'),
+       (16, 'city:delete'),
+       (17, 'district:read'),
+       (18, 'district:update'),
+       (19, 'district:create'),
+       (20, 'district:delete'),
+       (21, 'room_type:read'),
+       (22, 'room_type:update'),
+       (23, 'room_type:create'),
+       (24, 'room_type:delete'),
+       (25, 'amenity:read'),
+       (26, 'amenity:update'),
+       (27, 'amenity:create'),
+       (28, 'amenity:delete'),
+       (29, 'role:read'),
+       (30, 'role:update'),
+       (31, 'role:create'),
+       (32, 'role:delete');
 
 INSERT IGNORE INTO roles (id, name)
 VALUES (1, 'ROLE_USER'),
@@ -139,7 +167,8 @@ VALUES (1, 1),
 INSERT IGNORE INTO properties(id, title, description, price, location, area, num_rooms, status, user_id, city_id,
                               district_id, room_type_id, is_deleted, created_at, updated_at)
 VALUES (1, 'test title', 'test description', 300000, 'test location', 111, 1, 'PENDING', 1, 1, 1, 1, 0, now(), now()),
-       (2, 'Phòng rất đẹp 7A/9 Thành Thái, P.14, Quận 10 (Khoá Vân Tay, giờ tự do)', 'Phòng cho thuê thiết kế rất đẹp có nhiều tiện ích tuyệt vời ngay trung tâm Quận 10, địa chỉ: 7A/9 Thành Thái, Phường 14, Quận 10, TP. HCM. (Hẻm 7 Thành Thái, Cư xá Đồng Tiến, vào 500m có đường 7A Thành Thái).
+       (2, 'Phòng rất đẹp 7A/9 Thành Thái, P.14, Quận 10 (Khoá Vân Tay, giờ tự do)',
+        'Phòng cho thuê thiết kế rất đẹp có nhiều tiện ích tuyệt vời ngay trung tâm Quận 10, địa chỉ: 7A/9 Thành Thái, Phường 14, Quận 10, TP. HCM. (Hẻm 7 Thành Thái, Cư xá Đồng Tiến, vào 500m có đường 7A Thành Thái).
 + DT: 20m2, Phòng đẹp thiết kế đẹp với nhiều tiện ích tuyệt vời: có Máy Lạnh, kệ bếp đá hoa cương có bồn rửa chén, Wc riêng.
 + Có Máy lạnh tiết kiệm điện.
 + WC riêng rộng rãi, cửa sổ thoáng mát.
@@ -156,9 +185,8 @@ VALUES (1, 'test title', 'test description', 300000, 'test location', 111, 1, 'P
 Giá rất hợp lý mùa dịch: 3.2 Triệu/tháng.
 Liên Hệ: 0937554570 (A.Thái)
 
-TIỀN PHÒNG GIẢM SÂU VÀ KHÔNG TĂNG GIÁ.', 3200000, '7A/9 Thành Thái, P.14, Quận 10', 20, 1, 'PENDING', 3, 1, 10, 1, 0,
-        now(),
-        now());
+TIỀN PHÒNG GIẢM SÂU VÀ KHÔNG TĂNG GIÁ.',
+        3200000, '7A/9 Thành Thái, P.14, Quận 10', 20, 1, 'PENDING', 3, 1, 10, 1, 0, now(), now());
 
 INSERT IGNORE INTO property_amenities(property_id, amenity_id)
 VALUES (1, 1),
