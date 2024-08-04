@@ -1,0 +1,45 @@
+INSERT INTO authorities(id, privilege)
+VALUES (1, 'user:read'),
+       (2, 'user:update'),
+       (3, 'user:create'),
+       (4, 'user:delete'),
+       (5, 'property:read'),
+       (6, 'property:update'),
+       (7, 'property:create'),
+       (8, 'property:delete'),
+       (9, 'review:read'),
+       (10, 'review:update'),
+       (11, 'review:create'),
+       (12, 'review:delete'),
+       (13, 'city:read'),
+       (14, 'city:update'),
+       (15, 'city:create'),
+       (16, 'city:delete'),
+       (17, 'district:read'),
+       (18, 'district:update'),
+       (19, 'district:create'),
+       (20, 'district:delete'),
+       (21, 'room_type:read'),
+       (22, 'room_type:update'),
+       (23, 'room_type:create'),
+       (24, 'room_type:delete'),
+       (25, 'amenity:read'),
+       (26, 'amenity:update'),
+       (27, 'amenity:create'),
+       (28, 'amenity:delete'),
+       (29, 'role:read'),
+       (30, 'role:update'),
+       (31, 'role:create'),
+       (32, 'role:delete');
+
+INSERT INTO roles (id, name)
+VALUES (1, 'ROLE_USER'),
+       (2, 'ROLE_ADMIN');
+
+INSERT INTO role_authorities (role_id, authority_id)
+VALUES (1, 1),
+       (1, 2),
+       (2, 1),
+       (2, 2),
+       (2, 3),
+       (2, 4);
