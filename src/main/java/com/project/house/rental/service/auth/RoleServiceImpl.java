@@ -1,16 +1,26 @@
 package com.project.house.rental.service.auth;
 
+import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.auth.RoleDto;
+import com.project.house.rental.dto.params.RoleParams;
 import com.project.house.rental.entity.auth.Authority;
 import com.project.house.rental.entity.auth.Role;
+import com.project.house.rental.entity.auth.Role_;
 import com.project.house.rental.repository.auth.AuthorityRepository;
 import com.project.house.rental.repository.auth.RoleRepository;
+import com.project.house.rental.specification.RoleSpecification;
 import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.persistence.NoResultException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -35,6 +45,53 @@ public class RoleServiceImpl implements RoleService {
         return roles.stream()
                 .map(this::toDto)
                 .toList();
+    }
+
+    @Override
+    public Map<String, Object> getAllRolesWithParams(RoleParams roleParams) {
+        Specification<Role> spec = RoleSpecification.searchByName(roleParams.getName())
+                .and(RoleSpecification.filterByAuthority(roleParams.getAuthorities(), authorityRepository));
+
+        Sort sort = switch (roleParams.getSortBy()) {
+            case "nameAsc" -> Sort.by(Role_.NAME);
+            case "nameDesc" -> Sort.by(Role_.NAME).descending();
+            case "createdAtAsc" -> Sort.by(Role_.CREATED_AT);
+            default -> Sort.by(Role_.CREATED_AT).descending();
+        };
+
+        if (roleParams.getPageNumber() < 0) {
+            roleParams.setPageNumber(0);
+        }
+
+        if (roleParams.getPageSize() <= 0) {
+            roleParams.setPageSize(10);
+        }
+
+        Pageable pageable = PageRequest.of(
+                roleParams.getPageNumber(),
+                roleParams.getPageSize(),
+                sort
+        );
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ROLE_FILTER);
+        Page<Role> rolePage = roleRepository.findAll(spec, pageable);
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROLE_FILTER);
+
+        PageInfo pageInfo = new PageInfo(
+                rolePage.getNumber(),
+                rolePage.getTotalElements(),
+                rolePage.getTotalPages(),
+                rolePage.getSize()
+        );
+
+        List<RoleDto> roleDtoList = rolePage.stream()
+                .map(this::toDto)
+                .toList();
+
+        return Map.of(
+                "pageInfo", pageInfo,
+                "data", roleDtoList
+        );
     }
 
     @Override

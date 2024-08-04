@@ -1,0 +1,17 @@
+meta {
+  name: Get All Role With Params
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{host}}/api/roles?authorities=city:delete,city:create
+  body: none
+  auth: inherit
+}
+
+params:query {
+  authorities: city:delete,city:create
+  ~name: Quản
+  ~sortBy: createdAtAsc
+}

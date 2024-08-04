@@ -1,12 +1,14 @@
 package com.project.house.rental.controller;
 
 import com.project.house.rental.dto.auth.RoleDto;
+import com.project.house.rental.dto.params.RoleParams;
 import com.project.house.rental.service.auth.RoleService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/roles")
@@ -19,7 +21,13 @@ public class RoleController {
     }
 
     @GetMapping({"", "/"})
-    public ResponseEntity<List<RoleDto>> getRoles() {
+    public ResponseEntity<Map<String, Object>> getRolesWithParams(@ModelAttribute RoleParams roleParams) {
+        Map<String, Object> rolesWithPagination = roleService.getAllRolesWithParams(roleParams);
+        return ResponseEntity.ok(rolesWithPagination);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<RoleDto>> getAllRoles() {
         List<RoleDto> roleDtos = roleService.getAllRoles();
         return ResponseEntity.ok(roleDtos);
     }
