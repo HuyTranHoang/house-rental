@@ -1,0 +1,22 @@
+meta {
+  name: Update Role
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{host}}/api/roles/4
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Quản lý thành phố update",
+    "authorityPrivileges": [
+      "city:read",
+      "city:update",
+      "city:create"
+    ]
+  }
+}

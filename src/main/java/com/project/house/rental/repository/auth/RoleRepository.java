@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
-    Role findRoleByName(String name);
+    Role findRoleByNameIgnoreCase(String name);
 
     @Query("SELECT r FROM Role r WHERE r.id = :id AND r.isDeleted = false")
     Role findByIdWithFilter(long id);

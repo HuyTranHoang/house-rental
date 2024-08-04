@@ -26,7 +26,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<RoleDto> getAll() {
+    public List<RoleDto> getAllRoles() {
 
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ROLE_FILTER);
         List<Role> roles = roleRepository.findAll();
@@ -38,7 +38,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleDto getById(long id) {
+    public RoleDto getRoleById(long id) {
         Role role = roleRepository.findByIdWithFilter(id);
 
         if (role == null) {
@@ -49,7 +49,16 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleDto create(RoleDto roleDto) {
+    public RoleDto createRole(RoleDto roleDto) {
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ROLE_FILTER);
+        Role existingRole = roleRepository.findRoleByNameIgnoreCase(roleDto.getName());
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROLE_FILTER);
+
+        if (existingRole != null) {
+            throw new NoResultException("Vai trò đã tồn tại");
+        }
+
         Role role = toEntity(roleDto);
         roleRepository.save(role);
 
@@ -57,7 +66,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleDto update(long id, RoleDto roleDto) {
+    public RoleDto updateRole(long id, RoleDto roleDto) {
         Role role = roleRepository.findByIdWithFilter(id);
 
         if (role == null) {
@@ -71,15 +80,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void deleteById(long id) {
-        Role role = roleRepository.findByIdWithFilter(id);
-
-        if (role == null) {
-            throw new NoResultException("Không tìm thấy vai trò với id: " + id);
-        }
+    public void deleteRoleById(long id) {
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy 'City' với id = " + id));
 
         roleRepository.deleteById(role.getId());
-        roleRepository.save(role);
     }
 
     @Override
@@ -99,6 +104,10 @@ public class RoleServiceImpl implements RoleService {
     public Role toEntity(RoleDto roleDto) {
         List<Authority> authorities = authorityRepository
                 .findAllByPrivilegeIn(roleDto.getAuthorityPrivileges());
+
+        if (authorities.size() != roleDto.getAuthorityPrivileges().size()) {
+            throw new NoResultException("Không tìm thấy quyền đuộc cung cấp");
+        }
 
         return Role.builder()
                 .name(roleDto.getName())

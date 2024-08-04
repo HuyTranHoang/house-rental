@@ -253,11 +253,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserEntity toEntity(UserEntityDto userDto) {
         List<Role> roles = userDto.getRoles().stream()
-                .map(roleRepository::findRoleByName)
+                .map(roleRepository::findRoleByNameIgnoreCase)
                 .toList();
 
         List<Authority> authorities = userDto.getRoles().stream()
-                .map(roleRepository::findRoleByName)
+                .map(roleRepository::findRoleByNameIgnoreCase)
                 .flatMap(role -> role.getAuthorities().stream())
                 .distinct()
                 .toList();
@@ -279,11 +279,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private void updateEntityFromDto(UserEntity user, UserEntityDto userDto) {
         List<Role> roles = userDto.getRoles().stream()
-                .map(roleRepository::findRoleByName)
+                .map(roleRepository::findRoleByNameIgnoreCase)
                 .toList();
 
         List<Authority> authorities = userDto.getRoles().stream()
-                .map(roleRepository::findRoleByName)
+                .map(roleRepository::findRoleByNameIgnoreCase)
                 .flatMap(role -> role.getAuthorities().stream())
                 .distinct()
                 .toList();

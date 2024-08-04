@@ -7,15 +7,15 @@ import java.util.List;
 
 public interface RoleService {
 
-    List<RoleDto> getAll();
+    List<RoleDto> getAllRoles();
 
-    RoleDto getById(long id);
+    RoleDto getRoleById(long id);
 
-    RoleDto create(RoleDto roleDto);
+    RoleDto createRole(RoleDto roleDto);
 
-    RoleDto update(long id, RoleDto roleDto);
+    RoleDto updateRole(long id, RoleDto roleDto);
 
-    void deleteById(long id);
+    void deleteRoleById(long id);
 
     RoleDto toDto(Role role);
 
