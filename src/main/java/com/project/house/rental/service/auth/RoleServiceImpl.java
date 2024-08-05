@@ -62,7 +62,7 @@ public class RoleServiceImpl implements RoleService {
         if (roleParams.getPageNumber() < 0) {
             roleParams.setPageNumber(0);
         }
-
+    
         if (roleParams.getPageSize() <= 0) {
             roleParams.setPageSize(10);
         }

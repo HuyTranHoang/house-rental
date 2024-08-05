@@ -12,7 +12,7 @@ spring:
     password: ${MYSQL_PASSWORD}
   jpa:
     hibernate.ddl-auto: none
-    show-sql: true
+    show-sql: false
   sql:
     init.mode: embedded
   servlet:
