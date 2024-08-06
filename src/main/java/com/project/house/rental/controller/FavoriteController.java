@@ -1,6 +1,7 @@
 package com.project.house.rental.controller;
 
 import com.project.house.rental.dto.FavoriteDto;
+import com.project.house.rental.dto.params.FavoriteParams;
 import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
 import com.project.house.rental.service.FavoriteService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/favorite")
@@ -19,7 +21,13 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
-    @GetMapping({"/", ""})
+    @GetMapping({"", "/"})
+    public ResponseEntity<Map<String, Object>> getAllFavoritesWithParams(@ModelAttribute FavoriteParams favoriteParams) {
+        Map<String, Object> favoritesWithParams = favoriteService.getAllFavoritesWithParams(favoriteParams);
+        return ResponseEntity.ok(favoritesWithParams);
+    }
+
+    @GetMapping("/all")
     public ResponseEntity<List<FavoriteDto>> getAllFavorites() {
         List<FavoriteDto> favoriteDtos = favoriteService.getAllFavorites();
         return ResponseEntity.ok(favoriteDtos);
