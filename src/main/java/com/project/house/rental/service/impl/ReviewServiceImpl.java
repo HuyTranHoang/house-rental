@@ -141,18 +141,13 @@ public class ReviewServiceImpl implements ReviewService {
 
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_REVIEW_FILTER);
 
-        Page<Review> cityPage = reviewRepository.findAll(spec, pageable);
+        Page<Review> reviewPage = reviewRepository.findAll(spec, pageable);
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_REVIEW_FILTER);
 
-        PageInfo pageInfo = new PageInfo(
-                cityPage.getNumber(),
-                cityPage.getTotalElements(),
-                cityPage.getTotalPages(),
-                cityPage.getSize()
-        );
+        PageInfo pageInfo = new PageInfo(reviewPage);
 
-        List<ReviewDto> reviewDtoList = cityPage.stream()
+        List<ReviewDto> reviewDtoList = reviewPage.stream()
                 .map(this::toDto)
                 .toList();
 

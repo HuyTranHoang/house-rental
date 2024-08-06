@@ -5,16 +5,16 @@ meta {
 }
 
 get {
-  url: {{host}}/api/favorite
+  url: {{host}}/api/favorite?propertyTitle=Căn hộ mini Full
   body: none
   auth: none
 }
 
 params:query {
-  ~propertyTitle: 
-  ~userId: 1
+  propertyTitle: Căn hộ mini Full
+  ~userId: 3
   ~propertyId: 1
   ~sortBy: propertyCreatedAsc
   ~sortBy: createdAtAsc
-  ~sortBy: propertyPriceAsc
+  ~sortBy: propertyPriceDesc
 }

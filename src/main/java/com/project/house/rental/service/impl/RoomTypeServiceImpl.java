@@ -139,12 +139,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
 
-        PageInfo pageInfo = new PageInfo(
-          roomTypePage.getNumber(),
-          roomTypePage.getTotalElements(),
-          roomTypePage.getTotalPages(),
-          roomTypePage.getSize()
-        );
+        PageInfo pageInfo = new PageInfo(roomTypePage);
 
         List<RoomTypeDto> roomTypeDtoList = roomTypePage.stream()
                 .map(this::toDto)

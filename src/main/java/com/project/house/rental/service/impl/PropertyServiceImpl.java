@@ -301,16 +301,11 @@ public class PropertyServiceImpl implements PropertyService {
             hibernateFilterHelper.disableFilter(FilterConstant.STATUS_PROPERTY_FILTER);
         }
 
+        PageInfo pageInfo = new PageInfo(propertyPage);
+
         List<PropertyDto> propertyDtoList = propertyPage.stream()
                 .map(this::toDto)
                 .toList();
-
-        PageInfo pageInfo = new PageInfo(
-                propertyPage.getNumber(),
-                propertyPage.getTotalElements(),
-                propertyPage.getTotalPages(),
-                propertyPage.getSize()
-        );
 
         return Map.of(
                 "pageInfo", pageInfo,

@@ -3,6 +3,8 @@ package com.project.house.rental.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,4 +20,6 @@ public class FavoriteDto {
     long propertyId;
 
     String propertyTitle;
+
+    Date createdAt;
 }

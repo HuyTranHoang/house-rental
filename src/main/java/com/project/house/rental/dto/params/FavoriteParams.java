@@ -16,8 +16,6 @@ public class FavoriteParams extends PaginationParams {
 
     double propertyPrice;
 
-    Date propertyDate;
-
     private String sortBy = "createdAtDesc";
 
 }

@@ -19,7 +19,6 @@ import java.util.Date;
 @Entity
 @Table(name = "favorites")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@SQLDelete(sql = "UPDATE favorites SET is_deleted = true WHERE user_id = ? AND property_id = ?")
 @FilterDef(name = FilterConstant.DELETE_FAVORITE_FILTER, parameters = @ParamDef(name = FilterConstant.IS_DELETED, type = Boolean.class))
 @Filter(name = FilterConstant.DELETE_FAVORITE_FILTER, condition = FilterConstant.CONDITION)
 public class Favorite {

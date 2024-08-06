@@ -3,6 +3,7 @@ package com.project.house.rental.common;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 
 @Data
 public class PageInfo {
@@ -25,5 +26,12 @@ public class PageInfo {
         } else {
             this.size = size;
         }
+    }
+
+    public PageInfo(Page page) {
+        this.number = page.getNumber();
+        this.totalElements = page.getTotalElements();
+        this.totalPages = page.getTotalPages();
+        this.size = page.getSize();
     }
 }

@@ -131,12 +131,7 @@ public class DistrictServiceImpl implements DistrictService {
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_DISTRICT_FILTER);
 
-        PageInfo pageInfo = new PageInfo(
-                districtPage.getTotalPages(),
-                districtPage.getTotalElements(),
-                districtPage.getNumber(),
-                districtPage.getSize()
-        );
+        PageInfo pageInfo = new PageInfo(districtPage);
 
         List<DistrictDto> districtDtoList = districtPage.stream()
                 .map(this::toDto)

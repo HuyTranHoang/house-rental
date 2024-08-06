@@ -137,12 +137,7 @@ public class CityServiceImpl implements CityService {
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_CITY_FILTER);
 
-        PageInfo pageInfo = new PageInfo(
-                cityPage.getNumber(),
-                cityPage.getTotalElements(),
-                cityPage.getTotalPages(),
-                cityPage.getSize()
-        );
+        PageInfo pageInfo = new PageInfo(cityPage);
 
         List<CityDto> cityDtoList = cityPage.stream()
                 .map(this::toDto)
@@ -158,6 +153,7 @@ public class CityServiceImpl implements CityService {
         return CityDto.builder()
                 .id(city.getId())
                 .name(city.getName())
+                .createdAt(city.getCreatedAt())
                 .build();
     }
 

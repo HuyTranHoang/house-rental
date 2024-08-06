@@ -130,12 +130,7 @@ public class ReportServiceImpl implements ReportService {
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_REPORT_FILTER);
 
-        PageInfo pageInfo = new PageInfo(
-                reportPage.getTotalPages(),
-                reportPage.getTotalElements(),
-                reportPage.getNumber(),
-                reportPage.getSize()
-        );
+        PageInfo pageInfo = new PageInfo(reportPage);
 
         List<ReportDto> reportDtoList = reportPage.stream()
                 .map(this::toDto)

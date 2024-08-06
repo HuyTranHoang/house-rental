@@ -121,14 +121,13 @@ public class AmenityServiceImpl implements AmenityService {
                 sort
         );
 
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_AMENITY_FILTER);
+
         Page<Amenity> amenityPage = amenityRepository.findAll(spec, pageable);
 
-        PageInfo pageInfo = new PageInfo(
-                amenityPage.getNumber(),
-                amenityPage.getTotalElements(),
-                amenityPage.getTotalPages(),
-                amenityPage.getSize()
-        );
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_AMENITY_FILTER);
+
+        PageInfo pageInfo = new PageInfo(amenityPage);
 
         List<AmenityDto> amenityDtoList = amenityPage.stream()
                 .map(this::toDto)

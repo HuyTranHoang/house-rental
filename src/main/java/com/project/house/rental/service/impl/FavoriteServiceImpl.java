@@ -145,6 +145,7 @@ public class FavoriteServiceImpl implements FavoriteService {
                 .username(favorite.getUser().getUsername())
                 .propertyId(favorite.getProperty().getId())
                 .propertyTitle(favorite.getProperty().getTitle())
+                .createdAt(favorite.getCreatedAt())
                 .build();
     }
 
@@ -172,16 +173,12 @@ public class FavoriteServiceImpl implements FavoriteService {
     public Map<String, Object> getAllFavoritesWithParams(FavoriteParams favoriteParams) {
         Specification<Favorite> spec = FavoriteSpecification.filterByUserId(favoriteParams.getUserId())
                 .and(FavoriteSpecification.filterByPropertyId(favoriteParams.getPropertyId()))
-                .and(FavoriteSpecification.filterByPropertyTitle(favoriteParams.getPropertyTitle()))
-                .and(FavoriteSpecification.filterByPropertyCreated(favoriteParams.getPropertyDate()));
+                .and(FavoriteSpecification.searchByPropertyTitle(favoriteParams.getPropertyTitle()));
 
         Sort sort = switch (favoriteParams.getSortBy()) {
-            case "createdAtAsc" -> Sort.by(Favorite_.CREATED_AT);
             case "propertyPriceAsc" -> Sort.by(Favorite_.PROPERTY + "." + Property_.PRICE).ascending();
             case "propertyPriceDesc" -> Sort.by(Favorite_.PROPERTY + "." + Property_.PRICE).descending();
-            case "propertyCreatedAsc" -> Sort.by(Favorite_.PROPERTY + "." + Property_.CREATED_AT).ascending();
-            case "propertyCreatedDesc" -> Sort.by(Favorite_.PROPERTY + "." + Property_.CREATED_AT).descending();
-
+            case "createdAtAsc" -> Sort.by(Favorite_.CREATED_AT);
             default -> Sort.by(Favorite_.CREATED_AT).descending();
         };
 
@@ -205,12 +202,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_FAVORITE_FILTER);
 
-        PageInfo pageInfo = new PageInfo(
-                cityPage.getNumber(),
-                cityPage.getTotalElements(),
-                cityPage.getTotalPages(),
-                cityPage.getSize()
-        );
+        PageInfo pageInfo = new PageInfo(cityPage);
 
         List<FavoriteDto> favoriteDtoList = cityPage.stream()
                 .map(this::toDto)
