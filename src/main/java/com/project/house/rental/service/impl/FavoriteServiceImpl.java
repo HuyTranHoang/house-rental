@@ -1,9 +1,10 @@
 package com.project.house.rental.service.impl;
 
+import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.FavoriteDto;
-import com.project.house.rental.entity.Favorite;
-import com.project.house.rental.entity.Property;
+import com.project.house.rental.dto.params.FavoriteParams;
+import com.project.house.rental.entity.*;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
 import com.project.house.rental.repository.FavoriteRepository;
@@ -11,12 +12,19 @@ import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.FavoriteService;
+import com.project.house.rental.specification.FavoriteSpecification;
 import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FavoriteServiceImpl implements FavoriteService {
@@ -158,5 +166,59 @@ public class FavoriteServiceImpl implements FavoriteService {
                 .user(userEntity)
                 .property(property)
                 .build();
+    }
+
+    @Override
+    public Map<String, Object> getAllFavoritesWithParams(FavoriteParams favoriteParams) {
+        Specification<Favorite> spec = FavoriteSpecification.filterByUserId(favoriteParams.getUserId())
+                .and(FavoriteSpecification.filterByPropertyId(favoriteParams.getPropertyId()))
+                .and(FavoriteSpecification.filterByPropertyTitle(favoriteParams.getPropertyTitle()))
+                .and(FavoriteSpecification.filterByPropertyCreated(favoriteParams.getPropertyDate()));
+
+        Sort sort = switch (favoriteParams.getSortBy()) {
+            case "createdAtAsc" -> Sort.by(Favorite_.CREATED_AT);
+            case "propertyPriceAsc" -> Sort.by(Favorite_.PROPERTY + "." + Property_.PRICE).ascending();
+            case "propertyPriceDesc" -> Sort.by(Favorite_.PROPERTY + "." + Property_.PRICE).descending();
+            case "propertyCreatedAsc" -> Sort.by(Favorite_.PROPERTY + "." + Property_.CREATED_AT).ascending();
+            case "propertyCreatedDesc" -> Sort.by(Favorite_.PROPERTY + "." + Property_.CREATED_AT).descending();
+
+            default -> Sort.by(Favorite_.CREATED_AT).descending();
+        };
+
+        if (favoriteParams.getPageNumber() < 0) {
+            favoriteParams.setPageNumber(0);
+        }
+
+        if (favoriteParams.getPageSize() <= 0) {
+            favoriteParams.setPageSize(10);
+        }
+
+        Pageable pageable = PageRequest.of(
+                favoriteParams.getPageNumber(),
+                favoriteParams.getPageSize(),
+                sort
+        );
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_FAVORITE_FILTER);
+
+        Page<Favorite> cityPage = favoriteRepository.findAll(spec, pageable);
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_FAVORITE_FILTER);
+
+        PageInfo pageInfo = new PageInfo(
+                cityPage.getNumber(),
+                cityPage.getTotalElements(),
+                cityPage.getTotalPages(),
+                cityPage.getSize()
+        );
+
+        List<FavoriteDto> favoriteDtoList = cityPage.stream()
+                .map(this::toDto)
+                .toList();
+
+        return Map.of(
+                "pageInfo", pageInfo,
+                "data", favoriteDtoList
+        );
     }
 }

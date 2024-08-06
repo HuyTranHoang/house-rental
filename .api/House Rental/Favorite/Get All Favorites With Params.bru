@@ -1,0 +1,20 @@
+meta {
+  name: Get All Favorites With Params
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{host}}/api/favorite
+  body: none
+  auth: none
+}
+
+params:query {
+  ~propertyTitle: 
+  ~userId: 1
+  ~propertyId: 1
+  ~sortBy: propertyCreatedAsc
+  ~sortBy: createdAtAsc
+  ~sortBy: propertyPriceAsc
+}
