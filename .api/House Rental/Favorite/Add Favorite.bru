@@ -1,0 +1,22 @@
+meta {
+  name: Add Favorite
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{host}}/api/favorite
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "userId": 2,
+    "propertyId": 1
+  }
+}

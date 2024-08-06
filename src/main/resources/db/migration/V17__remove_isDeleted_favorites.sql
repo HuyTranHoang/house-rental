@@ -1,0 +1,1 @@
+alter table favorites drop is_deleted

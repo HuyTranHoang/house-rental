@@ -1,0 +1,15 @@
+meta {
+  name: Delete Favorite
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{host}}/api/review/0
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

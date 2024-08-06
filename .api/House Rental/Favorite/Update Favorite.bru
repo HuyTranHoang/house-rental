@@ -1,0 +1,22 @@
+meta {
+  name: Update Favorite
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{host}}/api/favorite/13
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "userId": 2,
+    "propertyId": 1
+  }
+}

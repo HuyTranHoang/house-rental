@@ -147,3 +147,6 @@ VALUES (1, 1),
 
 INSERT IGNORE INTO reviews(id, user_id, property_id, rating, comment, is_deleted, created_at, updated_at)
 VALUES (1, 1, 1, 5, 'test comment', 0, now(), now());
+
+INSERT IGNORE INTO favorites(user_id, property_id)
+VALUES (3, 1);

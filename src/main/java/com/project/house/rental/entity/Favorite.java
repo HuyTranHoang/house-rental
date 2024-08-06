@@ -20,10 +20,7 @@ import java.util.Date;
 @Entity
 @Table(name = "favorites")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@SQLDelete(sql = "UPDATE favorites SET is_deleted = true WHERE user_id = ? AND property_id = ?")
-//@SQLRestriction("is_deleted = false")
 public class Favorite {
-
     @EmbeddedId
     FavoriteId id;
 
@@ -36,9 +33,6 @@ public class Favorite {
     @MapsId("propertyId")
     @JoinColumn(name = "property_id")
     Property property;
-
-    @Column(name = "is_deleted")
-    boolean isDeleted = Boolean.FALSE;
 
     @Column(name = "created_at")
     @CreationTimestamp
