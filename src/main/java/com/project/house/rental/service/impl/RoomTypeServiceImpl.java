@@ -6,10 +6,12 @@ import com.project.house.rental.dto.RoomTypeDto;
 import com.project.house.rental.dto.params.RoomTypeParams;
 import com.project.house.rental.entity.RoomType;
 import com.project.house.rental.entity.RoomType_;
+import com.project.house.rental.exception.ConflictException;
 import com.project.house.rental.repository.RoomTypeRepository;
 import com.project.house.rental.service.RoomTypeService;
 import com.project.house.rental.specification.RoomTypeSpecification;
 import com.project.house.rental.utils.HibernateFilterHelper;
+import jakarta.persistence.NoResultException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +51,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         RoomType roomType = roomTypeRepository.findByIdWithFilter(id);
 
         if (roomType == null) {
-            throw new RuntimeException("Không tìm thấy loại phòng với id = " + id);
+            throw new NoResultException("Không tìm thấy loại phòng với id = " + id);
         }
 
         return toDto(roomType);
@@ -64,7 +66,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
 
         if (existingRoomType != null) {
-            throw new RuntimeException("Loại phòng đã tồn tại");
+            throw new ConflictException("Loại phòng đã tồn tại");
         }
 
         RoomType roomType = toEntity(roomTypeDto);
@@ -81,7 +83,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         RoomType roomType = roomTypeRepository.findByIdWithFilter(id);
 
         if (roomType == null) {
-            throw new RuntimeException("Không tìm thấy loại phòng với id = " + id);
+            throw new NoResultException("Không tìm thấy loại phòng với id = " + id);
         }
 
         RoomType existingRoomType = roomTypeRepository.findByNameIgnoreCase(roomTypeDto.getName());
@@ -90,7 +92,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
 
         if (existingRoomType != null && existingRoomType.getId() != id) {
-            throw new RuntimeException("Loại phòng đã tồn tại");
+            throw new ConflictException("Loại phòng đã tồn tại");
         }
 
         updateEntityFromDto(roomType, roomTypeDto);
@@ -103,9 +105,15 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     @Override
     public void deleteRoomTypeById(long id) {
         RoomType roomType = roomTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy loại phòng với id = " + id));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy loại phòng với id = " + id));
 
         roomTypeRepository.deleteById(roomType.getId());
+    }
+
+    @Override
+    public void deleteMultipleRoomTypes(List<Long> ids) {
+        List<RoomType> roomTypeList = roomTypeRepository.findAllById(ids);
+        roomTypeRepository.deleteAll(roomTypeList);
     }
 
     @Override
@@ -156,6 +164,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         return RoomTypeDto.builder()
                 .id(roomType.getId())
                 .name(roomType.getName())
+                .createdAt(roomType.getCreatedAt())
                 .build();
     }
 

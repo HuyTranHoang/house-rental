@@ -6,10 +6,12 @@ import com.project.house.rental.dto.CityDto;
 import com.project.house.rental.dto.params.CityParams;
 import com.project.house.rental.entity.City;
 import com.project.house.rental.entity.City_;
+import com.project.house.rental.exception.ConflictException;
 import com.project.house.rental.repository.CityRepository;
 import com.project.house.rental.service.CityService;
 import com.project.house.rental.specification.CitySpecification;
 import com.project.house.rental.utils.HibernateFilterHelper;
+import jakarta.persistence.NoResultException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,7 +52,7 @@ public class CityServiceImpl implements CityService {
         City city = cityRepository.findByIdWithFilter(id);
 
         if (city == null) {
-            throw new RuntimeException("Không tìm thấy 'City' với id = " + id);
+            throw new NoResultException("Không tìm thấy 'City' với id = " + id);
         }
 
         return toDto(city);
@@ -66,7 +68,7 @@ public class CityServiceImpl implements CityService {
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_CITY_FILTER);
 
         if (existingCity != null) {
-            throw new RuntimeException("Tên thành phố đã tồn tại");
+            throw new ConflictException("Tên thành phố đã tồn tại");
         }
 
         City city = toEntity(cityDto);
@@ -81,7 +83,7 @@ public class CityServiceImpl implements CityService {
         City city = cityRepository.findByIdWithFilter(id);
 
         if (city == null) {
-            throw new RuntimeException("Không tìm thấy thành phố với id = " + id);
+            throw new NoResultException("Không tìm thấy thành phố với id = " + id);
         }
 
         City existingCity = cityRepository.findByNameIgnoreCase(cityDto.getName());
@@ -89,7 +91,7 @@ public class CityServiceImpl implements CityService {
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_CITY_FILTER);
 
         if (existingCity != null && existingCity.getId() != id) {
-            throw new RuntimeException("Tên thành phố đã tồn tại");
+            throw new ConflictException("Tên thành phố đã tồn tại");
         }
 
         updateEntityFromDto(city, cityDto);
@@ -101,7 +103,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public void deleteCityById(long id) {
         City city = cityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy 'City' với id = " + id));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy 'City' với id = " + id));
 
         cityRepository.deleteById(city.getId());
     }

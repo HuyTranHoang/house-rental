@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,4 +17,6 @@ public class RoomTypeDto {
     @NotEmpty(message = "Vui lòng nhập tên loại phòng")
     @Size(max = 100, message = "Tên loại phòng không được vượt quá 100 kí tự")
     String name;
+
+    Date createdAt;
 }

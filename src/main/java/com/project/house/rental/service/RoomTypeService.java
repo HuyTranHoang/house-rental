@@ -18,6 +18,8 @@ public interface RoomTypeService {
 
     void deleteRoomTypeById(long id);
 
+    void deleteMultipleRoomTypes(List<Long> ids);
+
     Map<String, Object> getAllRoomTypesWithParams(RoomTypeParams roomTypeParams);
 
     RoomTypeDto toDto(RoomType roomType);

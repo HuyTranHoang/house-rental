@@ -44,6 +44,11 @@ public class ExceptionHandling {
         return createResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<HttpResponse> handleConflictException(ConflictException e) {
+        return createResponseEntity(HttpStatus.CONFLICT, e.getMessage());
+    }
+
     private ResponseEntity<HttpResponse> createResponseEntity(HttpStatus status, String message) {
         HttpResponse httpResponse = new HttpResponse(status.value(), status, status.getReasonPhrase(), message);
         return new ResponseEntity<>(httpResponse, status);

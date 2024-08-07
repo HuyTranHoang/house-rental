@@ -5,9 +5,16 @@ meta {
 }
 
 get {
-  url: {{host}}/api/room-type
+  url: {{host}}/api/room-type?name&sortBy&pageSize&pageNumber
   body: multipartForm
   auth: bearer
+}
+
+params:query {
+  name: 
+  sortBy: 
+  pageSize: 
+  pageNumber: 
 }
 
 auth:bearer {

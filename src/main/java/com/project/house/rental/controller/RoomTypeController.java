@@ -54,4 +54,11 @@ public class RoomTypeController {
         roomTypeService.deleteRoomTypeById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/delete-multiple")
+    public ResponseEntity<Void> deleteMultipleCities(@RequestBody Map<String, List<Long>> requestBody) {
+        List<Long> ids = requestBody.get("ids");
+        roomTypeService.deleteMultipleRoomTypes(ids);
+        return ResponseEntity.noContent().build();
+    }
 }

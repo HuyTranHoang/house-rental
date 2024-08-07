@@ -1,0 +1,24 @@
+meta {
+  name: Delete Multi Room Type
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{host}}/api/room-type/delete-multiple
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "ids": [
+      7,
+      8
+    ]
+  }
+}
