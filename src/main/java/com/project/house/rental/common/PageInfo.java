@@ -32,6 +32,11 @@ public class PageInfo {
         this.number = page.getNumber();
         this.totalElements = page.getTotalElements();
         this.totalPages = page.getTotalPages();
-        this.size = page.getSize();
+
+        if (page.getSize() < 0 || page.getSize() > this.maxPageSize) {
+            this.size = 10;
+        } else {
+            this.size = page.getSize();
+        }
     }
 }

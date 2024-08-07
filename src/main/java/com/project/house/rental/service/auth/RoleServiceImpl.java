@@ -77,12 +77,7 @@ public class RoleServiceImpl implements RoleService {
         Page<Role> rolePage = roleRepository.findAll(spec, pageable);
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROLE_FILTER);
 
-        PageInfo pageInfo = new PageInfo(
-                rolePage.getNumber(),
-                rolePage.getTotalElements(),
-                rolePage.getTotalPages(),
-                rolePage.getSize()
-        );
+        PageInfo pageInfo = new PageInfo(rolePage);
 
         List<RoleDto> roleDtoList = rolePage.stream()
                 .map(this::toDto)

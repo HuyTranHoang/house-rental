@@ -43,7 +43,12 @@ app:
     default-page-number: 0
     max-page-size: 20
 
+
 cloudinary:
   cloudName: ${CLOUDINARY_CLOUD_NAME}
   apiKey: ${CLOUDINARY_API_KEY}
   apiSecret: ${CLOUDINARY_API_SECRET}
+
+vnpay:
+  tmnCode: ${VNPAY_TMN_CODE}
+  hashSecret: ${VNPAY_HASH_SECRET}

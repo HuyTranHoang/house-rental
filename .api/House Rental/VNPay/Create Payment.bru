@@ -1,0 +1,15 @@
+meta {
+  name: Create Payment
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{host}}/api/vnpay/create-payment?amount=1000000
+  body: none
+  auth: inherit
+}
+
+params:query {
+  amount: 1000000
+}
