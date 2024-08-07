@@ -19,6 +19,8 @@ public interface CityService {
 
     void deleteCityById(long id);
 
+    void deleteMultipleCities(List<Long> ids);
+
     Map<String, Object> getAllCitiesWithParams(CityParams cityParams);
 
     CityDto toDto(City city);

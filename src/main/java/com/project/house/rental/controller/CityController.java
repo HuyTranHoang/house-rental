@@ -55,4 +55,11 @@ public class CityController {
         cityService.deleteCityById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/delete-multiple")
+    public ResponseEntity<Void> deleteMultipleCities(@RequestBody Map<String, List<Long>> requestBody) {
+        List<Long> ids = requestBody.get("ids");
+        cityService.deleteMultipleCities(ids);
+        return ResponseEntity.noContent().build();
+    }
 }

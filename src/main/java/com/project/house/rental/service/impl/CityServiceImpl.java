@@ -107,6 +107,12 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
+    public void deleteMultipleCities(List<Long> ids) {
+        List<City> cityList = cityRepository.findAllById(ids);
+        cityRepository.deleteAll(cityList);
+    }
+
+    @Override
     public Map<String, Object> getAllCitiesWithParams(CityParams cityParams) {
         Specification<City> spec = CitySpecification.searchByName(cityParams.getName());
 
