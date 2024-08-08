@@ -1,5 +1,5 @@
 meta {
-  name: getAmenities
+  name: Get All Amenity With Params
   type: http
   seq: 3
 }
@@ -8,6 +8,13 @@ get {
   url: {{host}}/api/amenities
   body: none
   auth: bearer
+}
+
+params:query {
+  ~name: 
+  ~sortBy: 
+  ~pageNumber: 
+  ~pageSize: 
 }
 
 auth:bearer {

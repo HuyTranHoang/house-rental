@@ -150,6 +150,7 @@ public class AmenityServiceImpl implements AmenityService {
         return AmenityDto.builder()
                 .id(amenities.getId())
                 .name(amenities.getName())
+                .createdDate(amenities.getCreatedAt())
                 .build();
     }
 

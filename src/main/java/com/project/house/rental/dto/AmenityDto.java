@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,4 +19,6 @@ public class AmenityDto {
     @NotEmpty(message = "Vui lòng nhập tên tiện ích")
     @Size(max = 100, message = "Tên tiện ích không được vượt quá 100 kí tự")
     String name;
+
+    Date createdDate;
 }

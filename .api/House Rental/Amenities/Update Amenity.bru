@@ -1,15 +1,21 @@
 meta {
-  name: getAmenitiesByid
+  name: Update Amenity
   type: http
-  seq: 2
+  seq: 6
 }
 
-get {
+put {
   url: {{host}}/api/amenities/1
-  body: none
+  body: json
   auth: bearer
 }
 
 auth:bearer {
   token: {{jwt}}
+}
+
+body:json {
+  {
+      "name": "Full Noi That"
+  }
 }
