@@ -97,6 +97,12 @@ public class AmenityServiceImpl implements AmenityService {
     }
 
     @Override
+    public void deleteMultipleAmenities(List<Long> ids) {
+        List<Amenity> amenityList = amenityRepository.findAllById(ids);
+        amenityRepository.deleteAll(amenityList);
+    }
+
+    @Override
     public Map<String, Object> getAllAmenitiesWithParams(AmenityParams amenityParams) {
         Specification<Amenity> spec = AmenitySpecification.searchByName(amenityParams.getName());
 

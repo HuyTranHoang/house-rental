@@ -55,4 +55,11 @@ public class AmenityController {
         amenitiesService.deleteAmenityById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/delete-multiple")
+    public ResponseEntity<Void> deleteMultipleAmenities(@RequestBody Map<String, List<Long>> requestBody) {
+        List<Long> ids = requestBody.get("ids");
+        amenitiesService.deleteMultipleAmenities(ids);
+        return ResponseEntity.noContent().build();
+    }
 }
