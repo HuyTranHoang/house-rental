@@ -87,7 +87,10 @@ public class ReportServiceImpl implements ReportService {
 
         Report newReport = toEntity(reportDto);
 
-        emailSenderService.sendReportHTMLMail(currentUser.getEmail(), currentUser.getUsername(), newReport.getProperty().getTitle());
+        newReport.setStatus(Report.ReportStatus.PENDING);
+
+        // TODO: Bật lên khi test demo
+//         emailSenderService.sendReportHTMLMail(currentUser.getEmail(), currentUser.getUsername(), newReport.getProperty().getTitle());
 
         return toDto(reportRepository.save(newReport));
     }
@@ -194,13 +197,13 @@ public class ReportServiceImpl implements ReportService {
                 .propertyId(report.getProperty().getId())
                 .title(report.getProperty().getTitle())
                 .reason(report.getReason())
+                .status(String.valueOf(report.getStatus()))
+                .createdAt(report.getCreatedAt())
                 .build();
     }
 
     @Override
     public Report toEntity(ReportDto reportDto) {
-        //TODO: check if user is deleted bằng hàm custom
-
         UserEntity currentUser = userRepository.findById(reportDto.getUserId())
                 .orElseThrow(() -> new NoResultException("Không tìm thấy user với id: " + reportDto.getUserId()));
 

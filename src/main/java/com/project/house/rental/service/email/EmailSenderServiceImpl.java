@@ -93,6 +93,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
+    @Async
     public void sendResetPasswordHTMLMail(String to, String token) {
         try {
             Context context = new Context();
@@ -113,6 +114,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
+    @Async
     public void sendReportHTMLMail(String to, String username, String propertyTitle) {
         try {
             Context context = new Context();

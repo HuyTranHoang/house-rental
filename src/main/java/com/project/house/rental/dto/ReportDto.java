@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,5 +24,7 @@ public class ReportDto {
     @NotEmpty(message = "Vui lòng nhập lí do báo cáo")
     String reason;
 
+    String status;
 
+    Date createdAt;
 }
