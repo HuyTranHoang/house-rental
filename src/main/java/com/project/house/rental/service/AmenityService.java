@@ -18,6 +18,7 @@ public interface AmenityService {
     AmenityDto updateAmenity(long id, AmenityDto amenityDto);
 
     void deleteAmenityById(long id);
+    void deleteMultipleAmenities(List<Long> ids);
 
     Map<String, Object> getAllAmenitiesWithParams(AmenityParams amenityParams);
 
