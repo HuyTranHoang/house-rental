@@ -6,10 +6,12 @@ import com.project.house.rental.dto.AmenityDto;
 import com.project.house.rental.dto.params.AmenityParams;
 import com.project.house.rental.entity.Amenity;
 import com.project.house.rental.entity.Amenity_;
+import com.project.house.rental.exception.ConflictException;
 import com.project.house.rental.repository.AmenityRepository;
 import com.project.house.rental.service.AmenityService;
 import com.project.house.rental.specification.AmenitySpecification;
 import com.project.house.rental.utils.HibernateFilterHelper;
+import jakarta.persistence.NoResultException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +51,7 @@ public class AmenityServiceImpl implements AmenityService {
         Amenity amenity = amenityRepository.findByIdWithFilter(id);
 
         if (amenity == null) {
-            throw new RuntimeException("Không tìm thấy tiện ích với id = " + id);
+            throw new NoResultException("Không tìm thấy tiện ích với id = " + id);
         }
 
         return toDto(amenity);
@@ -60,7 +62,7 @@ public class AmenityServiceImpl implements AmenityService {
         Amenity existingAmenity = amenityRepository.findByNameIgnoreCase(amenityDto.getName());
 
         if (existingAmenity != null) {
-            throw new RuntimeException("Tiện ích đã tồn tại");
+            throw new ConflictException("Tiện ích đã tồn tại");
         }
 
         Amenity amenities = toEntity(amenityDto);
@@ -73,13 +75,13 @@ public class AmenityServiceImpl implements AmenityService {
         Amenity amenities = amenityRepository.findByIdWithFilter(id);
 
         if (amenities == null) {
-            throw new RuntimeException("Không tìm thấy tiện ích với id = " + id);
+            throw new NoResultException("Không tìm thấy tiện ích với id = " + id);
         }
 
         Amenity existingAmenity = amenityRepository.findByNameIgnoreCase(amenityDto.getName());
 
         if (existingAmenity != null && existingAmenity.getId() != id) {
-            throw new RuntimeException("Tiện ích đã tồn tại");
+            throw new ConflictException("Tiện ích đã tồn tại");
         }
 
         updateEntityFromDto(amenities, amenityDto);
@@ -91,7 +93,7 @@ public class AmenityServiceImpl implements AmenityService {
     @Override
     public void deleteAmenityById(long id) {
         Amenity amenities = amenityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy tiện ích với id = " + id));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy tiện ích với id = " + id));
 
         amenityRepository.deleteById(amenities.getId());
     }
@@ -110,7 +112,8 @@ public class AmenityServiceImpl implements AmenityService {
             case "nameAsc" -> Sort.by(Amenity_.NAME);
             case "nameDesc" -> Sort.by(Amenity_.NAME).descending();
             case "createdAtAsc" -> Sort.by(Amenity_.CREATED_AT);
-            default -> Sort.by(Amenity_.CREATED_AT).descending();
+            case "createdAtDesc" -> Sort.by(Amenity_.CREATED_AT).descending();
+            default -> Sort.by(Amenity_.ID).descending();
         };
 
         if (amenityParams.getPageNumber() < 0) {
@@ -150,7 +153,7 @@ public class AmenityServiceImpl implements AmenityService {
         return AmenityDto.builder()
                 .id(amenities.getId())
                 .name(amenities.getName())
-                .createdDate(amenities.getCreatedAt())
+                .createdAt(amenities.getCreatedAt())
                 .build();
     }
 

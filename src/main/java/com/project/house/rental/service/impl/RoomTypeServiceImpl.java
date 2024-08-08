@@ -124,7 +124,8 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             case "nameAsc" -> Sort.by(RoomType_.NAME);
             case "nameDesc" -> Sort.by(RoomType_.NAME).descending();
             case "createdAtAsc" -> Sort.by(RoomType_.CREATED_AT);
-            default -> Sort.by(RoomType_.CREATED_AT).descending();
+            case "createdAtDesc" -> Sort.by(RoomType_.CREATED_AT).descending();
+            default -> Sort.by(RoomType_.ID).descending();
         };
 
         if (roomTypeParams.getPageNumber() < 0) {

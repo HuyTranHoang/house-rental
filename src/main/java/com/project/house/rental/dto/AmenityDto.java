@@ -20,5 +20,5 @@ public class AmenityDto {
     @Size(max = 100, message = "Tên tiện ích không được vượt quá 100 kí tự")
     String name;
 
-    Date createdDate;
+    Date createdAt;
 }

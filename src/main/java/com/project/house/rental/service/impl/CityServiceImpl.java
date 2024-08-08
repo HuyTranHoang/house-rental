@@ -122,7 +122,8 @@ public class CityServiceImpl implements CityService {
             case "nameAsc" -> Sort.by(City_.NAME);
             case "nameDesc" -> Sort.by(City_.NAME).descending();
             case "createdAtAsc" -> Sort.by(City_.CREATED_AT);
-            default -> Sort.by(City_.CREATED_AT).descending();
+            case "createdAtDesc" -> Sort.by(City_.CREATED_AT).descending();
+            default -> Sort.by(City_.ID).descending();
         };
 
         if (cityParams.getPageNumber() < 0) {
