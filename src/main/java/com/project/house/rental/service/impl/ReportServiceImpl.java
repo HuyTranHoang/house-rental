@@ -5,9 +5,11 @@ import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.ReportDto;
 import com.project.house.rental.dto.params.ReportParams;
 import com.project.house.rental.entity.Property;
+import com.project.house.rental.entity.Property_;
 import com.project.house.rental.entity.Report;
 import com.project.house.rental.entity.Report_;
 import com.project.house.rental.entity.auth.UserEntity;
+import com.project.house.rental.entity.auth.UserEntity_;
 import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.repository.ReportRepository;
 import com.project.house.rental.repository.auth.UserRepository;
@@ -106,11 +108,20 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public Map<String, Object> getAllReportsWithParams(ReportParams reportParams) {
-        Specification<Report> specification = ReportSpecification.filterByUsername(reportParams.getUsername());
+        Specification<Report> specification = ReportSpecification.filterByUsername(reportParams.getUsername())
+                .and(ReportSpecification.filterByStatus(reportParams.getStatus()))
+                .and(ReportSpecification.filterByCategory(reportParams.getCategory()));
 
         Sort sort = switch (reportParams.getSortBy()) {
+            case "usernameAsc" -> Sort.by(Report_.USER + "." + UserEntity_.USERNAME);
+            case "usernameDesc" -> Sort.by(Report_.USER + "." + UserEntity_.USERNAME).descending();
+            case "titleAsc" -> Sort.by(Report_.PROPERTY + "." + Property_.TITLE);
+            case "titleDesc" -> Sort.by(Report_.PROPERTY + "." + Property_.TITLE).descending();
+            case "categoryAsc" -> Sort.by(Report_.CATEGORY);
+            case "categoryDesc" -> Sort.by(Report_.CATEGORY).descending();
             case "createdAtAsc" -> Sort.by(Report_.CREATED_AT);
-            default -> Sort.by(Report_.CREATED_AT).descending();
+            case "createdAtDesc" -> Sort.by(Report_.CREATED_AT).descending();
+            default -> Sort.by(Report_.ID).descending();
         };
 
         if (reportParams.getPageNumber() < 0) {
@@ -175,15 +186,6 @@ public class ReportServiceImpl implements ReportService {
         reportRepository.save(report);
     }
 
-    private boolean isValidReportStatus(String status) {
-        try {
-            Report.ReportStatus.valueOf(status);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-    }
-
     /*
         Helper method
      */
@@ -198,6 +200,7 @@ public class ReportServiceImpl implements ReportService {
                 .title(report.getProperty().getTitle())
                 .reason(report.getReason())
                 .status(String.valueOf(report.getStatus()))
+                .category(String.valueOf(report.getCategory()))
                 .createdAt(report.getCreatedAt())
                 .build();
     }
@@ -212,10 +215,33 @@ public class ReportServiceImpl implements ReportService {
             throw new NoResultException("Không tìm thấy bài đăng!");
         }
 
+        if (!isValidReportCategory(reportDto.getCategory())) {
+            throw new IllegalArgumentException("Danh mục [" + reportDto.getCategory() + "] không hợp lệ");
+        }
+
         return Report.builder()
                 .user(currentUser)
                 .property(currentProperty)
                 .reason(reportDto.getReason())
+                .category(Report.ReportCategory.valueOf(reportDto.getCategory()))
                 .build();
+    }
+
+    private boolean isValidReportStatus(String status) {
+        try {
+            Report.ReportStatus.valueOf(status);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private boolean isValidReportCategory(String cateogry) {
+        try {
+            Report.ReportCategory.valueOf(cateogry);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

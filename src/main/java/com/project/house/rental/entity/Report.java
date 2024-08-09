@@ -39,6 +39,10 @@ public class Report {
     String reason;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "category")
+    ReportCategory category = ReportCategory.OTHER;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     ReportStatus status = ReportStatus.PENDING;
 
@@ -53,6 +57,14 @@ public class Report {
         PENDING,
         APPROVED,
         REJECTED
+    }
+
+    public enum ReportCategory {
+        SCAM,
+        INAPPROPRIATE_CONTENT,
+        DUPLICATE,
+        MISINFORMATION,
+        OTHER
     }
 
 }

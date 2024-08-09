@@ -26,4 +26,24 @@ public class ReportSpecification {
             return cb.or(predicates.toArray(new Predicate[0]));
         };
     }
+
+    public static Specification<Report> filterByStatus(String status) {
+        return (root, query, cb) -> {
+            if (!StringUtils.hasLength(status)) {
+                return cb.conjunction();
+            }
+
+            return cb.equal(root.get(Report_.STATUS), status);
+        };
+    }
+
+    public static Specification<Report> filterByCategory(String category) {
+        return (root, query, cb) -> {
+            if (!StringUtils.hasLength(category)) {
+                return cb.conjunction();
+            }
+
+            return cb.equal(root.get(Report_.CATEGORY), category);
+        };
+    }
 }

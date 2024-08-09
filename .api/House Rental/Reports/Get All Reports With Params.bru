@@ -5,15 +5,17 @@ meta {
 }
 
 get {
-  url: {{host}}/api/reports?sortBy=createdAtDesc&pageNumber=1&pageSize=20
+  url: {{host}}/api/reports?status=PENDING
   body: none
   auth: bearer
 }
 
 params:query {
-  sortBy: createdAtDesc
-  pageNumber: 1
-  pageSize: 20
+  status: PENDING
+  ~sortBy: createdAtDesc
+  ~pageNumber: 1
+  ~pageSize: 20
+  ~username: huyy
 }
 
 auth:bearer {

@@ -5,15 +5,15 @@ meta {
 }
 
 get {
-  url: {{host}}/api/properties
+  url: {{host}}/api/properties?search=rất đẹp
   body: none
   auth: none
 }
 
 params:query {
+  search: rất đẹp
   ~sortBy: priceAsc
   ~pageNumber: 0
-  ~search: qqq
   ~roomTypeId: 1
   ~minPrice: 2000
   ~maxPrice: 123

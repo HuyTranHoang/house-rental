@@ -24,6 +24,9 @@ public class ReportDto {
     @NotEmpty(message = "Vui lòng nhập lí do báo cáo")
     String reason;
 
+    @NotEmpty(message = "Vui lòng chọn danh mục báo cáo")
+    String category;
+
     String status;
 
     Date createdAt;
