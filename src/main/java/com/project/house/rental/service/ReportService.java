@@ -29,4 +29,5 @@ public interface ReportService {
     Report toEntity(ReportDto reportDto);
 
 //    void updateEntityFromDto(Report report, ReportDto reportDto);
+
 }
