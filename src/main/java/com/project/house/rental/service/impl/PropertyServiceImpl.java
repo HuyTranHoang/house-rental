@@ -328,6 +328,8 @@ public class PropertyServiceImpl implements PropertyService {
         Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
 
+        //TODO: Cần gửi email thông báo cho người dùng đăng bài
+
         property.setBlocked(true);
 
         propertyRepository.save(property);
