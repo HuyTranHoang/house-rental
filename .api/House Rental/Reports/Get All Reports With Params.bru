@@ -5,13 +5,14 @@ meta {
 }
 
 get {
-  url: {{host}}/api/reports?status=PENDING
+  url: {{host}}/api/reports?category=SCAM, OTHER
   body: none
   auth: bearer
 }
 
 params:query {
-  status: PENDING
+  category: SCAM, OTHER
+  ~status: PENDING
   ~sortBy: createdAtDesc
   ~pageNumber: 1
   ~pageSize: 20

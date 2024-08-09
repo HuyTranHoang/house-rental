@@ -37,13 +37,19 @@ public class ReportSpecification {
         };
     }
 
-    public static Specification<Report> filterByCategory(String category) {
+    public static Specification<Report> filterByCategory(String categoryList) {
         return (root, query, cb) -> {
-            if (!StringUtils.hasLength(category)) {
+            if (!StringUtils.hasLength(categoryList)) {
                 return cb.conjunction();
             }
 
-            return cb.equal(root.get(Report_.CATEGORY), category);
+            List<Predicate> predicates = new ArrayList<>();
+            String[] categories = categoryList.split(",");
+            for (String category : categories) {
+                category = category.trim().toUpperCase();
+                predicates.add(cb.equal(root.get(Report_.CATEGORY), category));
+            }
+            return cb.or(predicates.toArray(new Predicate[0]));
         };
     }
 }
