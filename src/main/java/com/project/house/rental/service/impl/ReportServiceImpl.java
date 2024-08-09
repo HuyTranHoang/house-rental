@@ -179,6 +179,7 @@ public class ReportServiceImpl implements ReportService {
         report.setStatus(Report.ReportStatus.valueOf(status));
 
         if (status.equals("APPROVED")) {
+            //TODO: Cần gửi email thông báo cho người dùng đăng bài viết
             property.setBlocked(true);
             propertyRepository.save(property);
         }
