@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Service
@@ -179,9 +180,19 @@ public class ReportServiceImpl implements ReportService {
         report.setStatus(Report.ReportStatus.valueOf(status));
 
         if (status.equals("APPROVED")) {
-            //TODO: Cần gửi email thông báo cho người dùng đăng bài viết
+
             property.setBlocked(true);
             propertyRepository.save(property);
+
+            List<Report> pendingReports = reportRepository.findAllByPropertyIdAndStatus(property.getId(), Report.ReportStatus.PENDING);
+
+            for (Report pendingReport : pendingReports) {
+                pendingReport.setStatus(Report.ReportStatus.APPROVED);
+                reportRepository.save(pendingReport);
+            }
+
+            //TODO: Cần gửi email thông báo cho người dùng đăng bài viết
+            emailSenderService.sendReportHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
         }
 
         reportRepository.save(report);
