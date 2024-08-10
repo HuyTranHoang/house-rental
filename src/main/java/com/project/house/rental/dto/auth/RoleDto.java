@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -20,4 +21,6 @@ public class RoleDto {
     String name;
 
     List<String> authorityPrivileges;
+
+    Date createdAt;
 }

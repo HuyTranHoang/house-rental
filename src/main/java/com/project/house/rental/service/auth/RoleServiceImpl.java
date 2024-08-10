@@ -56,7 +56,8 @@ public class RoleServiceImpl implements RoleService {
             case "nameAsc" -> Sort.by(Role_.NAME);
             case "nameDesc" -> Sort.by(Role_.NAME).descending();
             case "createdAtAsc" -> Sort.by(Role_.CREATED_AT);
-            default -> Sort.by(Role_.CREATED_AT).descending();
+            case "createdAtDesc" -> Sort.by(Role_.CREATED_AT).descending();
+            default -> Sort.by(Role_.ID).descending();
         };
 
         if (roleParams.getPageNumber() < 0) {
@@ -149,6 +150,7 @@ public class RoleServiceImpl implements RoleService {
                 .id(role.getId())
                 .name(role.getName())
                 .authorityPrivileges(authorityPrivileges)
+                .createdAt(role.getCreatedAt())
                 .build();
     }
 
