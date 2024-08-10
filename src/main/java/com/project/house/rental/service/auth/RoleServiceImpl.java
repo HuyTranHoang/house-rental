@@ -7,6 +7,7 @@ import com.project.house.rental.dto.params.RoleParams;
 import com.project.house.rental.entity.auth.Authority;
 import com.project.house.rental.entity.auth.Role;
 import com.project.house.rental.entity.auth.Role_;
+import com.project.house.rental.exception.ConflictException;
 import com.project.house.rental.repository.auth.AuthorityRepository;
 import com.project.house.rental.repository.auth.RoleRepository;
 import com.project.house.rental.specification.RoleSpecification;
@@ -109,7 +110,7 @@ public class RoleServiceImpl implements RoleService {
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROLE_FILTER);
 
         if (existingRole != null) {
-            throw new NoResultException("Vai trò đã tồn tại");
+            throw new ConflictException("Vai trò đã tồn tại");
         }
 
         Role role = toEntity(roleDto);
@@ -124,6 +125,14 @@ public class RoleServiceImpl implements RoleService {
 
         if (role == null) {
             throw new NoResultException("Không tìm thấy vai trò với id: " + id);
+        }
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ROLE_FILTER);
+        Role existingRole = roleRepository.findRoleByNameIgnoreCase(roleDto.getName());
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROLE_FILTER);
+
+        if (existingRole != null && existingRole.getId() != id) {
+            throw new ConflictException("Vai trò đã tồn tại");
         }
 
         updateEntityFromDto(role, roleDto);
