@@ -191,8 +191,8 @@ public class ReportServiceImpl implements ReportService {
                 reportRepository.save(pendingReport);
             }
 
-            //TODO: Cần gửi email thông báo cho người dùng đăng bài viết
-            emailSenderService.sendReportHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
+            //TODO: Bật lên khi test demo
+            //emailSenderService.sendBlockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
         }
 
         reportRepository.save(report);

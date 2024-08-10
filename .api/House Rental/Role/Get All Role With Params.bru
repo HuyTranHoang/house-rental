@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: {{host}}/api/roles?authorities=city:delete,city:create
+  url: {{host}}/api/roles
   body: none
   auth: inherit
 }
 
 params:query {
-  authorities: city:delete,city:create
+  ~authorities: city:delete,city:create
   ~name: Quản
   ~sortBy: createdAtAsc
 }
