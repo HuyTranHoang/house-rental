@@ -150,6 +150,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public void deleteMultipleRoles(List<Long> ids) {
+        List<Role> roles = roleRepository.findAllById(ids);
+        roleRepository.deleteAll(roles);
+    }
+
+    @Override
     public RoleDto toDto(Role role) {
         List<String> authorityPrivileges = role.getAuthorities().stream()
                 .map(Authority::getPrivilege)

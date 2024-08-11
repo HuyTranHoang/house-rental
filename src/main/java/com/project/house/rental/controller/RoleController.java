@@ -50,6 +50,13 @@ public class RoleController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/delete-multiple")
+    public ResponseEntity<Void> deleteMultipleRoles(@RequestBody Map<String, List<Long>> requestBody) {
+        List<Long> ids = requestBody.get("ids");
+        roleService.deleteMultipleRoles(ids);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<RoleDto> updateRole(@PathVariable long id, @RequestBody @Valid RoleDto roleDto) {
         RoleDto updatedRoleDto = roleService.updateRole(id, roleDto);
