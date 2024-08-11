@@ -127,6 +127,10 @@ public class RoleServiceImpl implements RoleService {
             throw new NoResultException("Không tìm thấy vai trò với id: " + id);
         }
 
+        if (role.getName().equals("ROLE_ADMIN")) {
+            throw new IllegalArgumentException("Không thể cập nhật vai trò admin");
+        }
+
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ROLE_FILTER);
         Role existingRole = roleRepository.findRoleByNameIgnoreCase(roleDto.getName());
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROLE_FILTER);
@@ -145,6 +149,10 @@ public class RoleServiceImpl implements RoleService {
     public void deleteRoleById(long id) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy 'City' với id = " + id));
+
+        if (role.getName().equals("ROLE_ADMIN") || role.getName().equals("ROLE_USER")) {
+            throw new IllegalArgumentException("Không thể xóa vai trò mặc định");
+        }
 
         roleRepository.deleteById(role.getId());
     }

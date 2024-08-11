@@ -1,0 +1,20 @@
+meta {
+  name: Delete Roles By Id
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{host}}/api/roles/2
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "ids": [
+      1,
+      2
+    ]
+  }
+}
