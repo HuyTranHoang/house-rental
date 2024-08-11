@@ -24,21 +24,21 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasAnyAuthority('user:update')")
+    @PreAuthorize("hasAnyAuthority('user:update', 'admin:all')")
     @PutMapping("/profile")
     public ResponseEntity<UserEntityDto> updateProfile(@RequestBody @Valid ProfileDto profileDto, HttpServletRequest request) throws CustomRuntimeException {
         UserEntityDto userEntityDto = userService.updateProfile(profileDto, request);
         return ResponseEntity.ok(userEntityDto);
     }
 
-    @PreAuthorize("hasAnyAuthority('user:update')")
+    @PreAuthorize("hasAnyAuthority('user:update', 'admin:all')")
     @PutMapping("/change-password")
     public ResponseEntity<UserEntityDto> changePassword(@RequestBody @Valid ChangePasswordDto changePasswordDto, HttpServletRequest request) throws CustomRuntimeException {
         UserEntityDto userEntityDto = userService.changePassword(changePasswordDto, request);
         return ResponseEntity.ok(userEntityDto);
     }
 
-    @PreAuthorize("hasAnyAuthority('user:update')")
+    @PreAuthorize("hasAnyAuthority('user:update', 'admin:all')")
     @PutMapping("/update-avatar")
     public ResponseEntity<UserEntityDto> updateAvatar(@RequestParam MultipartFile avatar, HttpServletRequest request) throws CustomRuntimeException, IOException {
         UserEntityDto userEntityDto = userService.updateAvatar(avatar, request);
