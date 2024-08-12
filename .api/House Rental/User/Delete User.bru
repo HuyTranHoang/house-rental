@@ -1,0 +1,28 @@
+meta {
+  name: Delete User
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{host}}/api/user/5
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "huyy4UPDATE111222333333333",
+    "password": "password1",
+    "email": "nhokpio954@gmail.com",
+    "phoneNumber": "1234567890",
+    "firstName": "new111",
+    "lastName": "user",
+    "avatarUrl": null,
+    "roles": [
+      "ROLE_USER"
+    ],
+    "active": true,
+    "nonLocked": true
+  }
+}

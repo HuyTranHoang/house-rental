@@ -3,6 +3,7 @@ package com.project.house.rental.controller;
 import com.project.house.rental.dto.auth.ChangePasswordDto;
 import com.project.house.rental.dto.auth.ProfileDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
+import com.project.house.rental.dto.params.UserParams;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.service.auth.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -45,4 +47,33 @@ public class UserController {
         return ResponseEntity.ok(userEntityDto);
     }
 
+    @PostMapping({"", "/"})
+    public ResponseEntity<UserEntityDto> addNewUser(@RequestBody @Valid UserEntityDto user) throws CustomRuntimeException {
+        UserEntityDto userEntityDto = userService.addNewUser(user);
+        return ResponseEntity.ok(userEntityDto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserEntityDto> updateUser(@PathVariable long id, @RequestBody @Valid UserEntityDto user) throws CustomRuntimeException {
+        UserEntityDto userEntityDto = userService.updateUser(id, user);
+        return ResponseEntity.ok(userEntityDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable long id) throws CustomRuntimeException {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/lock/{id}")
+    public ResponseEntity<UserEntityDto> lockUser(@PathVariable long id) throws CustomRuntimeException {
+        UserEntityDto userEntityDto = userService.lockUser(id);
+        return ResponseEntity.ok(userEntityDto);
+    }
+
+    @GetMapping({"/", ""})
+    public ResponseEntity<Map<String, Object>> getAllUser(@ModelAttribute UserParams userParams) {
+        Map<String, Object> usersWithPagination = userService.getAllUserWithParams(userParams);
+        return ResponseEntity.ok(usersWithPagination);
+    }
 }

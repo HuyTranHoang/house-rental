@@ -1,0 +1,28 @@
+meta {
+  name: Lock User
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{host}}/api/user/lock/4
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "huyy4UPDATE111222333333333",
+    "password": "password1",
+    "email": "nhokpio954@gmail.com",
+    "phoneNumber": "1234567890",
+    "firstName": "new111",
+    "lastName": "user",
+    "avatarUrl": null,
+    "roles": [
+      "ROLE_USER"
+    ],
+    "active": true,
+    "nonLocked": true
+  }
+}

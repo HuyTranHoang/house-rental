@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -48,4 +49,6 @@ public class UserEntityDto {
     List<String> roles;
 
     List<String> authorities;
+
+    Date createdAt;
 }

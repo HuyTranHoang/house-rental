@@ -1,6 +1,7 @@
 package com.project.house.rental.entity.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.entity.BaseEntity;
 import com.project.house.rental.entity.Favorite;
 import com.project.house.rental.entity.Property;
@@ -8,6 +9,10 @@ import com.project.house.rental.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
 
 import java.util.List;
 
@@ -19,6 +24,9 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
+@FilterDef(name = FilterConstant.DELETE_USER_FILTER, parameters = @ParamDef(name = FilterConstant.IS_DELETED, type = Boolean.class))
+@Filter(name = FilterConstant.DELETE_USER_FILTER, condition = FilterConstant.CONDITION)
 public class UserEntity extends BaseEntity {
 
     String username;

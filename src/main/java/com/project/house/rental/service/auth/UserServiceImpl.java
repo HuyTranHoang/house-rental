@@ -1,9 +1,13 @@
 package com.project.house.rental.service.auth;
 
+import com.project.house.rental.common.PageInfo;
+import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.auth.ChangePasswordDto;
 import com.project.house.rental.dto.auth.ProfileDto;
 import com.project.house.rental.dto.auth.ResetPasswordDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
+import com.project.house.rental.dto.params.UserParams;
+import com.project.house.rental.entity.City_;
 import com.project.house.rental.entity.auth.*;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.repository.auth.PasswordResetRepository;
@@ -12,8 +16,15 @@ import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.service.email.EmailSenderService;
+import com.project.house.rental.specification.UserSpecification;
+import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,8 +50,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final JWTTokenProvider jwtTokenProvider;
     private final CloudinaryService cloudinaryService;
     private final PasswordResetRepository passwordResetRepository;
+    private final HibernateFilterHelper hibernateFilterHelper;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, EmailSenderService emailSenderService, PasswordEncoder passwordEncoder, JWTTokenProvider jwtTokenProvider, CloudinaryService cloudinaryService, PasswordResetRepository passwordResetRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, EmailSenderService emailSenderService, PasswordEncoder passwordEncoder, JWTTokenProvider jwtTokenProvider, CloudinaryService cloudinaryService, PasswordResetRepository passwordResetRepository, HibernateFilterHelper hibernateFilterHelper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.emailSenderService = emailSenderService;
@@ -47,16 +60,116 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.jwtTokenProvider = jwtTokenProvider;
         this.cloudinaryService = cloudinaryService;
         this.passwordResetRepository = passwordResetRepository;
+        this.hibernateFilterHelper = hibernateFilterHelper;
     }
 
     @Override
-    public UserEntityDto addNewUser(UserEntityDto user, String[] role) {
-        return null;
+    public Map<String, Object> getAllUserWithParams(UserParams userParams) {
+        Specification<UserEntity> spec = UserSpecification.searchByUsernameEmailPhone(userParams.getSearch())
+                .and(UserSpecification.filterByRoles(userParams.getRoles(), roleRepository))
+                .and(UserSpecification.filterByIsNonLocked(userParams.getIsNonLocked()));
+
+        Sort sort = switch (userParams.getSortBy()) {
+            case "usernameAsc" -> Sort.by(UserEntity_.USERNAME);
+            case "usernameDesc" -> Sort.by(UserEntity_.USERNAME).descending();
+            case "emailAsc" -> Sort.by(UserEntity_.EMAIL);
+            case "emailDesc" -> Sort.by(UserEntity_.EMAIL).descending();
+            case "phoneNumbeAscr" -> Sort.by(UserEntity_.PHONE_NUMBER);
+            case "phoneNumbeDesc" -> Sort.by(UserEntity_.PHONE_NUMBER).descending();
+            case "isNonLockedAsc" -> Sort.by(UserEntity_.IS_NON_LOCKED);
+            case "isNonLockedDesc" -> Sort.by(UserEntity_.IS_NON_LOCKED).descending();
+            case "createdAtAsc" -> Sort.by(UserEntity_.CREATED_AT);
+            case "createdAtDesc" -> Sort.by(UserEntity_.CREATED_AT).descending();
+            default -> Sort.by(City_.ID).descending();
+        };
+
+        if (userParams.getPageNumber() < 0) {
+            userParams.setPageNumber(0);
+        }
+
+        if (userParams.getPageSize() <= 0) {
+            userParams.setPageSize(10);
+        }
+
+        Pageable pageable = PageRequest.of(
+                userParams.getPageNumber(),
+                userParams.getPageSize(),
+                sort
+        );
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_USER_FILTER);
+
+        Page<UserEntity> userPage = userRepository.findAll(spec, pageable);
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_USER_FILTER);
+
+        PageInfo pageInfo = new PageInfo(userPage);
+
+        List<UserEntityDto> userEntityDtoList = userPage.stream()
+                .map(this::toDto)
+                .toList();
+
+        return Map.of(
+                "pageInfo", pageInfo,
+                "data", userEntityDtoList
+        );
     }
 
     @Override
-    public UserEntityDto updateUser(UserEntityDto user, String[] role) {
-        return null;
+    public UserEntityDto addNewUser(UserEntityDto user) throws CustomRuntimeException {
+        UserEntity existUsername = userRepository.findUserByUsername(user.getUsername());
+        if (existUsername != null) {
+            throw new CustomRuntimeException("Tài khoản đã tồn tại!");
+        }
+
+        UserEntity existEmail = userRepository.findUserByEmail(user.getEmail());
+        if (existEmail != null) {
+            throw new CustomRuntimeException("Email đã được đăng ký!");
+        }
+
+        List<Role> roles = user.getRoles().stream()
+                .map(roleName -> {
+                    Role role = roleRepository.findRoleByNameIgnoreCase(roleName);
+                    if (role == null) {
+                        throw new IllegalArgumentException("Không tìm thấy quyền: " + roleName);
+                    }
+                    return role;
+                })
+                .toList();
+
+        if (roles.isEmpty() || roles.contains(null)) {
+            throw new CustomRuntimeException("Vui lòng chọn ít nhất một quyền hợp lệ cho tài khoản!");
+        }
+
+        String encodePassword = passwordEncoder.encode(user.getPassword());
+
+        user.setPassword(encodePassword);
+        user.setActive(true);
+        user.setNonLocked(true);
+        user.setRoles(user.getRoles());
+
+        //emailSenderService.sendRegisterHTMLMail(user.getEmail());
+
+        UserEntity newUser = toEntity(user);
+        return toDto(userRepository.save(newUser));
+    }
+
+    @Override
+    public UserEntityDto updateUser(long id, UserEntityDto user) throws CustomRuntimeException {
+        UserEntity existUser = userRepository.findById(id)
+                .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
+
+        updateEntityFromDto(existUser, user);
+        return toDto(userRepository.save(existUser));
+    }
+
+    @Override
+    public UserEntityDto lockUser(long id) throws CustomRuntimeException {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
+
+        user.setNonLocked(!user.isNonLocked());
+        return toDto(userRepository.save(user));
     }
 
     @Override
@@ -118,7 +231,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void deleteUser(long id) throws CustomRuntimeException {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
 
+        userRepository.delete(user);
     }
 
     @Override
@@ -248,6 +364,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .isNonLocked(user.isNonLocked())
                 .roles(roles)
                 .authorities(authorities)
+                .createdAt(user.getCreatedAt())
                 .build();
     }
 
@@ -277,16 +394,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .build();
     }
 
-    private void updateEntityFromDto(UserEntity user, UserEntityDto userDto) {
-        List<Role> roles = userDto.getRoles().stream()
-                .map(roleRepository::findRoleByNameIgnoreCase)
-                .toList();
+    private void updateEntityFromDto(UserEntity user, UserEntityDto userDto) throws CustomRuntimeException {
+        // Ensure roles are modifiable
+        List<Role> roles = new ArrayList<>(userDto.getRoles().stream()
+                .map(roleName -> {
+                    Role role = roleRepository.findRoleByNameIgnoreCase(roleName);
+                    if (role == null) {
+                        throw new IllegalArgumentException("Không tìm thấy quyền: " + roleName);
+                    }
+                    return role;
+                })
+                .toList());
 
-        List<Authority> authorities = userDto.getRoles().stream()
+        if (roles.isEmpty() || roles.contains(null)) {
+            throw new CustomRuntimeException("Vui lòng chọn ít nhất một quyền hợp lệ cho tài khoản!");
+        }
+
+        List<Authority> authorities = new ArrayList<>(userDto.getRoles().stream()
                 .map(roleRepository::findRoleByNameIgnoreCase)
                 .flatMap(role -> role.getAuthorities().stream())
                 .distinct()
-                .toList();
+                .toList());
 
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
