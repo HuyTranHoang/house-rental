@@ -45,4 +45,16 @@ public class UserController {
         return ResponseEntity.ok(userEntityDto);
     }
 
+    @PostMapping({"", "/"})
+    public ResponseEntity<UserEntityDto> addNewUser(@RequestBody @Valid UserEntityDto user) throws CustomRuntimeException {
+        UserEntityDto userEntityDto = userService.addNewUser(user);
+        return ResponseEntity.ok(userEntityDto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserEntityDto> updateUser(@PathVariable long id, @RequestBody @Valid UserEntityDto user) throws CustomRuntimeException {
+        UserEntityDto userEntityDto = userService.updateUser(id, user);
+        return ResponseEntity.ok(userEntityDto);
+    }
+
 }

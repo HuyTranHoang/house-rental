@@ -13,9 +13,9 @@ import java.io.IOException;
 
 
 public interface UserService {
-    UserEntityDto addNewUser(UserEntityDto user, String[] role);
+    UserEntityDto addNewUser(UserEntityDto user) throws CustomRuntimeException;
 
-    UserEntityDto updateUser(UserEntityDto user, String[] role);
+    UserEntityDto updateUser(long id, UserEntityDto user) throws CustomRuntimeException;
 
     void sendEmailResetPassword(String email) throws CustomRuntimeException;
 

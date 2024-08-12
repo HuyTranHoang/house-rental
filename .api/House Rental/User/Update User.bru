@@ -1,0 +1,26 @@
+meta {
+  name: Update User
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{host}}/api/user/6
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "huyy4UPDATE111222333333333",
+    "password": "password1",
+    "email": "nhokpio954@gmail.com",
+    "phoneNumber": "1234567890",
+    "firstName": "new111",
+    "lastName": "user",
+    "avatarUrl": null,
+    "roles": [
+      "ROLE_USER"
+    ]
+  }
+}

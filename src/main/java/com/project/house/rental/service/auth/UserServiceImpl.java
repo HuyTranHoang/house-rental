@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,13 +51,51 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserEntityDto addNewUser(UserEntityDto user, String[] role) {
-        return null;
+    public UserEntityDto addNewUser(UserEntityDto user) throws CustomRuntimeException {
+        UserEntity existUsername = userRepository.findUserByUsername(user.getUsername());
+        if (existUsername != null) {
+            throw new CustomRuntimeException("Tài khoản đã tồn tại!");
+        }
+
+        UserEntity existEmail = userRepository.findUserByEmail(user.getEmail());
+        if (existEmail != null) {
+            throw new CustomRuntimeException("Email đã được đăng ký!");
+        }
+
+        List<Role> roles = user.getRoles().stream()
+                .map(roleName -> {
+                    Role role = roleRepository.findRoleByNameIgnoreCase(roleName);
+                    if (role == null) {
+                        throw new IllegalArgumentException("Không tìm thấy quyền: " + roleName);
+                    }
+                    return role;
+                })
+                .toList();
+
+        if (roles.isEmpty() || roles.contains(null)) {
+            throw new CustomRuntimeException("Vui lòng chọn ít nhất một quyền hợp lệ cho tài khoản!");
+        }
+
+        String encodePassword = passwordEncoder.encode(user.getPassword());
+
+        user.setPassword(encodePassword);
+        user.setActive(true);
+        user.setNonLocked(true);
+        user.setRoles(user.getRoles());
+
+        //emailSenderService.sendRegisterHTMLMail(user.getEmail());
+
+        UserEntity newUser = toEntity(user);
+        return toDto(userRepository.save(newUser));
     }
 
     @Override
-    public UserEntityDto updateUser(UserEntityDto user, String[] role) {
-        return null;
+    public UserEntityDto updateUser(long id, UserEntityDto user) throws CustomRuntimeException {
+        UserEntity existUser = userRepository.findById(id)
+                .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
+
+        updateEntityFromDto(existUser, user);
+        return toDto(userRepository.save(existUser));
     }
 
     @Override
@@ -277,16 +316,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .build();
     }
 
-    private void updateEntityFromDto(UserEntity user, UserEntityDto userDto) {
-        List<Role> roles = userDto.getRoles().stream()
-                .map(roleRepository::findRoleByNameIgnoreCase)
-                .toList();
+    private void updateEntityFromDto(UserEntity user, UserEntityDto userDto) throws CustomRuntimeException {
+        // Ensure roles are modifiable
+        List<Role> roles = new ArrayList<>(userDto.getRoles().stream()
+                .map(roleName -> {
+                    Role role = roleRepository.findRoleByNameIgnoreCase(roleName);
+                    if (role == null) {
+                        throw new IllegalArgumentException("Không tìm thấy quyền: " + roleName);
+                    }
+                    return role;
+                })
+                .toList());
 
-        List<Authority> authorities = userDto.getRoles().stream()
+        if (roles.isEmpty() || roles.contains(null)) {
+            throw new CustomRuntimeException("Vui lòng chọn ít nhất một quyền hợp lệ cho tài khoản!");
+        }
+
+        List<Authority> authorities = new ArrayList<>(userDto.getRoles().stream()
                 .map(roleRepository::findRoleByNameIgnoreCase)
                 .flatMap(role -> role.getAuthorities().stream())
                 .distinct()
-                .toList();
+                .toList());
 
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
