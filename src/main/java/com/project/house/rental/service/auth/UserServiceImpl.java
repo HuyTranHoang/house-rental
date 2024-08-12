@@ -99,6 +99,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public UserEntityDto lockUser(long id) throws CustomRuntimeException {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
+
+        user.setNonLocked(!user.isNonLocked());
+        return toDto(userRepository.save(user));
+    }
+
+    @Override
     public void sendEmailResetPassword(String email) throws CustomRuntimeException {
         UserEntity user = userRepository.findUserByEmail(email);
 
@@ -157,7 +166,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void deleteUser(long id) throws CustomRuntimeException {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
 
+        userRepository.delete(user);
     }
 
     @Override

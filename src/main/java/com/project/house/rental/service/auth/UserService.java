@@ -17,6 +17,8 @@ public interface UserService {
 
     UserEntityDto updateUser(long id, UserEntityDto user) throws CustomRuntimeException;
 
+    UserEntityDto lockUser(long id) throws CustomRuntimeException;
+
     void sendEmailResetPassword(String email) throws CustomRuntimeException;
 
     UserEntityDto resetPassword(ResetPasswordDto resetPasswordDto) throws CustomRuntimeException;

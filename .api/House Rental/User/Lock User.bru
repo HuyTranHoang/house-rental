@@ -1,12 +1,12 @@
 meta {
-  name: Update User
+  name: Lock User
   type: http
-  seq: 5
+  seq: 7
 }
 
 put {
-  url: {{host}}/api/user/6
-  body: json
+  url: {{host}}/api/user/lock/4
+  body: none
   auth: inherit
 }
 

@@ -57,4 +57,16 @@ public class UserController {
         return ResponseEntity.ok(userEntityDto);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable long id) throws CustomRuntimeException {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/lock/{id}")
+    public ResponseEntity<UserEntityDto> lockUser(@PathVariable long id) throws CustomRuntimeException {
+        UserEntityDto userEntityDto = userService.lockUser(id);
+        return ResponseEntity.ok(userEntityDto);
+    }
+
 }
