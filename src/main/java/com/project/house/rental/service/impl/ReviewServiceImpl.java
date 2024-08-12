@@ -4,6 +4,7 @@ import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.ReviewDto;
 import com.project.house.rental.dto.params.ReviewParams;
+import com.project.house.rental.entity.Amenity;
 import com.project.house.rental.entity.Property;
 import com.project.house.rental.entity.Review;
 import com.project.house.rental.entity.Review_;
@@ -115,6 +116,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public void deleteMultipleReviews(List<Long> ids) {
+        List<Review> reviewList = reviewRepository.findAllById(ids);
+        reviewRepository.deleteAll(reviewList);
+    }
+
+    @Override
     public Map<String, Object> getAllReviewsWithParams(ReviewParams reviewParams) {
         Specification<Review> spec = ReviewSpecification.filterByRating(reviewParams.getRating())
                 .and(ReviewSpecification.filterByPropertyId(reviewParams.getPropertyId()))
@@ -171,6 +178,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .userName(review.getUser().getUsername())
                 .propertyId(review.getProperty().getId())
                 .propertyTitle(review.getProperty().getTitle())
+                .createdAt(review.getCreatedAt())
                 .build();
     }
 

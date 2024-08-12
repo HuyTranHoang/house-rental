@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,4 +32,6 @@ public class ReviewDto {
     long userId;
 
     String userName;
+
+    Date createdAt;
 }
