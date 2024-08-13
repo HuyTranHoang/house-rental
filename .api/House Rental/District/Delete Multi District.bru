@@ -1,0 +1,20 @@
+meta {
+  name: Delete Multi District
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{host}}/api/district/delete-multiple
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "ids": [
+      15,
+      39
+    ]
+  }
+}

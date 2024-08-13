@@ -11,4 +11,6 @@ public interface DistrictRepository extends JpaRepository<District, Long>, JpaSp
 
     @Query("SELECT d FROM District d WHERE d.id = :id AND d.isDeleted = false")
     District findByIdWithFilter(long id);
+
+    District findByNameAndCityId(String name, long city_id);
 }

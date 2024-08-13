@@ -19,6 +19,8 @@ public interface DistrictService {
 
     void deleteDistrictById(long id);
 
+    void deleteDistricts(List<Long> ids);
+
     Map<String, Object> getAllDistrictsWithParams(DistrictParams districtParams);
 
     DistrictDto toDto(District district);

@@ -5,17 +5,17 @@ meta {
 }
 
 get {
-  url: {{host}}/api/district?sortBy=cityNameDesc&pageNumber=1&pageSize=20
+  url: {{host}}/api/district?cityId=2
   body: none
   auth: bearer
 }
 
 params:query {
-  sortBy: cityNameDesc
-  pageNumber: 1
-  pageSize: 20
+  cityId: 2
+  ~sortBy: cityNameDesc
+  ~pageNumber: 1
+  ~pageSize: 20
   ~name: 
-  ~cityName: null
 }
 
 auth:bearer {

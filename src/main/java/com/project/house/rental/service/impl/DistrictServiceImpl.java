@@ -8,6 +8,7 @@ import com.project.house.rental.entity.City;
 import com.project.house.rental.entity.City_;
 import com.project.house.rental.entity.District;
 import com.project.house.rental.entity.District_;
+import com.project.house.rental.exception.ConflictException;
 import com.project.house.rental.repository.CityRepository;
 import com.project.house.rental.repository.DistrictRepository;
 import com.project.house.rental.service.DistrictService;
@@ -68,6 +69,12 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public DistrictDto createDistrict(DistrictDto districtDto) {
+        District existingDistrict = districtRepository.findByNameAndCityId(districtDto.getName(), districtDto.getCityId());
+
+        if (existingDistrict != null) {
+            throw new ConflictException("Quận đã tồn tại trong thành phố này");
+        }
+
         District district = toEntity(districtDto);
 
         district = districtRepository.save(district);
@@ -81,6 +88,12 @@ public class DistrictServiceImpl implements DistrictService {
 
         if (district == null) {
             throw new NoResultException("Không tìm thấy quận với id: " + id);
+        }
+
+        District existingDistrict = districtRepository.findByNameAndCityId(districtDto.getName(), districtDto.getCityId());
+
+        if (existingDistrict != null && existingDistrict.getId() != id) {
+            throw new ConflictException("Quận đã tồn tại trong thành phố này");
         }
 
         updateEntityFromDto(district, districtDto);
@@ -98,17 +111,24 @@ public class DistrictServiceImpl implements DistrictService {
         districtRepository.deleteById(district.getId());
     }
 
+    @Override
+    public void deleteDistricts(List<Long> ids) {
+        List<District> districts = districtRepository.findAllById(ids);
+        districtRepository.deleteAll(districts);
+    }
+
     public Map<String, Object> getAllDistrictsWithParams(DistrictParams districtParams) {
         Specification<District> spec = DistrictSpecification.searchByName(districtParams.getName())
                 .and(DistrictSpecification.filterByCity(districtParams.getCityId()));
 
         Sort sort = switch (districtParams.getSortBy()) {
-            case "nameDesc" -> Sort.by(District_.NAME).descending();
             case "nameAsc" -> Sort.by(District_.NAME);
-            case "createAtAsc" -> Sort.by(District_.CREATED_AT);
+            case "nameDesc" -> Sort.by(District_.NAME).descending();
             case "cityNameAsc" -> Sort.by(District_.CITY + "." + City_.NAME);
             case "cityNameDesc" -> Sort.by(District_.CITY + "." + City_.NAME).descending();
-            default -> Sort.by(District_.CREATED_AT).descending();
+            case "createAtAsc" -> Sort.by(District_.CREATED_AT);
+            case "createAtDesc" -> Sort.by(District_.CREATED_AT).descending();
+            default -> Sort.by(District_.ID).descending();
         };
 
         if (districtParams.getPageNumber() < 0) {
@@ -150,6 +170,7 @@ public class DistrictServiceImpl implements DistrictService {
                 .name(district.getName())
                 .cityId(district.getCity().getId())
                 .cityName(district.getCity().getName())
+                .createdAt(district.getCreatedAt())
                 .build();
     }
 

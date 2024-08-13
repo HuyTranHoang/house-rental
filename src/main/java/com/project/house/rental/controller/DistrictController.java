@@ -1,6 +1,5 @@
 package com.project.house.rental.controller;
 
-
 import com.project.house.rental.dto.DistrictDto;
 import com.project.house.rental.dto.params.DistrictParams;
 import com.project.house.rental.service.DistrictService;
@@ -22,7 +21,7 @@ public class DistrictController {
     }
 
     @GetMapping({"/", ""})
-    public ResponseEntity<Map<String,Object>> getAllDistrict(@ModelAttribute DistrictParams districtParams) {
+    public ResponseEntity<Map<String, Object>> getAllDistrict(@ModelAttribute DistrictParams districtParams) {
         Map<String, Object> districtsWithPagination = districtService.getAllDistrictsWithParams(districtParams);
         return ResponseEntity.ok(districtsWithPagination);
     }
@@ -34,26 +33,33 @@ public class DistrictController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DistrictDto> getDistrictById(@PathVariable long id){
+    public ResponseEntity<DistrictDto> getDistrictById(@PathVariable long id) {
         DistrictDto district = districtService.getDistrictById(id);
         return ResponseEntity.ok(district);
     }
 
     @PostMapping({"/", ""})
-    public ResponseEntity<DistrictDto> createDistrict(@RequestBody @Valid DistrictDto districtDto){
+    public ResponseEntity<DistrictDto> createDistrict(@RequestBody @Valid DistrictDto districtDto) {
         DistrictDto district = districtService.createDistrict(districtDto);
         return ResponseEntity.ok(district);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DistrictDto> updateDistrict(@PathVariable long id, @RequestBody @Valid DistrictDto districtDto){
+    public ResponseEntity<DistrictDto> updateDistrict(@PathVariable long id, @RequestBody @Valid DistrictDto districtDto) {
         DistrictDto district = districtService.updateDistrict(id, districtDto);
         return ResponseEntity.ok(district);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDistrict(@PathVariable long id){
+    public ResponseEntity<Void> deleteDistrict(@PathVariable long id) {
         districtService.deleteDistrictById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/delete-multiple")
+    public ResponseEntity<Void> deleteMultipleDistricts(@RequestBody Map<String, List<Long>> requestBody) {
+        List<Long> ids = requestBody.get("ids");
+        districtService.deleteDistricts(ids);
         return ResponseEntity.noContent().build();
     }
 }
