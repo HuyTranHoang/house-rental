@@ -28,7 +28,7 @@ public class ReviewSpecification {
 
     public static Specification<Review> filterByUsername(String username) {
         return (root, query, cb) -> {
-            if (username == null)
+            if (username == null || username.trim().isEmpty())
                 return cb.conjunction();
 
             return cb.equal(root.get(Review_.USER).get(UserEntity_.USERNAME), username);
