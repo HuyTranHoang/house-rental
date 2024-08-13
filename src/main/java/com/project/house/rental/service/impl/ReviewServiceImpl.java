@@ -125,7 +125,7 @@ public class ReviewServiceImpl implements ReviewService {
     public Map<String, Object> getAllReviewsWithParams(ReviewParams reviewParams) {
         Specification<Review> spec = ReviewSpecification.filterByRating(reviewParams.getRating())
                 .and(ReviewSpecification.filterByPropertyId(reviewParams.getPropertyId()))
-                .and(ReviewSpecification.filterByUserId(reviewParams.getUserId()));
+                .and(ReviewSpecification.filterByUsername(reviewParams.getUserName()));
 
         Sort sort = switch (reviewParams.getSortBy()) {
             case "createdAtAsc" -> Sort.by(Review_.CREATED_AT);
