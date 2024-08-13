@@ -129,6 +129,8 @@ public class ReviewServiceImpl implements ReviewService {
 
         Sort sort = switch (reviewParams.getSortBy()) {
             case "createdAtAsc" -> Sort.by(Review_.CREATED_AT);
+            case "ratingAsc" -> Sort.by(Review_.RATING);
+            case "ratingDesc" -> Sort.by(Review_.RATING).descending();
             default -> Sort.by(Review_.CREATED_AT).descending();
         };
 
