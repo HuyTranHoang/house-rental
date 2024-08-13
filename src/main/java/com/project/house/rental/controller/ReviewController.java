@@ -56,4 +56,11 @@ public class ReviewController {
         reviewService.deleteReviewById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/delete-multiple")
+    public ResponseEntity<Void> deleteMultipleReviews(@RequestBody Map<String, List<Long>> requestBody) {
+        List<Long> ids = requestBody.get("ids");
+        reviewService.deleteMultipleReviews(ids);
+        return ResponseEntity.noContent().build();
+    }
 }

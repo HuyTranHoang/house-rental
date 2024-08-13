@@ -26,12 +26,12 @@ public class ReviewSpecification {
         };
     }
 
-    public static Specification<Review> filterByUserId(long userId) {
+    public static Specification<Review> filterByUsername(String username) {
         return (root, query, cb) -> {
-            if (userId == 0)
+            if (username == null)
                 return cb.conjunction();
 
-            return cb.equal(root.get(Review_.USER).get(UserEntity_.ID), userId);
+            return cb.equal(root.get(Review_.USER).get(UserEntity_.USERNAME), username);
         };
     }
 }

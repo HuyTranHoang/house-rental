@@ -29,6 +29,8 @@ public interface ReviewService {
 
     void updateEntityFromDto(Review review, ReviewDto reviewDto);
 
+    void deleteMultipleReviews(List<Long> ids);
+
 //    List<Review> findByHouseId(Long houseId);
 //    List<Review> findByUserId(Long userId);
 //    Review findByHouseIdAndUserId(Long houseId, Long userId);

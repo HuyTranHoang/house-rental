@@ -6,11 +6,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ReviewParams extends PaginationParams {
-    int rating;
+    private int rating;
 
-    long userId;
+    private String userName;
 
-    long propertyId;
+    private long propertyId;
 
     private String sortBy = "createdAtDesc";
 }
