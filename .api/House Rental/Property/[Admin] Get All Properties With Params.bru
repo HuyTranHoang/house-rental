@@ -5,21 +5,21 @@ meta {
 }
 
 get {
-  url: {{host}}/api/properties/admin
+  url: {{host}}/api/properties/admin?minPrice=0&maxPrice=0&minArea=0&maxArea=0
   body: none
   auth: none
 }
 
 params:query {
+  minPrice: 0
+  maxPrice: 0
+  minArea: 0
+  maxArea: 0
   ~numOfDays: 1
   ~sortBy: priceAsc
   ~pageNumber: 0
   ~search: qqq
   ~roomTypeId: 1
-  ~minPrice: 2000
-  ~maxPrice: 123
-  ~minArea: 
-  ~maxArea: 
   ~pageSize: 1
   ~cityId: 2
   ~districtId: 12

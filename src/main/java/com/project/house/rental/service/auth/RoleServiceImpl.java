@@ -173,6 +173,7 @@ public class RoleServiceImpl implements RoleService {
                 .id(role.getId())
                 .name(role.getName())
                 .authorityPrivileges(authorityPrivileges)
+                .description(role.getDescription())
                 .createdAt(role.getCreatedAt())
                 .build();
     }
@@ -188,6 +189,7 @@ public class RoleServiceImpl implements RoleService {
 
         return Role.builder()
                 .name(roleDto.getName())
+                .description(roleDto.getDescription())
                 .authorities(authorities)
                 .build();
     }
@@ -198,6 +200,7 @@ public class RoleServiceImpl implements RoleService {
                 .findAllByPrivilegeIn(roleDto.getAuthorityPrivileges());
 
         role.setName(roleDto.getName());
+        role.setDescription(roleDto.getDescription());
         role.setAuthorities(authorities);
     }
 }

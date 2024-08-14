@@ -27,6 +27,8 @@ public class Role extends BaseEntity {
 
     String name;
 
+    String description;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "role_authorities",
@@ -34,4 +36,5 @@ public class Role extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
     List<Authority> authorities;
+
 }
