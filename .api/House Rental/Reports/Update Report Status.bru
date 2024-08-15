@@ -5,13 +5,17 @@ meta {
 }
 
 put {
-  url: {{host}}/api/reports/1?status=APPROVED
+  url: {{host}}/api/reports/:id?status=APPROVED
   body: json
   auth: bearer
 }
 
 params:query {
   status: APPROVED
+}
+
+params:path {
+  id: 1
 }
 
 auth:bearer {

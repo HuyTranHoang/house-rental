@@ -5,9 +5,13 @@ meta {
 }
 
 delete {
-  url: {{host}}/api/room-type/5
+  url: {{host}}/api/room-type/:id
   body: none
   auth: bearer
+}
+
+params:path {
+  id: 1
 }
 
 auth:bearer {

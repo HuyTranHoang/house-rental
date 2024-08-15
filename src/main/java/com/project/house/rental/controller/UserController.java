@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -75,5 +76,12 @@ public class UserController {
     public ResponseEntity<Map<String, Object>> getAllUser(@ModelAttribute UserParams userParams) {
         Map<String, Object> usersWithPagination = userService.getAllUserWithParams(userParams);
         return ResponseEntity.ok(usersWithPagination);
+    }
+
+    @PutMapping("/update-role/{id}")
+    public ResponseEntity<UserEntityDto> updateRole(@PathVariable long id, @RequestBody Map<String, List<String>> requestBody) throws CustomRuntimeException {
+        List<String> roles = requestBody.get("roles");
+        UserEntityDto userEntityDto = userService.updateRole(id, roles);
+        return ResponseEntity.ok(userEntityDto);
     }
 }

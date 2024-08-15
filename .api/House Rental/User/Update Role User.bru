@@ -1,0 +1,24 @@
+meta {
+  name: Update Role User
+  type: http
+  seq: 9
+}
+
+put {
+  url: {{host}}/api/user/update-role/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 3
+}
+
+body:json {
+  {
+    "roles": [
+      "ROLE_USER",
+      "ROLE_ADMIN"
+    ]
+  }
+}

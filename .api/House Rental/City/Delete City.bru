@@ -5,7 +5,11 @@ meta {
 }
 
 delete {
-  url: {{host}}/api/city/4
+  url: {{host}}/api/city/:id
   body: none
   auth: inherit
+}
+
+params:path {
+  id: 1
 }

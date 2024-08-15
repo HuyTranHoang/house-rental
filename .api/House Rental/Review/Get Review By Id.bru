@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{host}}/api/review/8
+  url: {{host}}/api/review/:id
   body: none
   auth: none
+}
+
+params:path {
+  id: 1
 }

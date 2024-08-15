@@ -5,9 +5,13 @@ meta {
 }
 
 delete {
-  url: {{host}}/api/review/8
+  url: {{host}}/api/review/:id
   body: json
   auth: bearer
+}
+
+params:path {
+  id: 1
 }
 
 auth:bearer {

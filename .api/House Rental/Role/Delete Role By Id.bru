@@ -5,7 +5,11 @@ meta {
 }
 
 delete {
-  url: {{host}}/api/roles/2
+  url: {{host}}/api/roles/:id
   body: json
   auth: inherit
+}
+
+params:path {
+  id: 1
 }

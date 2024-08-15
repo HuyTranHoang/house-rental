@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{host}}/api/favorite/3/user
+  url: {{host}}/api/favorite/:userId/user
   body: none
   auth: none
+}
+
+params:path {
+  userId: 1
 }

@@ -148,6 +148,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setNonLocked(true);
         user.setRoles(user.getRoles());
 
+        //TODO: Bật lên khi demo
         //emailSenderService.sendRegisterHTMLMail(user.getEmail());
 
         UserEntity newUser = toEntity(user);
@@ -257,10 +258,34 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setNonLocked(true);
         user.setRoles(List.of("ROLE_USER"));
 
+        //TODO: Bật lên khi demo
 //        emailSenderService.sendRegisterHTMLMail(user.getEmail());
 
         UserEntity newUser = toEntity(user);
         return toDto(userRepository.save(newUser));
+    }
+
+    @Override
+    public UserEntityDto updateRole(long id, List<String> roles) throws CustomRuntimeException {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
+
+        List<Role> rolesUpdate = new ArrayList<>(roles.stream()
+                .map(roleName -> {
+                    Role role = roleRepository.findRoleByNameIgnoreCase(roleName);
+                    if (role == null) {
+                        throw new IllegalArgumentException("Không tìm thấy quyền: " + roleName);
+                    }
+                    return role;
+                })
+                .toList());
+
+        if (roles.isEmpty() || roles.contains(null)) {
+            throw new CustomRuntimeException("Vui lòng chọn ít nhất một quyền hợp lệ cho tài khoản!");
+        }
+
+        user.setRoles(rolesUpdate);
+        return toDto(userRepository.save(user));
     }
 
     @Override

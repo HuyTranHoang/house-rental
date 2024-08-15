@@ -5,13 +5,17 @@ meta {
 }
 
 put {
-  url: {{host}}/api/room-type/6
+  url: {{host}}/api/room-type/:id
   body: json
   auth: bearer
 }
 
 params:query {
   ~: 
+}
+
+params:path {
+  id: 1
 }
 
 auth:bearer {

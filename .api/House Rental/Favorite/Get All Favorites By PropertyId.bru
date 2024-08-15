@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{host}}/api/favorite/1/property
+  url: {{host}}/api/favorite/:propertyId/property
   body: none
   auth: none
+}
+
+params:path {
+  propertyId: 1
 }

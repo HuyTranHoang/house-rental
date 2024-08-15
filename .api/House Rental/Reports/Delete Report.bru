@@ -5,9 +5,13 @@ meta {
 }
 
 delete {
-  url: {{host}}/api/reports/2
+  url: {{host}}/api/reports/:id
   body: none
   auth: bearer
+}
+
+params:path {
+  id: 1
 }
 
 auth:bearer {

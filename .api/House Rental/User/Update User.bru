@@ -5,9 +5,13 @@ meta {
 }
 
 put {
-  url: {{host}}/api/user/6
+  url: {{host}}/api/user/:id
   body: json
   auth: inherit
+}
+
+params:path {
+  id: 1
 }
 
 body:json {

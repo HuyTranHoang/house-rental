@@ -5,7 +5,12 @@ meta {
 }
 
 delete {
-  url: {{host}}/api/favorite/3/1
+  url: {{host}}/api/favorite/:userId/:propertyId
   body: none
   auth: inherit
+}
+
+params:path {
+  propertyId: 1
+  userId: 1
 }

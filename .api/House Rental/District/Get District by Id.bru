@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: {{host}}/api/district/2
+  url: {{host}}/api/district/:id
   body: none
   auth: bearer
+}
+
+params:path {
+  id: 1
 }
 
 auth:bearer {

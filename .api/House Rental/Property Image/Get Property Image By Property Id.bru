@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{host}}/api/property-images/13
+  url: {{host}}/api/property-images/:propertyId
   body: none
   auth: inherit
+}
+
+params:path {
+  propertyId: 1
 }

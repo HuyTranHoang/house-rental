@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{host}}/api/city/1
+  url: {{host}}/api/city/:id
   body: none
   auth: inherit
+}
+
+params:path {
+  id: 1
 }

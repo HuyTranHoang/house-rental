@@ -5,9 +5,13 @@ meta {
 }
 
 put {
-  url: {{host}}/api/properties/13
+  url: {{host}}/api/properties/:id
   body: multipartForm
   auth: inherit
+}
+
+params:path {
+  id: 1
 }
 
 body:multipart-form {

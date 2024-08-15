@@ -5,9 +5,13 @@ meta {
 }
 
 put {
-  url: {{host}}/api/review/3
+  url: {{host}}/api/review/:id
   body: json
   auth: bearer
+}
+
+params:path {
+  id: 1
 }
 
 auth:bearer {

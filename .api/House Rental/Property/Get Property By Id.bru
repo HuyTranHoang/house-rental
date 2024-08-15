@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: {{host}}/api/properties/1
+  url: {{host}}/api/properties/:id
   body: none
   auth: bearer
+}
+
+params:path {
+  id: 1
 }
 
 auth:bearer {
