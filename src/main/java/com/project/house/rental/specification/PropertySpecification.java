@@ -109,4 +109,13 @@ public class PropertySpecification {
         };
     }
 
+    public static Specification<Property> filterByStatus(String status) {
+        return (root, query, cb) -> {
+            if (!StringUtils.hasLength(status)) {
+                return cb.conjunction();
+            }
+            return cb.equal(root.get(Property_.status), status);
+        };
+    }
+
 }

@@ -25,5 +25,7 @@ public class PropertyParams extends PaginationParams {
 
     private int numOfDays;
 
+    private String status;
+
     private String sortBy = "createdAtDesc";
 }
