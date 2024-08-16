@@ -48,7 +48,7 @@ public class Property extends BaseEntity {
     int numRooms;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "ENUM('PENDING', 'RESOLVED') DEFAULT 'PENDING'")
+    @Column(name = "status", columnDefinition = "ENUM('PENDING', 'RESOLVED','REJECTED') DEFAULT 'PENDING'")
     PropertyStatus status = PropertyStatus.PENDING;
 
     @Column(name = "is_blocked")
@@ -92,6 +92,7 @@ public class Property extends BaseEntity {
 
     public enum PropertyStatus {
         PENDING,
-        RESOLVED
+        RESOLVED,
+        REJECTED
     }
 }
