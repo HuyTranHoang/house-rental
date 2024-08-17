@@ -84,4 +84,11 @@ public class UserController {
         UserEntityDto userEntityDto = userService.updateRole(id, roles);
         return ResponseEntity.ok(userEntityDto);
     }
+
+    @DeleteMapping("/delete-multiple")
+    public ResponseEntity<Void> deleteMultipleUsers(@RequestBody Map<String, List<Long>> requestBody) {
+        List<Long> ids = requestBody.get("ids");
+        userService.deleteMultipleUsers(ids);
+        return ResponseEntity.noContent().build();
+    }
 }

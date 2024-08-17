@@ -8,6 +8,7 @@ import com.project.house.rental.dto.auth.ResetPasswordDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
 import com.project.house.rental.dto.params.UserParams;
 import com.project.house.rental.entity.City_;
+import com.project.house.rental.entity.Review;
 import com.project.house.rental.entity.auth.*;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.repository.auth.PasswordResetRepository;
@@ -236,6 +237,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
 
         userRepository.delete(user);
+    }
+
+    @Override
+    public void deleteMultipleUsers(List<Long> ids) {
+        List<UserEntity> reviewList = userRepository.findAllById(ids);
+        userRepository.deleteAll(reviewList);
     }
 
     @Override

@@ -43,4 +43,6 @@ public interface UserService {
 
     UserEntityDto toDto(UserEntity user);
 
+    void deleteMultipleUsers(List<Long> ids);
+
 }
