@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS password_resets;
+CREATE TABLE password_resets
+(
+    id         SERIAL PRIMARY KEY,
+    user_id    INT          NOT NULL,
+    token      VARCHAR(255) NOT NULL UNIQUE,
+    expires_at TIMESTAMPTZ  NOT NULL,
+    is_used    BOOLEAN     DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+);

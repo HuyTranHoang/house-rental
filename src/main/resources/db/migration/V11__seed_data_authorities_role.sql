@@ -1,3 +1,4 @@
+-- Chèn dữ liệu vào bảng authorities
 INSERT INTO authorities(id, privilege)
 VALUES (1, 'user:read'),
        (2, 'user:update'),
@@ -30,16 +31,17 @@ VALUES (1, 'user:read'),
        (29, 'role:read'),
        (30, 'role:update'),
        (31, 'role:create'),
-       (32, 'role:delete');
+       (32, 'role:delete'),
+       (33, 'admin:all'),
+       (34, 'dashboard:read');
 
-INSERT INTO roles (id, name)
-VALUES (1, 'ROLE_USER'),
-       (2, 'ROLE_ADMIN');
+-- Chèn dữ liệu vào bảng roles
+INSERT INTO roles(id, name, description)
+VALUES (2, 'ROLE_USER', 'Người dùng, có thể thay đổi thông tin cá nhân.'),
+       (1, 'ROLE_ADMIN', 'Có quyền quản lý toàn bộ hệ thống, người dùng, dữ liệu. Thực hiện mọi tác vụ trên hệ thống.');
 
-INSERT INTO role_authorities (role_id, authority_id)
-VALUES (1, 1),
-       (1, 2),
-       (2, 1),
+-- Chèn dữ liệu vào bảng role_authorities
+INSERT INTO role_authorities(role_id, authority_id)
+VALUES (2, 1),
        (2, 2),
-       (2, 3),
-       (2, 4);
+       (1, 33);
