@@ -4,7 +4,6 @@ import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.ReviewDto;
 import com.project.house.rental.dto.params.ReviewParams;
-import com.project.house.rental.entity.Amenity;
 import com.project.house.rental.entity.Property;
 import com.project.house.rental.entity.Review;
 import com.project.house.rental.entity.Review_;
@@ -125,7 +124,7 @@ public class ReviewServiceImpl implements ReviewService {
     public Map<String, Object> getAllReviewsWithParams(ReviewParams reviewParams) {
         Specification<Review> spec = ReviewSpecification.filterByRating(reviewParams.getRating())
                 .and(ReviewSpecification.filterByPropertyId(reviewParams.getPropertyId()))
-                .and(ReviewSpecification.filterByUsername(reviewParams.getUserName()));
+                .and(ReviewSpecification.searchByUsername(reviewParams.getUserName()));
 
         Sort sort = switch (reviewParams.getSortBy()) {
             case "createdAtAsc" -> Sort.by(Review_.CREATED_AT);

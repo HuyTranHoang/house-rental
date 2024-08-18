@@ -5,14 +5,14 @@ meta {
 }
 
 get {
-  url: {{host}}/api/review?rating=0&userId=4
+  url: {{host}}/api/review?userName=user
   body: none
   auth: none
 }
 
 params:query {
-  rating: 0
-  userId: 4
+  userName: user
+  ~rating: 1
   ~sortBy: createdAtDesc
   ~propertyId: 2
 }

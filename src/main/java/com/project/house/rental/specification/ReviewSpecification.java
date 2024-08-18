@@ -26,7 +26,7 @@ public class ReviewSpecification {
         };
     }
 
-    public static Specification<Review> filterByUsername(String username) {
+    public static Specification<Review> searchByUsername(String username) {
         return (root, query, cb) -> {
             if (username == null || username.trim().isEmpty())
                 return cb.conjunction();
