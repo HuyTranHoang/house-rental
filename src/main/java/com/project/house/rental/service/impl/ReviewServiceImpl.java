@@ -124,13 +124,15 @@ public class ReviewServiceImpl implements ReviewService {
     public Map<String, Object> getAllReviewsWithParams(ReviewParams reviewParams) {
         Specification<Review> spec = ReviewSpecification.filterByRating(reviewParams.getRating())
                 .and(ReviewSpecification.filterByPropertyId(reviewParams.getPropertyId()))
-                .and(ReviewSpecification.searchByUsername(reviewParams.getUserName()));
+                .and(ReviewSpecification.filterByUserId(reviewParams.getUserId()))
+                .and(ReviewSpecification.searchByUsernamePropertyTitle(reviewParams.getSearch()));
 
         Sort sort = switch (reviewParams.getSortBy()) {
-            case "createdAtAsc" -> Sort.by(Review_.CREATED_AT);
             case "ratingAsc" -> Sort.by(Review_.RATING);
             case "ratingDesc" -> Sort.by(Review_.RATING).descending();
-            default -> Sort.by(Review_.CREATED_AT).descending();
+            case "createdAtAsc" -> Sort.by(Review_.CREATED_AT);
+            case "createdAtDesc" -> Sort.by(Review_.CREATED_AT).descending();
+            default -> Sort.by(Review_.ID).descending();
         };
 
         if (reviewParams.getPageNumber() < 0) {

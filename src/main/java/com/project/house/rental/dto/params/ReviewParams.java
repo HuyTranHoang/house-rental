@@ -8,7 +8,9 @@ import lombok.Setter;
 public class ReviewParams extends PaginationParams {
     private int rating;
 
-    private String userName;
+    private String search;
+
+    private long userId;
 
     private long propertyId;
 
