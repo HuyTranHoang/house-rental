@@ -5,13 +5,14 @@ meta {
 }
 
 get {
-  url: {{host}}/api/review?userName=user
+  url: {{host}}/api/review?search=cho thuê
   body: none
   auth: none
 }
 
 params:query {
-  userName: user
+  search: cho thuê
+  ~userId: 1
   ~rating: 1
   ~sortBy: createdAtDesc
   ~propertyId: 2
