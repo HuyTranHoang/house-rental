@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS users
     first_name    VARCHAR(100),
     last_name     VARCHAR(100),
     avatar_url    VARCHAR(255),
+    balance       DECIMAL(10, 2)        DEFAULT 0.00,
     is_active     BOOLEAN      NOT NULL,
     is_non_locked BOOLEAN      NOT NULL,
     is_deleted    BOOLEAN      NOT NULL DEFAULT FALSE,
