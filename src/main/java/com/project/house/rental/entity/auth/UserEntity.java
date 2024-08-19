@@ -2,10 +2,7 @@ package com.project.house.rental.entity.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.house.rental.constant.FilterConstant;
-import com.project.house.rental.entity.BaseEntity;
-import com.project.house.rental.entity.Favorite;
-import com.project.house.rental.entity.Property;
-import com.project.house.rental.entity.Review;
+import com.project.house.rental.entity.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -48,6 +45,9 @@ public class UserEntity extends BaseEntity {
     @Column(name = "avatar_url")
     String avatarUrl;
 
+    @Column(name = "balance")
+    double balance;
+
     @Column(name = "is_active")
     boolean isActive;
 
@@ -82,4 +82,7 @@ public class UserEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     List<Favorite> favorites;
+
+    @OneToMany(mappedBy = "user")
+    List<Transaction> transactions;
 }

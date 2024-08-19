@@ -42,6 +42,8 @@ public class UserEntityDto {
 
     String avatarUrl;
 
+    double balance;
+
     boolean isActive;
 
     boolean isNonLocked;

@@ -8,7 +8,6 @@ import com.project.house.rental.dto.auth.ResetPasswordDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
 import com.project.house.rental.dto.params.UserParams;
 import com.project.house.rental.entity.City_;
-import com.project.house.rental.entity.Review;
 import com.project.house.rental.entity.auth.*;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.repository.auth.PasswordResetRepository;
@@ -392,6 +391,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .avatarUrl(user.getAvatarUrl())
+                .balance(user.getBalance())
                 .isActive(user.isActive())
                 .isNonLocked(user.isNonLocked())
                 .roles(roles)
@@ -419,6 +419,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .firstName(userDto.getFirstName())
                 .lastName(userDto.getLastName())
                 .avatarUrl(userDto.getAvatarUrl())
+                .balance(userDto.getBalance())
                 .isActive(userDto.isActive())
                 .isNonLocked(userDto.isNonLocked())
                 .roles(roles)
@@ -455,6 +456,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setAvatarUrl(userDto.getAvatarUrl());
+        user.setBalance(userDto.getBalance());
         user.setActive(userDto.isActive());
         user.setNonLocked(userDto.isNonLocked());
         user.setRoles(roles);
