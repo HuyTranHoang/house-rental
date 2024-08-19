@@ -22,10 +22,9 @@ public class HibernateFilterHelper {
         if (FilterConstant.BLOCK_PROPERTY_FILTER.equals(filterName)) {
             filter.setParameter(FilterConstant.IS_BLOCKED, false);
         } else if (FilterConstant.STATUS_PROPERTY_FILTER.equals(filterName)) {
-            filter.setParameter(FilterConstant.STATUS, "RESOLVED");
+            filter.setParameter(FilterConstant.STATUS, "APPROVED");
         } else {
             filter.setParameter(FilterConstant.IS_DELETED, false);
-
         }
     }
 

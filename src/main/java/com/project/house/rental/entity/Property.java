@@ -92,7 +92,7 @@ public class Property extends BaseEntity {
 
     public enum PropertyStatus {
         PENDING,
-        RESOLVED,
+        APPROVED,
         REJECTED
     }
 }
