@@ -126,8 +126,8 @@ public class DistrictServiceImpl implements DistrictService {
             case "nameDesc" -> Sort.by(District_.NAME).descending();
             case "cityNameAsc" -> Sort.by(District_.CITY + "." + City_.NAME);
             case "cityNameDesc" -> Sort.by(District_.CITY + "." + City_.NAME).descending();
-            case "createAtAsc" -> Sort.by(District_.CREATED_AT);
-            case "createAtDesc" -> Sort.by(District_.CREATED_AT).descending();
+            case "createdAtAsc" -> Sort.by(District_.CREATED_AT);
+            case "createdAtDesc" -> Sort.by(District_.CREATED_AT).descending();
             default -> Sort.by(District_.ID).descending();
         };
 
