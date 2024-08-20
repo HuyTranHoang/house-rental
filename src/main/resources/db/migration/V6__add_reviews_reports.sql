@@ -21,7 +21,7 @@ CREATE TABLE reports
     property_id INT,
     reason      TEXT    NOT NULL,
     status      TEXT CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED')) DEFAULT 'PENDING',
-    category    TEXT CHECK (category IN ('SPAM', 'INAPPROPRIATE_CONTENT', 'DUPLICATE', 'MISINFORMATION', 'OTHER'))
+    category    TEXT CHECK (category IN ('SCAM', 'INAPPROPRIATE_CONTENT', 'DUPLICATE', 'MISINFORMATION', 'OTHER'))
                                                                            DEFAULT 'OTHER',
     is_deleted  BOOLEAN NOT NULL                                           DEFAULT FALSE,
     created_at  TIMESTAMPTZ                                                DEFAULT CURRENT_TIMESTAMP,
