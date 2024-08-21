@@ -11,6 +11,7 @@ import com.project.house.rental.repository.*;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.service.PropertyService;
+import com.project.house.rental.service.email.EmailSenderService;
 import com.project.house.rental.specification.PropertySpecification;
 import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.persistence.NoResultException;
@@ -40,8 +41,9 @@ public class PropertyServiceImpl implements PropertyService {
     private final PropertyImageRepository propertyImageRepository;
     private final CloudinaryService cloudinaryService;
     private final HibernateFilterHelper hibernateFilterHelper;
+    private final EmailSenderService emailSenderService;
 
-    public PropertyServiceImpl(PropertyRepository propertyRepository, CityRepository cityRepository, RoomTypeRepository roomTypeRepository, UserRepository userRepository, DistrictRepository districtRepository, AmenityRepository amenityRepository, PropertyImageRepository propertyImageRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, CityRepository cityRepository, RoomTypeRepository roomTypeRepository, UserRepository userRepository, DistrictRepository districtRepository, AmenityRepository amenityRepository, PropertyImageRepository propertyImageRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper, EmailSenderService emailSenderService) {
         this.propertyRepository = propertyRepository;
         this.cityRepository = cityRepository;
         this.roomTypeRepository = roomTypeRepository;
@@ -51,6 +53,7 @@ public class PropertyServiceImpl implements PropertyService {
         this.propertyImageRepository = propertyImageRepository;
         this.cloudinaryService = cloudinaryService;
         this.hibernateFilterHelper = hibernateFilterHelper;
+        this.emailSenderService = emailSenderService;
     }
 
     @Override
@@ -330,11 +333,11 @@ public class PropertyServiceImpl implements PropertyService {
         Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
 
-        //TODO: Cần gửi email thông báo cho người dùng đăng bài
-
         property.setBlocked(true);
-
         propertyRepository.save(property);
+
+        //TODO: Bat len khi demo
+//        emailSenderService.sendBlockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
 
         return toDto(property);
     }
