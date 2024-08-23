@@ -78,6 +78,12 @@ public class UserController {
         return ResponseEntity.ok(usersWithPagination);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserEntityDto> getUserById(@PathVariable long id) {
+        UserEntityDto userEntityDto = userService.getUserById(id);
+        return ResponseEntity.ok(userEntityDto);
+    }
+
     @PutMapping("/update-role/{id}")
     public ResponseEntity<UserEntityDto> updateRole(@PathVariable long id, @RequestBody Map<String, List<String>> requestBody) throws CustomRuntimeException {
         List<String> roles = requestBody.get("roles");

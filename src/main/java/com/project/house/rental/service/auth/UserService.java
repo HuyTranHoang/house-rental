@@ -19,6 +19,8 @@ public interface UserService {
 
     Map<String, Object> getAllUserWithParams(UserParams userParams);
 
+    UserEntityDto getUserById(long id);
+
     UserEntityDto addNewUser(UserEntityDto user) throws CustomRuntimeException;
 
     UserEntityDto updateUser(long id, UserEntityDto user) throws CustomRuntimeException;

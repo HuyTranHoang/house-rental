@@ -18,6 +18,7 @@ import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.service.email.EmailSenderService;
 import com.project.house.rental.specification.UserSpecification;
 import com.project.house.rental.utils.HibernateFilterHelper;
+import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -113,6 +114,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 "pageInfo", pageInfo,
                 "data", userEntityDtoList
         );
+    }
+
+    @Override
+    public UserEntityDto getUserById(long id) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy tài khoản!"));
+
+        return toDto(user);
     }
 
     @Override
