@@ -5,15 +5,15 @@ meta {
 }
 
 get {
-  url: {{host}}/api/review?search=cho thuê
+  url: {{host}}/api/review?propertyId=6
   body: none
   auth: none
 }
 
 params:query {
-  search: cho thuê
+  propertyId: 6
+  ~search: cho thuê
   ~userId: 1
   ~rating: 1
   ~sortBy: createdAtDesc
-  ~propertyId: 2
 }
