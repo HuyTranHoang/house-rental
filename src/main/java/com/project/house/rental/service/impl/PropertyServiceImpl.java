@@ -342,6 +342,20 @@ public class PropertyServiceImpl implements PropertyService {
         return toDto(property);
     }
 
+    @Override
+    public PropertyDto updatePropertyStatus(long id, String status) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
+
+        if (!isValidPropertyStatus(status)) {
+            throw new IllegalArgumentException("Trạng thái [" + status + "] không hợp lệ!");
+        }
+
+        property.setStatus(Property.PropertyStatus.valueOf(status));
+        propertyRepository.save(property);
+        return toDto(property);
+    }
+
 
     public static boolean isValidPropertyStatus(String status) {
         try {

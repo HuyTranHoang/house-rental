@@ -66,4 +66,10 @@ public class PropertyController {
         return ResponseEntity.ok(propertyDto);
     }
 
+    @PutMapping("/status/{id}")
+    public ResponseEntity<PropertyDto> updatePropertyStatus(@PathVariable Long id, @RequestParam String status) {
+        PropertyDto propertyDto = propertyService.updatePropertyStatus(id, status);
+        return ResponseEntity.ok(propertyDto);
+    }
+
 }

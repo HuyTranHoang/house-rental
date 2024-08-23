@@ -28,5 +28,7 @@ public interface PropertyService {
 
     PropertyDto blockProperty(long id);
 
+    PropertyDto updatePropertyStatus(long id, String status);
+
     Map<String, Object> getAllPropertiesWithParamsForClient(PropertyParams propertyParams);
 }

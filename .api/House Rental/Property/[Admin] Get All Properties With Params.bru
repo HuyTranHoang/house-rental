@@ -5,16 +5,17 @@ meta {
 }
 
 get {
-  url: {{host}}/api/properties/admin?minPrice=0&maxPrice=0&minArea=0&maxArea=0
+  url: {{host}}/api/properties/admin?status=PENDING
   body: none
   auth: none
 }
 
 params:query {
-  minPrice: 0
-  maxPrice: 0
-  minArea: 0
-  maxArea: 0
+  status: PENDING
+  ~minPrice: 0
+  ~maxPrice: 0
+  ~minArea: 0
+  ~maxArea: 0
   ~numOfDays: 1
   ~sortBy: priceAsc
   ~pageNumber: 0
