@@ -5,13 +5,13 @@ meta {
 }
 
 put {
-  url: {{host}}/api/properties/status/:id?status=APPROVED
+  url: {{host}}/api/properties/status/:id?status=PENDING
   body: json
   auth: bearer
 }
 
 params:query {
-  status: APPROVED
+  status: PENDING
 }
 
 params:path {
