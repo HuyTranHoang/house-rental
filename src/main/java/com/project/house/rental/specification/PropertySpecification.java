@@ -1,12 +1,14 @@
 package com.project.house.rental.specification;
 
 import com.project.house.rental.entity.*;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 public class PropertySpecification {
@@ -102,12 +104,17 @@ public class PropertySpecification {
                 return cb.conjunction();
             }
 
+            // Calculate the correct threshold date
             LocalDate dateThreshold = LocalDate.now().minusDays(numOfDays);
             Date sqlDateThreshold = Date.valueOf(dateThreshold);
 
-            return cb.greaterThanOrEqualTo(root.get(Property_.CREATED_AT), sqlDateThreshold);
+            // Convert Property_.CREATED_AT to LocalDate for comparison
+            Expression<LocalDate> createdDate = cb.function("DATE", LocalDate.class, root.get(Property_.CREATED_AT));
+
+            return cb.greaterThanOrEqualTo(createdDate, sqlDateThreshold.toLocalDate());
         };
     }
+
 
     public static Specification<Property> filterByStatus(String status) {
         return (root, query, cb) -> {
