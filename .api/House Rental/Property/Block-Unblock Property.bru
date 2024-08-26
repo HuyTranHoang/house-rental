@@ -5,17 +5,17 @@ meta {
 }
 
 put {
-  url: {{host}}/api/properties/block/:id?status=unblock
+  url: {{host}}/api/properties/block/:id?status=block
   body: none
   auth: bearer
 }
 
 params:query {
-  status: unblock
+  status: block
 }
 
 params:path {
-  id: 1
+  id: 4
 }
 
 auth:bearer {
