@@ -254,6 +254,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public UserEntityDto updateBalance(long id, double amount) throws CustomRuntimeException{
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
+
+        double newBalance = user.getBalance() + amount;
+
+        if (newBalance < 0) {
+            throw new CustomRuntimeException("Số dư không thể nhỏ hơn 0!");
+        }
+
+        user.setBalance(newBalance);
+        return toDto(userRepository.save(user));
+    }
+
+    @Override
     public UserEntityDto register(UserEntityDto user) throws CustomRuntimeException {
 
         UserEntity existUsername = userRepository.findUserByUsername(user.getUsername());

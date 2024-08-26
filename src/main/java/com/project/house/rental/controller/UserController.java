@@ -8,6 +8,7 @@ import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.service.auth.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -96,5 +97,16 @@ public class UserController {
         List<Long> ids = requestBody.get("ids");
         userService.deleteMultipleUsers(ids);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/balance/{id}")
+    public ResponseEntity<UserEntityDto> updateBalance(@PathVariable Long id, @RequestBody Map<String, Double> requestBody) {
+        double amount = requestBody.get("amount");
+        try {
+            UserEntityDto updatedUser = userService.updateBalance(id, amount);
+            return ResponseEntity.ok(updatedUser);
+        } catch (CustomRuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 }
