@@ -47,4 +47,5 @@ public interface UserService {
 
     void deleteMultipleUsers(List<Long> ids);
 
+    UserEntityDto updateBalance(long id, double amount) throws CustomRuntimeException;
 }
