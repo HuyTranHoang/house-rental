@@ -79,7 +79,7 @@ public class PropertyServiceImpl implements PropertyService {
 
             for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
                 PropertyImage propertyImage = PropertyImage.builder()
-                        .imageUrl(entry.getValue())
+                        .imageUrl(cloudinaryService.getOptimizedImage(entry.getKey()))
                         .publicId(entry.getKey())
                         .property(property)
                         .build();
@@ -106,7 +106,7 @@ public class PropertyServiceImpl implements PropertyService {
 
             for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
                 PropertyImage propertyImage = PropertyImage.builder()
-                        .imageUrl(entry.getValue())
+                        .imageUrl(cloudinaryService.getOptimizedImage(entry.getKey()))
                         .publicId(entry.getKey())
                         .property(property)
                         .build();
