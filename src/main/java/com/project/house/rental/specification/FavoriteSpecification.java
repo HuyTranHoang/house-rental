@@ -1,6 +1,8 @@
 package com.project.house.rental.specification;
 
-import com.project.house.rental.entity.*;
+import com.project.house.rental.entity.Favorite;
+import com.project.house.rental.entity.Favorite_;
+import com.project.house.rental.entity.Property_;
 import com.project.house.rental.entity.auth.UserEntity_;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
