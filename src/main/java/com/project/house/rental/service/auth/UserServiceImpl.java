@@ -35,9 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -385,10 +383,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new CustomRuntimeException("Không tìm thấy tài khoản!");
         }
 
-        String publicId = String.format("avatar/%s", user.getUsername());
+        String oldAvatarUrl = user.getAvatarUrl();
+        int index = oldAvatarUrl.indexOf("v1/");
+        if (index != -1) {
+            String publicId = oldAvatarUrl.substring(index + 3);
+            cloudinaryService.delete(publicId);
+        }
+
+        String publicId = String.format("avatar/%s", UUID.randomUUID());
 
         Map cloudinaryResponse = cloudinaryService.upload(avatar,publicId);
+
         String avatarPublicId = (String) cloudinaryResponse.get("public_id");
+
         String optimizedUrl = cloudinaryService.getOptimizedImage(avatarPublicId);
 
         user.setAvatarUrl(optimizedUrl);

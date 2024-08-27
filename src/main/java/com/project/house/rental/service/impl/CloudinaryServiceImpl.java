@@ -69,7 +69,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
     @Override
     public Map delete(String publicId) throws IOException {
-        return cloudinary.uploader().destroy(publicId, Map.of());
+            return cloudinary.uploader().destroy(publicId, Map.of());
     }
 
     @Override
