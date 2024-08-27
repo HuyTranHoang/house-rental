@@ -1,6 +1,7 @@
 package com.project.house.rental.service.impl;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
 import com.project.house.rental.service.CloudinaryService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,9 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     private final Cloudinary cloudinary;
 
     public CloudinaryServiceImpl(
-            @Value("${cloudinary.cloudName}" ) String cloudName,
-            @Value("${cloudinary.apiKey}" ) String apiKey,
-            @Value("${cloudinary.apiSecret}" ) String apiSecret
+            @Value("${cloudinary.cloudName}") String cloudName,
+            @Value("${cloudinary.apiKey}") String apiKey,
+            @Value("${cloudinary.apiSecret}") String apiSecret
     ) {
         Map<String, String> config = Map.of(
                 "cloud_name", cloudName,
@@ -36,10 +37,11 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @Override
     public Map upload(MultipartFile file, String publicId) throws IOException {
         File fileToUpload = convertMultiPartToFile(file);
-        Map<String, Object> uploadParams = Map.of("public_id", publicId);
+        Map<String, Object> uploadParams = Map.of("public_id", publicId,
+                "folder", "house-rental");
         Map result = cloudinary.uploader().upload(fileToUpload, uploadParams);
         if (!Files.deleteIfExists(fileToUpload.toPath())) {
-            throw new IOException("Failed to delete file" );
+            throw new IOException("Failed to delete file");
         }
 
         return result;
@@ -78,5 +80,12 @@ public class CloudinaryServiceImpl implements CloudinaryService {
         fileOutputStream.close();
 
         return convertedFile;
+    }
+
+    @Override
+    public String getOptimizedImage(String publicId) {
+        return cloudinary.url()
+                .transformation(new Transformation().quality("auto").fetchFormat("auto"))
+                .generate(publicId);
     }
 }

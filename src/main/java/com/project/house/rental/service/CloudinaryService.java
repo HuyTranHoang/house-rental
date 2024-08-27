@@ -14,4 +14,6 @@ public interface CloudinaryService {
     Map delete(String publicId) throws IOException;
 
     File convertMultiPartToFile(MultipartFile file) throws IOException;
+
+    String getOptimizedImage(String publicId);
 }
