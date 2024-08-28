@@ -14,11 +14,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleUserAccountLockedException(UserAccountLockedException ex) {
         Map<String, Object> errorResponse = Map.of(
                 "timeStamp", LocalDateTime.now().toString(),
-                "statusCode", HttpStatus.UNAUTHORIZED.value(),
-                "httpStatus", HttpStatus.UNAUTHORIZED,
-                "reason", "Unauthorized",
+                "statusCode", HttpStatus.FORBIDDEN.value(),
+                "httpStatus", HttpStatus.FORBIDDEN,
+                "reason", "Forbidden",
                 "message", ex.getMessage()
         );
-        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 }

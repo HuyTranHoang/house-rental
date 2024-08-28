@@ -66,6 +66,11 @@ public class AuthController {
 
         String username = jwtTokenProvider.getSubject(token);
         UserEntity loginUser = userRepository.findUserByUsername(username);
+
+        if (!loginUser.isNonLocked()) {
+            throw new CustomRuntimeException("User is locked");
+        }
+
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
 
         String JwtToken = jwtTokenProvider.generateJwtToken(userPrincipal);
