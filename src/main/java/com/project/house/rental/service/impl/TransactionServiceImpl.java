@@ -145,3 +145,13 @@ public class TransactionServiceImpl implements TransactionService {
 
 
 }
+    private String getUsernameFromToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            String token = bearerToken.substring(7);
+            return jwtTokenProvider.getSubject(token);
+        }
+        return null;
+    }
+
+}
