@@ -1,0 +1,22 @@
+meta {
+  name: Get All Transaction
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}/api/transaction
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~status: FAILED
+  ~userId: 2
+  ~minAmount: 0
+  ~maxAmount: 0
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

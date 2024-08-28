@@ -1,0 +1,25 @@
+meta {
+  name: Add Transaction
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{host}}/api/transaction
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "transactionId": 1,
+    "transactionType": "DEPOSIT",
+    "amount": 5000,
+    "status": "SUCCESS"
+  
+  }
+}
