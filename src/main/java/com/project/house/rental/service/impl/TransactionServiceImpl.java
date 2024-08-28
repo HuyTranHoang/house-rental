@@ -21,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,14 +42,17 @@ public class TransactionServiceImpl implements TransactionService {
     public Map<String, Object> getAllTransactionsWithParams(TransactionParams transactionParams) {
         Specification<Transaction> spec = TransactionSpecification.filterByUserId(transactionParams.getUserId())
                 .and(TransactionSpecification.filterByStatus(transactionParams.getStatus()))
+                .and(TransactionSpecification.filterByTransactionType(transactionParams.getTransactionType()))
                 .and(TransactionSpecification.filterByAmount(transactionParams.getMinAmount(), transactionParams.getMaxAmount()));
 
         Sort sort = switch (transactionParams.getSortBy()) {
             case "amountDesc" -> Sort.by(Transaction_.AMOUNT).descending();
-            case "amountAsc" -> Sort.by(Transaction_.AMOUNT).ascending();
+            case "amountAsc" -> Sort.by(Transaction_.AMOUNT);
             case "statusDesc" -> Sort.by(Transaction_.STATUS).descending();
-            case "statusAsc" -> Sort.by(Transaction_.STATUS).ascending();
-            default -> Sort.by(Transaction_.TRANSACTION_DATE).ascending();
+            case "statusAsc" -> Sort.by(Transaction_.STATUS);
+            case "transactionDateDesc" -> Sort.by(Transaction_.TRANSACTION_DATE).descending();
+            case "transactionDateAsc" -> Sort.by(Transaction_.TRANSACTION_DATE);
+            default -> Sort.by(Transaction_.ID).ascending();
         };
 
         if (transactionParams.getPageNumber() < 0) {
@@ -89,11 +93,28 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         transactionDto.setUserId(currentUser.getId());
-
+        transactionDto.setTransactionDate(new Date());
+        transactionDto.setStatus("PENDING");
 
         Transaction transaction = toEntity(transactionDto);
         Transaction savedTransaction = transactionRepository.save(transaction);
         return toDto(savedTransaction);
+    }
+
+    @Override
+    public TransactionDto updateTransactionStatus(long transactionId, String status) {
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy giao dịch"));
+
+        try {
+            Transaction.TransactionStatus newStatus = Transaction.TransactionStatus.valueOf(status.toUpperCase());
+            transaction.setStatus(newStatus);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Trạng thái giao dịch không hợp lệ: " + status);
+        }
+
+        Transaction updatedTransaction = transactionRepository.save(transaction);
+        return toDto(updatedTransaction);
     }
 
     @Override
@@ -125,33 +146,6 @@ public class TransactionServiceImpl implements TransactionService {
                 .status(Transaction.TransactionStatus.valueOf(transactionDto.getStatus()))
                 .description(transactionDto.getDescription())
                 .build();
-    }
-
-    @Override
-    public TransactionDto updateTransactionStatus(long transactionId, String status) {
-        Transaction transaction = transactionRepository.findById(transactionId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy giao dịch"));
-
-        try {
-            Transaction.TransactionStatus newStatus = Transaction.TransactionStatus.valueOf(status.toUpperCase());
-            transaction.setStatus(newStatus);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Trạng thái giao dịch không hợp lệ: " + status);
-        }
-
-        Transaction updatedTransaction = transactionRepository.save(transaction);
-        return toDto(updatedTransaction);
-    }
-
-
-}
-    private String getUsernameFromToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            String token = bearerToken.substring(7);
-            return jwtTokenProvider.getSubject(token);
-        }
-        return null;
     }
 
 }

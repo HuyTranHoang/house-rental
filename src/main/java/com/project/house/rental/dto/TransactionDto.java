@@ -1,7 +1,8 @@
 package com.project.house.rental.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -19,12 +20,15 @@ public class TransactionDto {
 
     String transactionId;
 
+    @NotEmpty(message = "Transaction type is required")
     String transactionType;
 
     long userId;
 
     String username;
 
+    @Min(value = 50000, message = "Amount must be greater than 50,000")
+    @Max(value = 1000000, message = "Amount must be less than 1,000,000")
     long amount;
 
     Date transactionDate;

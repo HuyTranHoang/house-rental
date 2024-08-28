@@ -11,6 +11,8 @@ public class TransactionParams extends PaginationParams {
 
     private String status;
 
+    private String transactionType;
+
     private double minAmount;
 
     private double maxAmount;

@@ -1,6 +1,7 @@
 package com.project.house.rental.specification;
 
-import com.project.house.rental.entity.*;
+import com.project.house.rental.entity.Transaction;
+import com.project.house.rental.entity.Transaction_;
 import com.project.house.rental.entity.auth.UserEntity_;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
@@ -22,6 +23,15 @@ public class TransactionSpecification {
                 return cb.conjunction();
 
             return cb.equal(root.get(Transaction_.STATUS), status);
+        };
+    }
+
+    public static Specification<Transaction> filterByTransactionType(String transactionType) {
+        return (root, query, cb) -> {
+            if(!StringUtils.hasLength(transactionType))
+                return cb.conjunction();
+
+            return cb.equal(root.get(Transaction_.TYPE), transactionType);
         };
     }
 
