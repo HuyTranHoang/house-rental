@@ -79,7 +79,7 @@ public class PropertyServiceImpl implements PropertyService {
 
             for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
                 PropertyImage propertyImage = PropertyImage.builder()
-                        .imageUrl(entry.getValue())
+                        .imageUrl(cloudinaryService.getOptimizedImage(entry.getKey()))
                         .publicId(entry.getKey())
                         .property(property)
                         .build();
@@ -106,7 +106,7 @@ public class PropertyServiceImpl implements PropertyService {
 
             for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
                 PropertyImage propertyImage = PropertyImage.builder()
-                        .imageUrl(entry.getValue())
+                        .imageUrl(cloudinaryService.getOptimizedImage(entry.getKey()))
                         .publicId(entry.getKey())
                         .property(property)
                         .build();
@@ -329,16 +329,36 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public PropertyDto blockProperty(long id) {
+    public PropertyDto blockProperty(long id, String status) {
         Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
 
+        if (status.equals("unblock")) {
+            property.setBlocked(false);
+            propertyRepository.save(property);
+            //TODO: Bat len khi demo -- Chưa có mail unblock
+//            emailSenderService.sendUnblockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
+            return toDto(property);
+        }
+
         property.setBlocked(true);
         propertyRepository.save(property);
-
         //TODO: Bat len khi demo
 //        emailSenderService.sendBlockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
+        return toDto(property);
+    }
 
+    @Override
+    public PropertyDto updatePropertyStatus(long id, String status) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
+
+        if (!isValidPropertyStatus(status)) {
+            throw new IllegalArgumentException("Trạng thái [" + status + "] không hợp lệ!");
+        }
+
+        property.setStatus(Property.PropertyStatus.valueOf(status));
+        propertyRepository.save(property);
         return toDto(property);
     }
 

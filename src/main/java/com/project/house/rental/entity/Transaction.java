@@ -4,6 +4,7 @@ import com.project.house.rental.entity.auth.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
@@ -31,6 +32,7 @@ public class Transaction {
     long amount;
 
     @Column(name = "transaction_date")
+    @CreationTimestamp
     Date transactionDate;
 
     @Enumerated(EnumType.STRING)

@@ -1,0 +1,30 @@
+meta {
+  name: Get User By Id
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{host}}/api/user/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 4
+}
+
+body:json {
+  {
+    "username": "huyy4",
+    "password": "password1",
+    "email": "nhokpio954@gmail.com",
+    "phoneNumber": "1234567890",
+    "firstName": "new",
+    "lastName": "user",
+    "avatarUrl": null,
+    "roles": [
+      "ROLE_USER"
+    ]
+  }
+}

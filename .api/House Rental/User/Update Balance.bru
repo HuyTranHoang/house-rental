@@ -1,0 +1,21 @@
+meta {
+  name: Update Balance
+  type: http
+  seq: 12
+}
+
+put {
+  url: {{host}}/api/user/4
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "amount": 50000
+  }
+}

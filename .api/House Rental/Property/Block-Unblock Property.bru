@@ -1,17 +1,21 @@
 meta {
-  name: Block Property
+  name: Block-Unblock Property
   type: http
   seq: 9
 }
 
 put {
-  url: {{host}}/api/properties/block/:id
-  body: json
+  url: {{host}}/api/properties/block/:id?status=block
+  body: none
   auth: bearer
 }
 
+params:query {
+  status: block
+}
+
 params:path {
-  id: 1
+  id: 4
 }
 
 auth:bearer {

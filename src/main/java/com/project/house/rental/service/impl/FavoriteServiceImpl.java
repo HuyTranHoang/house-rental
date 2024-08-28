@@ -4,7 +4,10 @@ import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.FavoriteDto;
 import com.project.house.rental.dto.params.FavoriteParams;
-import com.project.house.rental.entity.*;
+import com.project.house.rental.entity.Favorite;
+import com.project.house.rental.entity.Favorite_;
+import com.project.house.rental.entity.Property;
+import com.project.house.rental.entity.Property_;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
 import com.project.house.rental.repository.FavoriteRepository;
@@ -72,10 +75,6 @@ public class FavoriteServiceImpl implements FavoriteService {
     public List<FavoriteDto> getFavoriteByUserId(long userId) {
         List<Favorite> favorites = favoriteRepository.findByUserIdWithFilter(userId);
 
-        if (favorites.isEmpty()) {
-            throw new NoResultException("Không tìm thấy yêu thích với id người dùng: " + userId);
-        }
-
         return favorites.stream()
                 .map(this::toDto)
                 .toList();
@@ -84,10 +83,6 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public List<FavoriteDto> getFavoriteByPropertyId(long propertyId) {
         List<Favorite> favorites = favoriteRepository.findByPropertyIdWithFilter(propertyId);
-
-        if (favorites.isEmpty()) {
-            throw new NoResultException("Không tìm thấy yêu thích với id bài đăng: " + propertyId);
-        }
 
         return favorites.stream()
                 .map(this::toDto)
@@ -152,10 +147,10 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public Favorite toEntity(FavoriteDto favoriteDto) {
         UserEntity userEntity = userRepository.findById(favoriteDto.getUserId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với id: " + favoriteDto.getUserId()));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy người dùng với id: " + favoriteDto.getUserId()));
 
         Property property = propertyRepository.findById(favoriteDto.getPropertyId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy bài đăng với id: " + favoriteDto.getPropertyId()));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng với id: " + favoriteDto.getPropertyId()));
 
         FavoritePrimaryKey favoritePrimaryKey = FavoritePrimaryKey.builder()
                 .userId(favoriteDto.getUserId())

@@ -19,6 +19,8 @@ public interface UserService {
 
     Map<String, Object> getAllUserWithParams(UserParams userParams);
 
+    UserEntityDto getUserById(long id);
+
     UserEntityDto addNewUser(UserEntityDto user) throws CustomRuntimeException;
 
     UserEntityDto updateUser(long id, UserEntityDto user) throws CustomRuntimeException;
@@ -45,4 +47,5 @@ public interface UserService {
 
     void deleteMultipleUsers(List<Long> ids);
 
+    UserEntityDto updateBalance(long id, double amount) throws CustomRuntimeException;
 }

@@ -18,3 +18,4 @@ public class TransactionParams extends PaginationParams {
     private String sortBy = "transactionDateDesc";
 
 }
+

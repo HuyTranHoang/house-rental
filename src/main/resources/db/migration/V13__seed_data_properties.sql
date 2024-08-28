@@ -1,46 +1,52 @@
 INSERT INTO properties(id, title, description, price, location, area, num_rooms, status, user_id, city_id,
                        district_id, room_type_id, is_deleted, is_blocked, created_at, updated_at)
 VALUES (1, 'Cho Thuê Phòng Q1.cửa sổ.fuff nội thất.mới keng.2tr8',
-        '✔Còn 1 phòng mới keng như hình cho thuê tại địa chỉ 115/52A Trần Đình Xu Q1.(Ngay Bộ Công An TP).không chung chủ,giờ giấc tự do chìa khóa riêng.khu Nội Bộ riêng biệt an toàn.xe để trong nhà Free.
-    🥰Giá 2tr8.(phòng ở tầng 2 fuff nội thất.kệ nấu ăn trước phòng,nước nóng,quạt,máy giặt chung,cửa sổ,tủ lạnh và máy lạnh,tủ quần áo....vv).tolet chung với 1người sạch sẽ kế bên phòng.
-    ✔️Điện 4k,nước 100/ng,xe+wifi+rác free,không phát sinh chi phí.😍ai có nhu cầu vui lòng IB hoặc liên hệ 0838.999988.0975.572.901.',
-        2800000, 'Trần Đình Xu, Phường Nguyễn Cư Trinh, Quận 1, TPHCM', 15, 1, 'PENDING', 1, 1, 1, 1, false, false,
+        '<p>✔Còn 1 phòng mới keng như hình cho thuê tại địa chỉ 115/52A Trần Đình Xu Q1.(Ngay Bộ Công An TP)</p>
+<p>Không chung chủ,giờ giấc tự do chìa khóa riêng, khu Nội Bộ riêng biệt an toàn. Xe để trong nhà Free.</p>
+<p>🥰 Giá 2tr8. (phòng ở tầng 2 full nội thất.kệ nấu ăn trước phòng ,nước nóng, quạt,máy giặt chung, cửa sổ, tủ lạnh và máy lạnh, tủ quần áo....vv).</p>
+<p>Toilet chung với 1người sạch sẽ kế bên phòng.&nbsp;</p>
+<p>✔️Điện 4k,nước 100/ng,xe+wifi+rác free,không phát sinh chi phí.</p>
+<p>😍ai có nhu cầu vui lòng IB hoặc liên hệ 0838.999988.0975.572.901.', 2800000, 'Trần Đình Xu, Phường Nguyễn Cư Trinh, Quận 1, TPHCM</p>', 15, 1, 'PENDING', 1, 1, 1, 1, false, false,
         random_date_within_14_days(), now()),
        (2, 'Phòng rất đẹp 7A/9 Thành Thái, P.14, Quận 10 (Khoá Vân Tay, giờ tự do)',
-        'Phòng cho thuê thiết kế rất đẹp có nhiều tiện ích tuyệt vời ngay trung tâm Quận 10, địa chỉ: 7A/9 Thành Thái, Phường 14, Quận 10, TP. HCM. (Hẻm 7 Thành Thái, Cư xá Đồng Tiến, vào 500m có đường 7A Thành Thái).
-    + DT: 20m2, Phòng đẹp thiết kế đẹp với nhiều tiện ích tuyệt vời: có Máy Lạnh, kệ bếp đá hoa cương có bồn rửa chén, Wc riêng.
-    + Có Máy lạnh tiết kiệm điện.
-    + WC riêng rộng rãi, cửa sổ thoáng mát.
-    + Có người dọn vệ sinh hành lang hàng tuần, có internet cáp quang.
-    + Có bảo vệ 24/24h, giờ giấc tự do cho bạn cảm giác như ở nhà mình.
-    + Máy giặt miễn phí cho toà nhà thuận tiện cho bạn.
-    + Khoá vân tay, camera an ninh khắp toà nhà, cho bạn cảm giác thoải mái như chính nhà mình.
-    + Nhà mặt tiền đường xe hơi trong khu dân cư an ninh sầm uất khu dân trí cao, tiện đi lại mọi nơi trong thành phố,
-    + Gần chợ Thành Thái, siêu thị, nhà sách. Gần nhiều trường đại học: ĐH Bách Khoa (300m), ĐH Kinh Tế, ĐH Y Khoa Phạm Ngọc Thạch, ĐH Ngoại Ngữ - Tin Học, ĐH Hoa Sen.
-    + Gần bệnh viện đa khoa Quận 10, bệnh viện 115, bệnh Viện Nhi Đồng (600m).
-    - Là chỗ ở lý tưởng cho gia đình, nhân viên văn phòng, sinh viên ở.
-    Giá rất hợp lý mùa dịch: 3.2 Triệu/tháng.
-    Liên Hệ: 0937554570 (A.Thái)
-    TIỀN PHÒNG GIẢM SÂU VÀ KHÔNG TĂNG GIÁ.',
+        '<p>Phòng cho thuê thiết kế rất đẹp có nhiều tiện ích tuyệt vời ngay trung tâm Quận 10, địa chỉ: 7A/9 Thành Thái, Phường 14, Quận 10, TP. HCM.</p>
+<p>&nbsp;(Hẻm 7 Thành Thái, Cư xá Đồng Tiến, vào 500m có đường 7A Thành Thái).&nbsp;</p>
+<p>&nbsp;</p>
+<p>+ DT: 20m2, Phòng đẹp thiết kế đẹp với nhiều tiện ích tuyệt vời: có Máy Lạnh, kệ bếp đá hoa cương có bồn rửa chén, Wc riêng.&nbsp;</p>
+<p>+ Có Máy lạnh tiết kiệm điện. + WC riêng rộng rãi, cửa sổ thoáng mát.&nbsp;</p>
+<p>+ Có người dọn vệ sinh hành lang hàng tuần, có internet cáp quang.&nbsp;</p>
+<p>+ Có bảo vệ 24/24h, giờ giấc tự do cho bạn cảm giác như ở nhà mình.&nbsp;</p>
+<p>+ Máy giặt miễn phí cho toà nhà thuận tiện cho bạn.&nbsp;</p>
+<p>+ Khoá vân tay, camera an ninh khắp toà nhà, cho bạn cảm giác thoải mái như chính nhà mình.&nbsp;</p>
+<p>+ Nhà mặt tiền đường xe hơi trong khu dân cư an ninh sầm uất khu dân trí cao, tiện đi lại mọi nơi trong thành phố,&nbsp;</p>
+<p>+ Gần chợ Thành Thái, siêu thị, nhà sách. Gần nhiều trường đại học: ĐH Bách Khoa (300m), ĐH Kinh Tế, ĐH Y Khoa Phạm Ngọc Thạch, ĐH Ngoại Ngữ - Tin Học, ĐH Hoa Sen.&nbsp;</p>
+<p>+ Gần bệnh viện đa khoa Quận 10, bệnh viện 115, bệnh Viện Nhi Đồng (600m).&nbsp;</p>
+<p>- Là chỗ ở lý tưởng cho gia đình, nhân viên văn phòng, sinh viên ở. Giá rất hợp lý mùa dịch: 3.2 Triệu/tháng.&nbsp;</p>
+<p>&nbsp;</p>
+<p>Liên Hệ: 0937554570 (A.Thái) TIỀN PHÒNG GIẢM SÂU VÀ KHÔNG TĂNG GIÁ.</p>',
         3200000, '7A/9 Thành Thái, P.14, Quận 10', 20, 1, 'PENDING', 1, 1, 10, 1, false, false,
         random_date_within_14_days(), now()),
        (3, 'Căn hộ mini Full NT mới xây gần Lotte_SC Vivo_HimLam_RMIT_Tôn đức thắng',
-        '🏜🏝Thời tiết Sài Gòn mùa này nắng mưa thất thường, tìm phòng đã cực rồi còn gặp thời tiết oai bức như thế này.
-    💥Đừng quá lo lắng và chán nản, nhanh tay liên hệ HOTLINE - call/sms/zalo để tìm phòng trong vòng một nốt nhạc.
-    💐Với những thiết kế từ cổ điển cho đến hiện đại, thông minh đảm bảo bạn sẽ " đổ " ngay lần đầu tiên đi xem phòng.
-    ♻️Nhiều tòa nhà tọa lạc ngay trung tâm Quận 7, nối liền các quận lân cận như: Huỳnh Tấn Phát, Lê Văn Lương, Nguyễn Thị Thập,
-    Trần Xuân Soạn, KDC Him Lam, KDC Nam Long, khu vực Tân Quy, Tân Kiểng, gần Lottte.
-    Dễ dàng di chuyển qua các quận trung tâ như quận 1, quận 4, quận 5, quận 8,....
-    ✔Phòng trọ từ 4tr - 5tr5.
-    ✔Căn hộ mini từ 5tr - 6tr5
-    ✔Căn hộ 1 phòng ngủ từ 6tr5 - 10tr
-    ✔Căn hộ 2 phòng ngủ, penthouse 10tr
-    ✔Ngoài ra còn có các mặt bằng để kinh doanh.
-    💯Đầy đủ nội thất.
-    💯Nội thất cao cấp.
-    💯Tư vấn nhiệt tình, không lừa đảo.
-    💯Phòng đẹp như hình.
-    Gọi ngay nhé các bạn thân yêu ơi !!!!',
+        '<p>🏜🏝Thời tiết Sài Gòn mùa này nắng mưa thất thường, tìm phòng đã cực rồi còn gặp thời tiết oai bức như thế này.&nbsp;</p>
+<p>&nbsp;</p>
+<p>💥Đừng quá lo lắng và chán nản, nhanh tay liên hệ HOTLINE - call/sms/zalo để tìm phòng trong vòng một nốt nhạc.&nbsp;</p>
+<p>&nbsp;</p>
+<p>💐Với những thiết kế từ cổ điển cho đến hiện đại, thông minh đảm bảo bạn sẽ " đổ " ngay lần đầu tiên đi xem phòng.&nbsp;</p>
+<p>&nbsp;</p>
+<p>♻️Nhiều tòa nhà tọa lạc ngay trung tâm Quận 7, nối liền các quận lân cận như: Huỳnh Tấn Phát, Lê Văn Lương, Nguyễn Thị Thập, Trần Xuân Soạn, KDC Him Lam, KDC Nam Long, khu vực Tân Quy, Tân Kiểng, gần Lottte. Dễ dàng di chuyển qua các quận trung tâ như quận 1, quận 4, quận 5, quận 8,....&nbsp;</p>
+<p>&nbsp;</p>
+<p>✔Phòng trọ từ 4tr - 5tr5.&nbsp;</p>
+<p>✔Căn hộ mini từ 5tr - 6tr5&nbsp;</p>
+<p>✔Căn hộ 1 phòng ngủ từ 6tr5 - 10tr&nbsp;</p>
+<p>✔Căn hộ 2 phòng ngủ, penthouse 10tr&nbsp;</p>
+<p>✔Ngoài ra còn có các mặt bằng để kinh doanh.&nbsp;</p>
+<p>&nbsp;</p>
+<p>💯Đầy đủ nội thất.&nbsp;</p>
+<p>💯Nội thất cao cấp.&nbsp;</p>
+<p>💯Tư vấn nhiệt tình, không lừa đảo.&nbsp;</p>
+<p>💯Phòng đẹp như hình.&nbsp;</p>
+<p>&nbsp;</p>
+<p>Gọi ngay nhé các bạn thân yêu ơi !!!!</p>',
         4800000, 'Nguyễn Thị Thập, Phường Tân Quy, Quận 7, TPHCM', 38, 2, 'PENDING', 1, 1, 7, 2, false, false,
         random_date_within_14_days(), now());
 

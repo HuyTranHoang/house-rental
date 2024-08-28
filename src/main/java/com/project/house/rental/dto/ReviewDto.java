@@ -33,5 +33,7 @@ public class ReviewDto {
 
     String userName;
 
+    String userAvatar;
+
     Date createdAt;
 }

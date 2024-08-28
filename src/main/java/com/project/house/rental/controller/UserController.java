@@ -78,6 +78,12 @@ public class UserController {
         return ResponseEntity.ok(usersWithPagination);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserEntityDto> getUserById(@PathVariable long id) {
+        UserEntityDto userEntityDto = userService.getUserById(id);
+        return ResponseEntity.ok(userEntityDto);
+    }
+
     @PutMapping("/update-role/{id}")
     public ResponseEntity<UserEntityDto> updateRole(@PathVariable long id, @RequestBody Map<String, List<String>> requestBody) throws CustomRuntimeException {
         List<String> roles = requestBody.get("roles");
@@ -90,5 +96,12 @@ public class UserController {
         List<Long> ids = requestBody.get("ids");
         userService.deleteMultipleUsers(ids);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/balance/{id}")
+    public ResponseEntity<UserEntityDto> updateBalance(@PathVariable Long id, @RequestBody Map<String, Double> requestBody) throws CustomRuntimeException {
+        double amount = requestBody.get("amount");
+        UserEntityDto updatedUser = userService.updateBalance(id, amount);
+        return ResponseEntity.ok(updatedUser);
     }
 }

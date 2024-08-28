@@ -18,6 +18,7 @@ import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.service.email.EmailSenderService;
 import com.project.house.rental.specification.UserSpecification;
 import com.project.house.rental.utils.HibernateFilterHelper;
+import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -113,6 +115,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 "pageInfo", pageInfo,
                 "data", userEntityDtoList
         );
+    }
+
+    @Override
+    public UserEntityDto getUserById(long id) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy tài khoản!"));
+
+        return toDto(user);
     }
 
     @Override
@@ -245,6 +255,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public UserEntityDto updateBalance(long id, double amount) throws CustomRuntimeException {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
+
+        double newBalance = user.getBalance() + amount;
+
+        if (newBalance < 0) {
+            throw new CustomRuntimeException("Số dư không thể nhỏ hơn 0!");
+        }
+
+        user.setBalance(newBalance);
+        return toDto(userRepository.save(user));
+    }
+
+    @Override
     public UserEntityDto register(UserEntityDto user) throws CustomRuntimeException {
 
         UserEntity existUsername = userRepository.findUserByUsername(user.getUsername());
@@ -361,9 +386,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new CustomRuntimeException("Không tìm thấy tài khoản!");
         }
 
-        Map cloudinaryResponse = cloudinaryService.upload(avatar, String.format("house-rental/avatar/%s", user.getUsername()));
-        String avatarUrl = (String) cloudinaryResponse.get("url");
-        user.setAvatarUrl(avatarUrl);
+        String oldAvatarUrl = user.getAvatarUrl();
+        int index = oldAvatarUrl.indexOf("v1/");
+        if (index != -1) {
+            String publicId = oldAvatarUrl.substring(index + 3);
+            cloudinaryService.delete(publicId);
+        }
+
+        String publicId = String.format("avatar/%s", UUID.randomUUID());
+
+        Map cloudinaryResponse = cloudinaryService.upload(avatar,publicId);
+
+        String avatarPublicId = (String) cloudinaryResponse.get("public_id");
+
+        String optimizedUrl = cloudinaryService.getOptimizedImage(avatarPublicId);
+
+        user.setAvatarUrl(optimizedUrl);
 
         return toDto(userRepository.save(user));
     }

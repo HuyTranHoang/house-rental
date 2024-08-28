@@ -1,0 +1,24 @@
+meta {
+  name: Delete Multi User
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{host}}/api/user/delete-multiple
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "ids": [
+      7,
+      8
+    ]
+  }
+}

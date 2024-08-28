@@ -179,6 +179,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .comment(review.getComment())
                 .userId(review.getUser().getId())
                 .userName(review.getUser().getUsername())
+                .userAvatar(review.getUser().getAvatarUrl())
                 .propertyId(review.getProperty().getId())
                 .propertyTitle(review.getProperty().getTitle())
                 .createdAt(review.getCreatedAt())

@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -80,7 +81,19 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionDto createTransaction(TransactionDto transactionDto, HttpServletRequest request) {
-        return null;
+        String username = jwtTokenProvider.getUsernameFromToken(request);
+        UserEntity currentUser = userRepository.findUserByUsername(username);
+
+        if (currentUser == null) {
+            throw new UsernameNotFoundException("Không tìm thấy tài khoản với username: " + username);
+        }
+
+        transactionDto.setUserId(currentUser.getId());
+
+
+        Transaction transaction = toEntity(transactionDto);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        return toDto(savedTransaction);
     }
 
     @Override
@@ -114,6 +127,24 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
     }
 
+    @Override
+    public TransactionDto updateTransactionStatus(long transactionId, String status) {
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy giao dịch"));
+
+        try {
+            Transaction.TransactionStatus newStatus = Transaction.TransactionStatus.valueOf(status.toUpperCase());
+            transaction.setStatus(newStatus);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Trạng thái giao dịch không hợp lệ: " + status);
+        }
+
+        Transaction updatedTransaction = transactionRepository.save(transaction);
+        return toDto(updatedTransaction);
+    }
+
+
+}
     private String getUsernameFromToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
