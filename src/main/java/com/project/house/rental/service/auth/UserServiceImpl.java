@@ -10,6 +10,7 @@ import com.project.house.rental.dto.params.UserParams;
 import com.project.house.rental.entity.City_;
 import com.project.house.rental.entity.auth.*;
 import com.project.house.rental.exception.CustomRuntimeException;
+import com.project.house.rental.exception.UserAccountLockedException;
 import com.project.house.rental.repository.auth.PasswordResetRepository;
 import com.project.house.rental.repository.auth.RoleRepository;
 import com.project.house.rental.repository.auth.UserRepository;
@@ -328,7 +329,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         if (!user.isNonLocked()) {
-            throw new UsernameNotFoundException("Tài khoản đã bị khóa!");
+            throw new UserAccountLockedException("Tài khoản đã bị khóa!");
         }
 
         return new UserPrincipal(user);
