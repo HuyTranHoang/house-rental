@@ -33,4 +33,10 @@ public class TransactionController {
         return  ResponseEntity.ok(transaction);
     }
 
+    @PutMapping("/status/{id}")
+    public ResponseEntity<TransactionDto> updateTransactionStatus(@PathVariable long id, @RequestParam String status) {
+        TransactionDto updatedTransaction = transactionService.updateTransactionStatus(id, status);
+        return ResponseEntity.ok(updatedTransaction);
+    }
+
 }

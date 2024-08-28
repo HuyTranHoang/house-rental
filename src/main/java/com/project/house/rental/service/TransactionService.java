@@ -19,4 +19,6 @@ public interface TransactionService {
 
     Transaction toEntity(TransactionDto transactionDto);
 
+    TransactionDto updateTransactionStatus(long transactionId, String status);
+
 }

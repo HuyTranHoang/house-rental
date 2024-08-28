@@ -1,0 +1,21 @@
+meta {
+  name: Update Status Transaction
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{host}}/api/transaction/status/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "status": "FAILED"
+  }
+}

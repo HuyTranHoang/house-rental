@@ -127,13 +127,21 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
     }
 
-    private String getUsernameFromToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            String token = bearerToken.substring(7);
-            return jwtTokenProvider.getSubject(token);
+    @Override
+    public TransactionDto updateTransactionStatus(long transactionId, String status) {
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy giao dịch"));
+
+        try {
+            Transaction.TransactionStatus newStatus = Transaction.TransactionStatus.valueOf(status.toUpperCase());
+            transaction.setStatus(newStatus);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Trạng thái giao dịch không hợp lệ: " + status);
         }
-        return null;
+
+        Transaction updatedTransaction = transactionRepository.save(transaction);
+        return toDto(updatedTransaction);
     }
+
 
 }
