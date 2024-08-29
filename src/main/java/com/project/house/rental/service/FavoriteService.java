@@ -1,6 +1,7 @@
 package com.project.house.rental.service;
 
 import com.project.house.rental.dto.FavoriteDto;
+import com.project.house.rental.dto.FavoritePropertyDto;
 import com.project.house.rental.dto.params.FavoriteParams;
 import com.project.house.rental.entity.Favorite;
 import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
@@ -16,6 +17,8 @@ public interface FavoriteService {
     FavoriteDto getFavoriteById(FavoritePrimaryKey favoritePrimaryKey);
 
     List<FavoriteDto> getFavoriteByUserId(long userId);
+
+    List<FavoritePropertyDto> getFavoritePropertyByUserId(long userId);
 
     List<FavoriteDto> getFavoriteByPropertyId(long propertyId);
 

@@ -1,6 +1,7 @@
 package com.project.house.rental.controller;
 
 import com.project.house.rental.dto.FavoriteDto;
+import com.project.house.rental.dto.FavoritePropertyDto;
 import com.project.house.rental.dto.params.FavoriteParams;
 import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
 import com.project.house.rental.service.FavoriteService;
@@ -37,6 +38,12 @@ public class FavoriteController {
     public ResponseEntity<List<FavoriteDto>> getFavoriteByUserId(@PathVariable long userId) {
         List<FavoriteDto> favoriteDtos = favoriteService.getFavoriteByUserId(userId);
         return ResponseEntity.ok(favoriteDtos);
+    }
+
+    @GetMapping("/{userId}/userProperty")
+    public ResponseEntity<List<FavoritePropertyDto>> getFavoritePropertyByUserId(@PathVariable long userId) {
+        List<FavoritePropertyDto> favoritePropertyDtos = favoriteService.getFavoritePropertyByUserId(userId);
+        return ResponseEntity.ok(favoritePropertyDtos);
     }
 
     @GetMapping("/{propertyId}/property")

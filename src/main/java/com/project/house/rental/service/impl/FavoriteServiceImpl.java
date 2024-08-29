@@ -3,11 +3,10 @@ package com.project.house.rental.service.impl;
 import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.FavoriteDto;
+import com.project.house.rental.dto.FavoritePropertyDto;
+import com.project.house.rental.dto.PropertyDto;
 import com.project.house.rental.dto.params.FavoriteParams;
-import com.project.house.rental.entity.Favorite;
-import com.project.house.rental.entity.Favorite_;
-import com.project.house.rental.entity.Property;
-import com.project.house.rental.entity.Property_;
+import com.project.house.rental.entity.*;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
 import com.project.house.rental.repository.FavoriteRepository;
@@ -29,6 +28,8 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Service
 public class FavoriteServiceImpl implements FavoriteService {
@@ -78,6 +79,35 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         return favorites.stream()
                 .map(this::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<FavoritePropertyDto> getFavoritePropertyByUserId(long userId) {
+        List<Favorite> favorites = favoriteRepository.findByUserIdWithFilter(userId);
+
+        return favorites.stream()
+                .collect(groupingBy(favorite -> favorite.getUser().getId()))
+                .entrySet()
+                .stream()
+                .map(entry -> FavoritePropertyDto.builder()
+                        .userId(entry.getKey())
+                        .username(entry.getValue().get(0).getUser().getUsername())
+                        .properties(entry.getValue().stream()
+                                .map(Favorite::getProperty)
+                                .map(property -> PropertyDto.builder()
+                                        .id(property.getId())
+                                        .title(property.getTitle())
+                                        .price(property.getPrice())
+                                        .location(property.getLocation())
+                                        .propertyImages(property.getPropertyImages().stream()
+                                                .filter(image -> !image.isDeleted())
+                                                .map(PropertyImage::getImageUrl)
+                                                .toList())
+                                        .createdAt(property.getCreatedAt())
+                                        .build())
+                                .toList())
+                        .build())
                 .toList();
     }
 
