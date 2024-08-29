@@ -1,8 +1,11 @@
 package com.project.house.rental.controller;
 
 import com.project.house.rental.dto.PaymentDto;
+import com.project.house.rental.dto.PaymentRequest;
+import com.project.house.rental.dto.TransactionDto;
 import com.project.house.rental.service.vnPay.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +22,8 @@ public class VNPayController {
     }
 
     @PostMapping("/create-payment")
-    public ResponseEntity<PaymentDto> createPayment(HttpServletRequest request) throws IOException {
-        PaymentDto payment = vnPayService.createPayment(request);
+    public ResponseEntity<PaymentDto> createPayment(@Valid @RequestBody PaymentRequest paymentRequest, HttpServletRequest request) throws IOException {
+        PaymentDto payment = vnPayService.createPayment(paymentRequest, request);
         return ResponseEntity.ok(payment);
     }
 

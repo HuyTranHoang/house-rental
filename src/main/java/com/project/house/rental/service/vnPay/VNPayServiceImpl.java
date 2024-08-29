@@ -1,6 +1,8 @@
 package com.project.house.rental.service.vnPay;
 
 import com.project.house.rental.dto.PaymentDto;
+import com.project.house.rental.dto.PaymentRequest;
+import com.project.house.rental.dto.TransactionDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,11 @@ public class VNPayServiceImpl implements VNPayService {
     private VNPayConfig vnPayConfig;
 
     @Override
-    public PaymentDto createPayment(HttpServletRequest req) throws IOException {
+    public PaymentDto createPayment(PaymentRequest paymentRequest, HttpServletRequest req) throws IOException {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
-        long amount = Integer.parseInt(req.getParameter("amount")) * 100;
+        long amount = paymentRequest.getAmount() * 100;
         String bankCode = req.getParameter("bankCode");
 
         String vnp_TxnRef = vnPayConfig.getRandomNumber(8);
