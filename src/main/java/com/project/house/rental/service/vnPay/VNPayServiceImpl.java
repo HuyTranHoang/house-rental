@@ -4,7 +4,6 @@ import com.project.house.rental.dto.PaymentDto;
 import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -16,21 +15,24 @@ import java.util.*;
 @Service
 public class VNPayServiceImpl implements VNPayService {
 
-    @Autowired
-    private VNPayConfig vnPayConfig;
+    private final VNPayConfig vnPayConfig;
+
+    public VNPayServiceImpl(VNPayConfig vnPayConfig) {
+        this.vnPayConfig = vnPayConfig;
+    }
 
     @Override
     public PaymentDto createPayment(PaymentRequest paymentRequest, HttpServletRequest req) throws IOException {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
-        long amount = paymentRequest.getAmount() * 100;
+        long amount = Integer.parseInt(req.getParameter("amount")) * 100L;
         String bankCode = req.getParameter("bankCode");
 
         String vnp_TxnRef = vnPayConfig.getRandomNumber(8);
         String vnp_IpAddr = vnPayConfig.getIpAddress(req);
 
-        String vnp_TmnCode = vnPayConfig.getVnpTmnCode();
+        String vnp_TmnCode = vnPayConfig.getVnp_TmnCode();
 
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);
@@ -45,18 +47,14 @@ public class VNPayServiceImpl implements VNPayService {
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
         vnp_Params.put("vnp_OrderType", orderType);
-
-        String locate = req.getParameter("language");
-        if (locate != null && !locate.isEmpty()) {
-            vnp_Params.put("vnp_Locale", locate);
-        } else {
-            vnp_Params.put("vnp_Locale", "vn");
-        }
+        vnp_Params.put("vnp_Locale", "vn");
         vnp_Params.put("vnp_ReturnUrl", VNPayConfig.vnp_ReturnUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
-        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+7"));
+
         String vnp_CreateDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
 
@@ -73,8 +71,8 @@ public class VNPayServiceImpl implements VNPayService {
             String fieldName = itr.next();
             String fieldValue = vnp_Params.get(fieldName);
             if (fieldValue != null && !fieldValue.isEmpty()) {
-                hashData.append(fieldName).append('=').append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString())).append('=').append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                hashData.append(fieldName).append('=').append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII)).append('=').append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
                 if (itr.hasNext()) {
                     query.append('&');
                     hashData.append('&');

@@ -1,16 +1,16 @@
 package com.project.house.rental.service.vnPay;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Random;
 
+@Getter
 @Component
 public class VNPayConfig {
 
@@ -23,38 +23,6 @@ public class VNPayConfig {
     public static final String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static final String vnp_ReturnUrl = "http://localhost:8080/api/vnpay/return";
     public static final String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
-
-    public String Sha256(String message) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(message.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder(2 * hash.length);
-            for (byte b : hash) {
-                sb.append(String.format("%02x", b & 0xff));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException ex) {
-            return "";
-        }
-    }
-
-    public String hashAllFields(Map<String, String> fields) {
-        List<String> fieldNames = new ArrayList<>(fields.keySet());
-        Collections.sort(fieldNames);
-        StringBuilder sb = new StringBuilder();
-        Iterator<String> itr = fieldNames.iterator();
-        while (itr.hasNext()) {
-            String fieldName = itr.next();
-            String fieldValue = fields.get(fieldName);
-            if (fieldValue != null && !fieldValue.isEmpty()) {
-                sb.append(fieldName).append("=").append(fieldValue);
-                if (itr.hasNext()) {
-                    sb.append("&");
-                }
-            }
-        }
-        return hmacSHA512(secretKey, sb.toString());
-    }
 
     public String hmacSHA512(final String key, final String data) {
         try {
@@ -97,11 +65,4 @@ public class VNPayConfig {
         return sb.toString();
     }
 
-    public String getVnpTmnCode() {
-        return vnp_TmnCode;
-    }
-
-    public String getSecretKey() {
-        return secretKey;
-    }
 }
