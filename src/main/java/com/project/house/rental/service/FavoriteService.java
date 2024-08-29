@@ -18,7 +18,7 @@ public interface FavoriteService {
 
     List<FavoriteDto> getFavoriteByUserId(long userId);
 
-    List<FavoritePropertyDto> getFavoritePropertyByUserId(long userId);
+    FavoritePropertyDto getFavoritePropertyByUserId(long userId);
 
     List<FavoriteDto> getFavoriteByPropertyId(long propertyId);
 

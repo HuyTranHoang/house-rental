@@ -83,7 +83,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
 
     @Override
-    public List<FavoritePropertyDto> getFavoritePropertyByUserId(long userId) {
+    public FavoritePropertyDto getFavoritePropertyByUserId(long userId) {
         List<Favorite> favorites = favoriteRepository.findByUserIdWithFilter(userId);
 
         return favorites.stream()
@@ -108,7 +108,8 @@ public class FavoriteServiceImpl implements FavoriteService {
                                         .build())
                                 .toList())
                         .build())
-                .toList();
+                .findFirst()
+                .orElseThrow(() -> new NoResultException("Không tìm thấy yêu thích với userId: " + userId));
     }
 
     @Override

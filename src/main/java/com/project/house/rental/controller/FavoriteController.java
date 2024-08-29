@@ -41,9 +41,9 @@ public class FavoriteController {
     }
 
     @GetMapping("/{userId}/userProperty")
-    public ResponseEntity<List<FavoritePropertyDto>> getFavoritePropertyByUserId(@PathVariable long userId) {
-        List<FavoritePropertyDto> favoritePropertyDtos = favoriteService.getFavoritePropertyByUserId(userId);
-        return ResponseEntity.ok(favoritePropertyDtos);
+    public ResponseEntity<FavoritePropertyDto> getFavoritePropertyByUserId(@PathVariable long userId) {
+        FavoritePropertyDto favoritePropertyDto = favoriteService.getFavoritePropertyByUserId(userId);
+        return ResponseEntity.ok(favoritePropertyDto);
     }
 
     @GetMapping("/{propertyId}/property")
