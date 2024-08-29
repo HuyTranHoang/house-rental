@@ -1,6 +1,7 @@
 package com.project.house.rental.service.vnPay;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
+@Getter
 @Component
 public class VNPayConfig {
 
@@ -36,24 +38,6 @@ public class VNPayConfig {
         } catch (NoSuchAlgorithmException ex) {
             return "";
         }
-    }
-
-    public String hashAllFields(Map<String, String> fields) {
-        List<String> fieldNames = new ArrayList<>(fields.keySet());
-        Collections.sort(fieldNames);
-        StringBuilder sb = new StringBuilder();
-        Iterator<String> itr = fieldNames.iterator();
-        while (itr.hasNext()) {
-            String fieldName = itr.next();
-            String fieldValue = fields.get(fieldName);
-            if (fieldValue != null && !fieldValue.isEmpty()) {
-                sb.append(fieldName).append("=").append(fieldValue);
-                if (itr.hasNext()) {
-                    sb.append("&");
-                }
-            }
-        }
-        return hmacSHA512(secretKey, sb.toString());
     }
 
     public String hmacSHA512(final String key, final String data) {
@@ -97,11 +81,4 @@ public class VNPayConfig {
         return sb.toString();
     }
 
-    public String getVnpTmnCode() {
-        return vnp_TmnCode;
-    }
-
-    public String getSecretKey() {
-        return secretKey;
-    }
 }
