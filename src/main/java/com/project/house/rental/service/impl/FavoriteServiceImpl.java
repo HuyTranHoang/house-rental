@@ -26,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -161,6 +162,7 @@ public class FavoriteServiceImpl implements FavoriteService {
                 .favoritePrimaryKey(favoritePrimaryKey)
                 .user(userEntity)
                 .property(property)
+                .createdAt(new Date())
                 .build();
     }
 
