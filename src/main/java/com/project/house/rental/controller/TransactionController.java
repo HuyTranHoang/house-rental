@@ -1,13 +1,19 @@
 package com.project.house.rental.controller;
 
+import com.project.house.rental.dto.CityDto;
+import com.project.house.rental.dto.PaymentDto;
+import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
 import com.project.house.rental.dto.params.TransactionParams;
 import com.project.house.rental.service.TransactionService;
+import com.project.house.rental.service.vnPay.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 @RestController
@@ -15,9 +21,11 @@ import java.util.Map;
 public class TransactionController {
 
     private final TransactionService transactionService;
+    public  final VNPayService vnPayService;
 
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(TransactionService transactionService, VNPayService vnPayService) {
         this.transactionService = transactionService;
+        this.vnPayService = vnPayService;
     }
 
     @GetMapping({"", "/"})
@@ -26,16 +34,49 @@ public class TransactionController {
         return ResponseEntity.ok(transactionsWithParams);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<TransactionDto> getByTransctionId(@PathVariable String id) {
+        TransactionDto transactionDto = transactionService.findByTransactionId(id);
+        return ResponseEntity.ok(transactionDto);
+    }
+
     @PostMapping
-    public ResponseEntity<TransactionDto> createTransaction(@Valid @RequestBody TransactionDto transactionDto, HttpServletRequest request) {
-        TransactionDto transaction = transactionService.createTransaction(transactionDto, request);
-        return  ResponseEntity.ok(transaction);
+    public ResponseEntity<PaymentDto> createTransaction(@RequestBody PaymentRequest paymentRequest, HttpServletRequest request) throws IOException {
+        TransactionDto transaction = transactionService.createTransaction(paymentRequest, request);
+
+        PaymentDto paymentDto = vnPayService.createPayment(paymentRequest, request);
+
+        String paymentUrl = paymentDto.getURL();
+        String txnRef = extractTxnRefFromUrl(paymentUrl);
+
+        transactionService.updateTransactionId(transaction.getId(), txnRef);
+
+        return  ResponseEntity.ok(paymentDto);
     }
 
     @PutMapping("/status/{id}")
-    public ResponseEntity<TransactionDto> updateTransactionStatus(@PathVariable long id, @RequestParam String status) {
-        TransactionDto updatedTransaction = transactionService.updateTransactionStatus(id, status);
-        return ResponseEntity.ok(updatedTransaction);
+    public ResponseEntity<Void> updateTransactionStatus(@PathVariable String txnRef, @RequestParam String status) {
+        transactionService.updateTransactionStatus(txnRef, status);
+        return ResponseEntity.noContent().build();
     }
 
+
+
+    private String extractTxnRefFromUrl(String url) {
+        try {
+            URI uri = new URI(url);
+            String query = uri.getQuery();
+            if (query != null) {
+                for (String param : query.split("&")) {
+                    String[] pair = param.split("=");
+                    if (pair.length == 2 && "vnp_TxnRef".equals(pair[0])) {
+                        return pair[1];
+                    }
+                }
+            }
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

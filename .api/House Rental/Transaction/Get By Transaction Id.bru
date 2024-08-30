@@ -1,0 +1,19 @@
+meta {
+  name: Get By Transaction Id
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{host}}/api/transaction/:id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: bdafc352-e704-458e-b7b8-6ab9e7da0aaf
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

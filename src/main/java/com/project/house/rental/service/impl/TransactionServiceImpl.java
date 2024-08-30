@@ -1,6 +1,7 @@
 package com.project.house.rental.service.impl;
 
 import com.project.house.rental.common.PageInfo;
+import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
 import com.project.house.rental.dto.params.TransactionParams;
 import com.project.house.rental.entity.Transaction;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -84,7 +86,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public TransactionDto createTransaction(TransactionDto transactionDto, HttpServletRequest request) {
+    public TransactionDto createTransaction(PaymentRequest paymentRequest, HttpServletRequest request) {
         String username = jwtTokenProvider.getUsernameFromToken(request);
         UserEntity currentUser = userRepository.findUserByUsername(username);
 
@@ -92,30 +94,51 @@ public class TransactionServiceImpl implements TransactionService {
             throw new UsernameNotFoundException("Không tìm thấy tài khoản với username: " + username);
         }
 
-        transactionDto.setUserId(currentUser.getId());
-        transactionDto.setTransactionDate(new Date());
-        transactionDto.setStatus("PENDING");
+//        String transactionId = UUID.randomUUID().toString();
 
-        Transaction transaction = toEntity(transactionDto);
-        Transaction savedTransaction = transactionRepository.save(transaction);
-        return toDto(savedTransaction);
+        Transaction transaction = new Transaction();
+        transaction.setUser(currentUser);
+        transaction.setTransactionId("");
+        transaction.setAmount(paymentRequest.getAmount());
+        transaction.setTransactionDate(new Date());
+        transaction.setStatus(Transaction.TransactionStatus.PENDING);
+
+        transactionRepository.save(transaction);
+
+        return toDto(transaction);
     }
 
     @Override
-    public TransactionDto updateTransactionStatus(long transactionId, String status) {
-        Transaction transaction = transactionRepository.findById(transactionId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy giao dịch"));
+    public void updateTransactionStatus(String txnRef, String status) {
+        Transaction transaction = transactionRepository.findByTransactionId(txnRef);
+        if (transaction != null) {
+            transaction.setStatus(Transaction.TransactionStatus.valueOf(status));
+            transactionRepository.save(transaction);
+        }
+    }
 
-        try {
-            Transaction.TransactionStatus newStatus = Transaction.TransactionStatus.valueOf(status.toUpperCase());
-            transaction.setStatus(newStatus);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Trạng thái giao dịch không hợp lệ: " + status);
+
+    @Override
+    public TransactionDto findByTransactionId(String transactionId) {
+        Transaction transaction = transactionRepository.findByTransactionId(transactionId);
+
+        if (transaction == null) {
+            throw new RuntimeException("Không tìm thấy giao dịch với transactionId: " + transactionId);
         }
 
+        return toDto(transaction);
+    }
+
+    @Override
+    public TransactionDto updateTransactionId(long id, String transactionId) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy giao dịch"));
+
+        transaction.setTransactionId(transactionId);
         Transaction updatedTransaction = transactionRepository.save(transaction);
         return toDto(updatedTransaction);
     }
+
 
     @Override
     public TransactionDto toDto(Transaction transaction) {
