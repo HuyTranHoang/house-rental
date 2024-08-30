@@ -26,7 +26,7 @@ public class VNPayServiceImpl implements VNPayService {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
-        long amount = Integer.parseInt(req.getParameter("amount")) * 100L;
+        long amount = paymentRequest.getAmount() * 100L;
         String bankCode = req.getParameter("bankCode");
 
         String vnp_TxnRef = vnPayConfig.getRandomNumber(8);

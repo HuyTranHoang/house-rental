@@ -31,13 +31,17 @@ public class VNPayController {
     public ResponseEntity<String> returnPayment(
             @RequestParam("vnp_Amount") String amount,
             @RequestParam("vnp_OrderInfo") String orderInfo,
-            @RequestParam("vnp_ResponseCode") String responseCode
+            @RequestParam("vnp_ResponseCode") String responseCode,
+            @RequestParam("vnp_TxnRef") String txnRef
     ) {
+        //Đổi ip 2 url khi chạy trên server
         if (responseCode.equals("00")) {
-            return ResponseEntity.ok("Payment success with amount: " + amount + " and order info: " + orderInfo);
+            String successUrl = "http://localhost:3000/thanh-toan-thanh-cong?vnp_Amount=" + amount + "&vnp_OrderInfo=" + orderInfo + "&vnp_TxnRef=" + txnRef;
+            return ResponseEntity.status(302).header("Location", successUrl).build();
         }
 
-        return ResponseEntity.ok("Payment failed with amount: " + amount + " and order info: " + orderInfo);
+        String failureUrl = "http://localhost:3000/thanh-toan-that-bai";
+        return ResponseEntity.status(302).header("Location", failureUrl).build();
     }
 }
 
