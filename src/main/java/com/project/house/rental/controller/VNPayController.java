@@ -28,7 +28,7 @@ public class VNPayController {
     }
 
     @PostMapping("/create-payment")
-    public ResponseEntity<PaymentDto> createPayment(@Valid @RequestBody PaymentRequest paymentRequest, HttpServletRequest request) throws IOException {
+    public ResponseEntity<PaymentDto> createPayment(@Valid @RequestBody PaymentRequest paymentRequest, HttpServletRequest request) {
         PaymentDto payment = vnPayService.createPayment(paymentRequest, request);
         return ResponseEntity.ok(payment);
     }

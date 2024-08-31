@@ -94,14 +94,17 @@ public class TransactionServiceImpl implements TransactionService {
             throw new UsernameNotFoundException("Không tìm thấy tài khoản với username: " + username);
         }
 
-//        String transactionId = UUID.randomUUID().toString();
-
         Transaction transaction = new Transaction();
         transaction.setUser(currentUser);
         transaction.setTransactionId("");
         transaction.setAmount(paymentRequest.getAmount());
         transaction.setTransactionDate(new Date());
         transaction.setStatus(Transaction.TransactionStatus.PENDING);
+        if (paymentRequest.getType().equalsIgnoreCase("DEPOSIT")) {
+            transaction.setType(Transaction.TransactionType.DEPOSIT);
+        } else {
+            throw new UsernameNotFoundException("Loại giao dịch không hợp lệ: [" + username + "]");
+        }
 
         transactionRepository.save(transaction);
 

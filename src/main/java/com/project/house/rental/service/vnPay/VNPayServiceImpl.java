@@ -22,7 +22,7 @@ public class VNPayServiceImpl implements VNPayService {
     }
 
     @Override
-    public PaymentDto createPayment(PaymentRequest paymentRequest, HttpServletRequest req) throws IOException {
+    public PaymentDto createPayment(PaymentRequest paymentRequest, HttpServletRequest req) {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
@@ -46,7 +46,6 @@ public class VNPayServiceImpl implements VNPayService {
         }
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
-        vnp_Params.put("vnp_TransactionNo", orderType);
         vnp_Params.put("vnp_OrderType", orderType);
         vnp_Params.put("vnp_Locale", "vn");
         vnp_Params.put("vnp_ReturnUrl", VNPayConfig.vnp_ReturnUrl);

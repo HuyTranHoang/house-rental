@@ -41,7 +41,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<PaymentDto> createTransaction(@RequestBody PaymentRequest paymentRequest, HttpServletRequest request) throws IOException {
+    public ResponseEntity<PaymentDto> createTransaction(@RequestBody PaymentRequest paymentRequest, HttpServletRequest request) {
         TransactionDto transaction = transactionService.createTransaction(paymentRequest, request);
 
         PaymentDto paymentDto = vnPayService.createPayment(paymentRequest, request);
