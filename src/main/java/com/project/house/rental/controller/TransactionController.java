@@ -1,6 +1,5 @@
 package com.project.house.rental.controller;
 
-import com.project.house.rental.dto.CityDto;
 import com.project.house.rental.dto.PaymentDto;
 import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
@@ -21,7 +20,7 @@ import java.util.Map;
 public class TransactionController {
 
     private final TransactionService transactionService;
-    public  final VNPayService vnPayService;
+    public final VNPayService vnPayService;
 
     public TransactionController(TransactionService transactionService, VNPayService vnPayService) {
         this.transactionService = transactionService;
@@ -30,7 +29,7 @@ public class TransactionController {
 
     @GetMapping({"", "/"})
     public ResponseEntity<Map<String, Object>> getAllTransactionsWithParams(@ModelAttribute TransactionParams transactionParams) {
-        Map<String, Object> transactionsWithParams  = transactionService.getAllTransactionsWithParams(transactionParams);
+        Map<String, Object> transactionsWithParams = transactionService.getAllTransactionsWithParams(transactionParams);
         return ResponseEntity.ok(transactionsWithParams);
     }
 
@@ -51,16 +50,16 @@ public class TransactionController {
 
         transactionService.updateTransactionId(transaction.getId(), txnRef);
 
-        return  ResponseEntity.ok(paymentDto);
+        paymentDto.setTransactionId(transaction.getTransactionId());
+
+        return ResponseEntity.ok(paymentDto);
     }
 
-    @PutMapping("/status/{id}")
+    @PutMapping("/status/{txnRef}")
     public ResponseEntity<Void> updateTransactionStatus(@PathVariable String txnRef, @RequestParam String status) {
         transactionService.updateTransactionStatus(txnRef, status);
         return ResponseEntity.noContent().build();
     }
-
-
 
     private String extractTxnRefFromUrl(String url) {
         try {

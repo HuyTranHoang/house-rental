@@ -17,6 +17,8 @@ public class PaymentDto {
 
     String URL;
 
+    String transactionId;
+
     //String txnRef;
 
 }
