@@ -3,17 +3,15 @@ package com.project.house.rental.controller;
 import com.project.house.rental.dto.PaymentDto;
 import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
-import com.project.house.rental.entity.Transaction;
-import com.project.house.rental.repository.TransactionRepository;
+import com.project.house.rental.dto.auth.UserEntityDto;
+import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.service.TransactionService;
+import com.project.house.rental.service.auth.UserService;
 import com.project.house.rental.service.vnPay.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/vnpay")
@@ -21,10 +19,12 @@ public class VNPayController {
 
     private final VNPayService vnPayService;
     private final TransactionService transactionService;
+    private final UserService userService;
 
-    public VNPayController(VNPayService vnPayService, TransactionService transactionService) {
+    public VNPayController(VNPayService vnPayService, TransactionService transactionService, UserService userService) {
         this.vnPayService = vnPayService;
         this.transactionService = transactionService;
+        this.userService = userService;
     }
 
     @PostMapping("/create-payment")
@@ -39,17 +39,22 @@ public class VNPayController {
             @RequestParam("vnp_OrderInfo") String orderInfo,
             @RequestParam("vnp_ResponseCode") String responseCode,
             @RequestParam("vnp_TxnRef") String txnRef
-    ) {
+    ) throws CustomRuntimeException {
 
         //Đổi ip 2 url khi chạy trên server
         if (responseCode.equals("00")) {
             String successUrl = "http://localhost:3000/thanh-toan-thanh-cong?vnp_Amount=" + amount + "&vnp_OrderInfo=" + orderInfo + "&vnp_TxnRef=" + txnRef;
 
-            transactionService.updateTransactionStatus(txnRef, "SUCCESS");
+            TransactionDto transactionDto = transactionService.updateTransactionStatus(txnRef, "SUCCESS");
+
+            UserEntityDto userEntityDto = userService.getUserById(transactionDto.getUserId());
+            Double newBalance = userEntityDto.getBalance() + transactionDto.getAmount();
+            userService.updateBalance(userEntityDto.getId(), newBalance);
+
             return ResponseEntity.status(302).header("Location", successUrl).build();
         }
 
-        transactionService.updateTransactionStatus(txnRef, "FAILED");
+        TransactionDto transactionDto = transactionService.updateTransactionStatus(txnRef, "FAILED");
         String failureUrl = "http://localhost:3000/thanh-toan-that-bai";
         return ResponseEntity.status(302).header("Location", failureUrl).build();
     }

@@ -256,7 +256,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserEntityDto updateBalance(long id, double amount) throws CustomRuntimeException {
+    public void updateBalance(long id, double amount) throws CustomRuntimeException {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
 
@@ -267,7 +267,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         user.setBalance(newBalance);
-        return toDto(userRepository.save(user));
+        userRepository.save(user);
     }
 
     @Override

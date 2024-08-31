@@ -5,13 +5,13 @@ import com.project.house.rental.dto.PaymentDto;
 import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
 import com.project.house.rental.dto.params.TransactionParams;
+import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.service.TransactionService;
 import com.project.house.rental.service.vnPay.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<PaymentDto> createTransaction(@RequestBody PaymentRequest paymentRequest, HttpServletRequest request) {
+    public ResponseEntity<PaymentDto> createTransaction(@RequestBody PaymentRequest paymentRequest, HttpServletRequest request) throws CustomRuntimeException {
         TransactionDto transaction = transactionService.createTransaction(paymentRequest, request);
 
         PaymentDto paymentDto = vnPayService.createPayment(paymentRequest, request);

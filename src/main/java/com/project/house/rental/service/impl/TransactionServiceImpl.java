@@ -7,12 +7,14 @@ import com.project.house.rental.dto.params.TransactionParams;
 import com.project.house.rental.entity.Transaction;
 import com.project.house.rental.entity.Transaction_;
 import com.project.house.rental.entity.auth.UserEntity;
+import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.repository.TransactionRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.TransactionService;
 import com.project.house.rental.specification.TransactionSpecification;
 import com.project.house.rental.utils.HibernateFilterHelper;
+import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,8 +27,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
@@ -86,7 +86,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public TransactionDto createTransaction(PaymentRequest paymentRequest, HttpServletRequest request) {
+    public TransactionDto createTransaction(PaymentRequest paymentRequest, HttpServletRequest request) throws CustomRuntimeException {
         String username = jwtTokenProvider.getUsernameFromToken(request);
         UserEntity currentUser = userRepository.findUserByUsername(username);
 
@@ -103,7 +103,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (paymentRequest.getType().equalsIgnoreCase("DEPOSIT")) {
             transaction.setType(Transaction.TransactionType.DEPOSIT);
         } else {
-            throw new UsernameNotFoundException("Loại giao dịch không hợp lệ: [" + username + "]");
+            throw new CustomRuntimeException("Loại giao dịch không hợp lệ: [" + paymentRequest.getType() + "]");
         }
 
         transactionRepository.save(transaction);
@@ -112,11 +112,15 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void updateTransactionStatus(String txnRef, String status) {
+    public TransactionDto updateTransactionStatus(String txnRef, String status) {
         Transaction transaction = transactionRepository.findByTransactionId(txnRef);
+
         if (transaction != null) {
             transaction.setStatus(Transaction.TransactionStatus.valueOf(status));
             transactionRepository.save(transaction);
+            return toDto(transaction);
+        } else {
+            throw new NoResultException("Không tìm thấy giao dịch với mã: " + txnRef);
         }
     }
 
