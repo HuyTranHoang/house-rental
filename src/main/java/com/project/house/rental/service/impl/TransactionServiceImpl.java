@@ -94,16 +94,21 @@ public class TransactionServiceImpl implements TransactionService {
             throw new UsernameNotFoundException("Không tìm thấy tài khoản với username: " + username);
         }
 
-        Transaction transaction = new Transaction();
-        transaction.setUser(currentUser);
-        transaction.setTransactionId("");
-        transaction.setAmount(paymentRequest.getAmount());
-        transaction.setTransactionDate(new Date());
-        transaction.setStatus(Transaction.TransactionStatus.PENDING);
+        Transaction transaction = Transaction.builder()
+                .user(currentUser)
+                .transactionId("")
+                .amount(paymentRequest.getAmount())
+                .transactionDate(new Date())
+                .status(Transaction.TransactionStatus.PENDING)
+                .description(paymentRequest.getDescription())
+                .build();
+
         if (paymentRequest.getType().equalsIgnoreCase("DEPOSIT")) {
             transaction.setType(Transaction.TransactionType.DEPOSIT);
+        } else if (paymentRequest.getType().equalsIgnoreCase("WITHDRAWAL")) {
+            transaction.setType(Transaction.TransactionType.WITHDRAWAL);
         } else {
-            throw new CustomRuntimeException("Loại giao dịch không hợp lệ: [" + paymentRequest.getType() + "]");
+            throw new CustomRuntimeException("Loại giao dịch không hợp lệ");
         }
 
         transactionRepository.save(transaction);
