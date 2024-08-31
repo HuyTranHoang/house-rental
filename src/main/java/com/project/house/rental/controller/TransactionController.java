@@ -47,10 +47,9 @@ public class TransactionController {
 
         String paymentUrl = paymentDto.getURL();
         String txnRef = extractTxnRefFromUrl(paymentUrl);
+        paymentDto.setTransactionId(txnRef);
 
         transactionService.updateTransactionId(transaction.getId(), txnRef);
-
-        paymentDto.setTransactionId(transaction.getTransactionId());
 
         return ResponseEntity.ok(paymentDto);
     }

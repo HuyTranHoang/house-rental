@@ -7,15 +7,12 @@ meta {
 post {
   url: {{host}}/api/transaction
   body: json
-  auth: bearer
-}
-
-auth:bearer {
-  token: {{jwt}}
+  auth: inherit
 }
 
 body:json {
   {
-    "amount": 50000
+    "amount": 50000,
+    "type": "deposit"
   }
 }
