@@ -21,7 +21,7 @@ public class VNPayConfig {
     private String secretKey;
 
     public static final String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static final String vnp_ReturnUrl = "http://localhost:8080/api/vnpay/return";
+    public static final String vnp_ReturnUrl = "/api/vnpay/return";
     public static final String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public String hmacSHA512(final String key, final String data) {
