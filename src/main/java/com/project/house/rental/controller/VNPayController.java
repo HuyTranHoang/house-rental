@@ -10,6 +10,7 @@ import com.project.house.rental.service.auth.UserService;
 import com.project.house.rental.service.vnPay.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,9 @@ public class VNPayController {
     private final VNPayService vnPayService;
     private final TransactionService transactionService;
     private final UserService userService;
+
+    @Value("${base.url}")
+    private String baseUrl;
 
     public VNPayController(VNPayService vnPayService, TransactionService transactionService, UserService userService) {
         this.vnPayService = vnPayService;
@@ -41,9 +45,8 @@ public class VNPayController {
             @RequestParam("vnp_TxnRef") String txnRef
     ) throws CustomRuntimeException {
 
-        //Đổi ip 2 url khi chạy trên server
         if (responseCode.equals("00")) {
-            String successUrl = "http://localhost:3000/thanh-toan-thanh-cong?vnp_Amount=" + amount + "&vnp_OrderInfo=" + orderInfo + "&vnp_TxnRef=" + txnRef;
+            String successUrl = baseUrl + "thanh-toan-thanh-cong?vnp_Amount=" + amount + "&vnp_OrderInfo=" + orderInfo + "&vnp_TxnRef=" + txnRef;
 
             TransactionDto transactionDto = transactionService.updateTransactionStatus(txnRef, "SUCCESS");
 
@@ -54,8 +57,8 @@ public class VNPayController {
             return ResponseEntity.status(302).header("Location", successUrl).build();
         }
 
-        TransactionDto transactionDto = transactionService.updateTransactionStatus(txnRef, "FAILED");
-        String failureUrl = "http://localhost:3000/thanh-toan-that-bai";
+        transactionService.updateTransactionStatus(txnRef, "FAILED");
+        String failureUrl = baseUrl + "thanh-toan-that-bai";
         return ResponseEntity.status(302).header("Location", failureUrl).build();
     }
 }
