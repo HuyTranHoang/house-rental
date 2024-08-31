@@ -1,3 +1,6 @@
+vnpay:
+  returnUrl: https://house-rental-latest.onrender.com/api/vnpay/return
+
 base:
-  server-url: https://house-rental-latest.onrender.com/
   client-url: https://mogu.id.vn/
+
