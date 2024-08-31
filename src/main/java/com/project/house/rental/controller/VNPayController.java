@@ -51,8 +51,8 @@ public class VNPayController {
             TransactionDto transactionDto = transactionService.updateTransactionStatus(txnRef, "SUCCESS");
 
             UserEntityDto userEntityDto = userService.getUserById(transactionDto.getUserId());
-            Double newBalance = userEntityDto.getBalance() + transactionDto.getAmount();
-            userService.updateBalance(userEntityDto.getId(), newBalance);
+
+            userService.updateBalance(userEntityDto.getId(), transactionDto.getAmount());
 
             return ResponseEntity.status(302).header("Location", successUrl).build();
         }
