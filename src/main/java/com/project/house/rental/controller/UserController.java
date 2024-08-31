@@ -99,9 +99,9 @@ public class UserController {
     }
 
     @PutMapping("/balance/{id}")
-    public ResponseEntity<UserEntityDto> updateBalance(@PathVariable Long id, @RequestBody Map<String, Double> requestBody) throws CustomRuntimeException {
+    public ResponseEntity<Void> updateBalance(@PathVariable Long id, @RequestBody Map<String, Double> requestBody) throws CustomRuntimeException {
         double amount = requestBody.get("amount");
-        UserEntityDto updatedUser = userService.updateBalance(id, amount);
-        return ResponseEntity.ok(updatedUser);
+        userService.updateBalance(id, amount);
+        return ResponseEntity.ok().build();
     }
 }
