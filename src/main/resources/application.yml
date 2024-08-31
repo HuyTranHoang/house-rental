@@ -55,4 +55,5 @@ vnpay:
   hashSecret: ${VNPAY_HASH_SECRET}
 
 base:
-  url: http://localhost:3000/
+  server-url: http://localhost:8080/
+  client-url: http://localhost:3000/

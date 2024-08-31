@@ -22,7 +22,7 @@ public class VNPayController {
     private final TransactionService transactionService;
     private final UserService userService;
 
-    @Value("${base.url}")
+    @Value("${base.client-url}")
     private String baseUrl;
 
     public VNPayController(VNPayService vnPayService, TransactionService transactionService, UserService userService) {
