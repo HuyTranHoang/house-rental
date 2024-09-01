@@ -23,6 +23,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -78,7 +79,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@RequestParam String refreshToken) {
+    public ResponseEntity<?> refreshToken(@RequestBody Map<String, String> requestBody) {
+        String refreshToken = requestBody.get("refreshToken");
         Optional<RefreshToken> optionalRefreshToken = refreshTokenService.findByToken(refreshToken);
 
         if (optionalRefreshToken.isPresent()) {
