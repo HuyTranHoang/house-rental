@@ -30,7 +30,7 @@ public class JWTTokenProvider {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String generateJwtToken(UserPrincipal userPrincipal) {
+    public String generateAccessToken(UserPrincipal userPrincipal) {
         List<String> authorities = userPrincipal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
@@ -41,11 +41,21 @@ public class JWTTokenProvider {
                 .withIssuer(SecurityConstant.COMPANY)
                 .withAudience(SecurityConstant.APPLICATION_NAME)
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.EXPIRATION_TIME))
+                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.ACCESS_TOKEN_EXPIRATION_TIME))
                 .withSubject(userPrincipal.getUsername())
                 .withArrayClaim(SecurityConstant.JWT_AUTHORITIES, claims)
                 .withClaim("userId", userPrincipal.getId())
                 .withClaim("username", userPrincipal.getUsername())
+                .sign(Algorithm.HMAC512(secret.getBytes()));
+    }
+
+    public String generateRefreshToken(UserPrincipal userPrincipal) {
+        return JWT.create()
+                .withIssuer(SecurityConstant.COMPANY)
+                .withAudience(SecurityConstant.APPLICATION_NAME)
+                .withIssuedAt(new Date())
+                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.REFRESH_TOKEN_EXPIRATION_TIME))
+                .withSubject(userPrincipal.getUsername())
                 .sign(Algorithm.HMAC512(secret.getBytes()));
     }
 
