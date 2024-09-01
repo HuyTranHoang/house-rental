@@ -79,8 +79,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@RequestBody Map<String, String> requestBody) {
-        String refreshToken = requestBody.get("refreshToken");
+    public ResponseEntity<?> refreshToken(@CookieValue("refreshToken") String refreshToken) {
         Optional<RefreshToken> optionalRefreshToken = refreshTokenService.findByToken(refreshToken);
 
         if (optionalRefreshToken.isPresent()) {
@@ -91,6 +90,14 @@ public class AuthController {
 
             HttpHeaders jwtHeader = new HttpHeaders();
             jwtHeader.add(SecurityConstant.JWT_TOKEN_HEADER, newAccessToken);
+
+            ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
+                    .httpOnly(true)
+                    .secure(false) // Ensure this is set to true only if using HTTPS
+                    .path("/")
+                    .maxAge(SecurityConstant.REFRESH_TOKEN_EXPIRATION_TIME)
+                    .build();
+            jwtHeader.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
             return ResponseEntity.ok()
                     .headers(jwtHeader)
