@@ -83,7 +83,8 @@ public class AuthController {
 
         if (optionalRefreshToken.isPresent()) {
             RefreshToken token = optionalRefreshToken.get();
-            UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UserEntity userEntity = userRepository.findUserById(token.getUserId());
+            UserPrincipal userPrincipal = new UserPrincipal(userEntity);
             String newAccessToken = jwtTokenProvider.generateAccessToken(userPrincipal);
             return ResponseEntity.ok(newAccessToken);
         } else {

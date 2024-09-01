@@ -5,13 +5,13 @@ meta {
 }
 
 post {
-  url: {{host}}/api/auth/refresh-token
+  url: {{host}}/api/auth/refresh-token?refreshToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJIb3VzZSBSZW50YWwgQVBJIiwic3ViIjoiaHV5eSIsImlzcyI6IkhPVVNFIFJFTlRBTCIsImV4cCI6MTcyNTYxODQwMiwiaWF0IjoxNzI1MTg2NDAyfQ.7XRg0nVVKi0B-Q_8-7NNWK7oLYH5Z1wczBWj3fMub7u_JbpadYpJkPtrA2SdhgPBkZdt9k6Dkv8Z5U64CcNNaQ
   body: json
-  auth: bearer
+  auth: inherit
 }
 
-auth:bearer {
-  token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJIb3VzZSBSZW50YWwgQVBJIiwic3ViIjoibmV3VXNlcjEiLCJpc3MiOiJIT1VTRSBSRU5UQUwiLCJleHAiOjE3MjIxNjY4MzUsImlhdCI6MTcyMTczNDgzNSwidXNlcklkIjozLCJhdXRob3JpdGllcyI6WyJ1c2VyOnJlYWQiXSwidXNlcm5hbWUiOiJuZXdVc2VyMSJ9.TyGbDlQxXXGmGpZfE2Mzzet3IoOSJMpQg4jTaBFquhsXFEc5Nea0C5bQCe5qKEVVdso6rUnnYdQrBx67GmHvJ
+params:query {
+  refreshToken: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJIb3VzZSBSZW50YWwgQVBJIiwic3ViIjoiaHV5eSIsImlzcyI6IkhPVVNFIFJFTlRBTCIsImV4cCI6MTcyNTYxODQwMiwiaWF0IjoxNzI1MTg2NDAyfQ.7XRg0nVVKi0B-Q_8-7NNWK7oLYH5Z1wczBWj3fMub7u_JbpadYpJkPtrA2SdhgPBkZdt9k6Dkv8Z5U64CcNNaQ
 }
 
 body:json {
