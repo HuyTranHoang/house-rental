@@ -4,7 +4,9 @@ public class SecurityConstant {
 
     public static final String JWT_TOKEN_HEADER = "Jwt-Token";
 
-    public static final long EXPIRATION_TIME = 432_000_000; // 5 days expressed in milliseconds
+    public static final long ACCESS_TOKEN_EXPIRATION_TIME = 900_000; // 15 minutes expressed in milliseconds
+
+    public static final long REFRESH_TOKEN_EXPIRATION_TIME = 432_000_000; // 5 days expressed in milliseconds
 
     public static final long PASSWORD_RESET_EXPIRATION_TIME= 3_600_000; // 1 hour expressed in milliseconds
 
