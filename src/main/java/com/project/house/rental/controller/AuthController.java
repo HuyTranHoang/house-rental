@@ -83,10 +83,16 @@ public class AuthController {
 
         if (optionalRefreshToken.isPresent()) {
             RefreshToken token = optionalRefreshToken.get();
-            UserEntity userEntity = userRepository.findUserById(token.getUserId());
-            UserPrincipal userPrincipal = new UserPrincipal(userEntity);
+            UserEntity loginUser = userRepository.findUserById(token.getUserId());
+            UserPrincipal userPrincipal = new UserPrincipal(loginUser);
             String newAccessToken = jwtTokenProvider.generateAccessToken(userPrincipal);
-            return ResponseEntity.ok(newAccessToken);
+
+            HttpHeaders jwtHeader = new HttpHeaders();
+            jwtHeader.add(SecurityConstant.JWT_TOKEN_HEADER, newAccessToken);
+
+            return ResponseEntity.ok()
+                    .headers(jwtHeader)
+                    .body(userService.toDto(loginUser));
         } else {
             return ResponseEntity.status(403).body("Invalid refresh token");
         }
