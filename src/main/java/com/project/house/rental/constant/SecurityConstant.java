@@ -20,6 +20,7 @@ public class SecurityConstant {
             "/api/auth/login",
             "/api/auth/register",
             "/api/auth/refresh-token",
+            "/api/auth/logout",
             "/api/auth/send-reset-password-email",
             "/api/auth/reset-password",
             "/api/contact",
