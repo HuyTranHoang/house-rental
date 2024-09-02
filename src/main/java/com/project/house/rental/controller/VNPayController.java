@@ -25,6 +25,10 @@ public class VNPayController {
     @Value("${base.client-url}")
     private String baseUrl;
 
+    private static final String VNPAY_SUCCESS_CODE = "00";
+    private static final String SUCCESS_URL = "thanh-toan-thanh-cong";
+    private static final String FAILURE_URL = "thanh-toan-that-bai";
+
     public VNPayController(VNPayService vnPayService, TransactionService transactionService, UserService userService) {
         this.vnPayService = vnPayService;
         this.transactionService = transactionService;
@@ -38,33 +42,27 @@ public class VNPayController {
     }
 
     @GetMapping("/return")
-    public ResponseEntity<String> returnPayment(
+    public ResponseEntity<Void> returnPayment(
             @RequestParam("vnp_ResponseCode") String responseCode,
             @RequestParam("vnp_TxnRef") String txnRef
     ) throws CustomRuntimeException {
+        String redirectUrl = VNPAY_SUCCESS_CODE.equals(responseCode)
+                ? handleSuccess(txnRef)
+                : handleFailure(txnRef);
 
-        String redirectUrl;
-
-        if ("00".equals(responseCode)) {
-            redirectUrl = baseUrl + handleSuccess(txnRef);
-        } else {
-            redirectUrl = baseUrl + handleFailure(txnRef);
-        }
-
-        return ResponseEntity.status(302).header("Location", redirectUrl).build();
+        return ResponseEntity.status(302)
+                .header("Location", baseUrl + redirectUrl)
+                .build();
     }
 
     private String handleSuccess(String txnRef) throws CustomRuntimeException {
-        TransactionDto transactionDto = transactionService.updateTransactionStatus(txnRef, String.valueOf(Transaction.TransactionStatus.SUCCESS));
+        TransactionDto transactionDto = transactionService.updateTransactionStatus(txnRef, Transaction.TransactionStatus.SUCCESS.toString());
         userService.updateBalance(transactionDto.getUserId(), transactionDto.getAmount());
-
-        return String.format("thanh-toan-thanh-cong?vnp_TxnRef=%s", txnRef);
+        return SUCCESS_URL + "?vnp_TxnRef=" + txnRef;
     }
 
     private String handleFailure(String txnRef) {
-        transactionService.updateTransactionStatus(txnRef, String.valueOf(Transaction.TransactionStatus.FAILED));
-        return String.format("thanh-toan-that-bai?vnp_TxnRef=%s", txnRef);
+        transactionService.updateTransactionStatus(txnRef, Transaction.TransactionStatus.FAILED.toString());
+        return FAILURE_URL + "?vnp_TxnRef=" + txnRef;
     }
 }
-
-
