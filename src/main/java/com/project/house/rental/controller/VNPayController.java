@@ -4,6 +4,7 @@ import com.project.house.rental.dto.PaymentDto;
 import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
+import com.project.house.rental.entity.Transaction;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.service.TransactionService;
 import com.project.house.rental.service.auth.UserService;
@@ -45,10 +46,17 @@ public class VNPayController {
             @RequestParam("vnp_TxnRef") String txnRef
     ) throws CustomRuntimeException {
 
-        if (responseCode.equals("00")) {
-            String successUrl = baseUrl + "thanh-toan-thanh-cong?vnp_Amount=" + amount + "&vnp_OrderInfo=" + orderInfo + "&vnp_TxnRef=" + txnRef;
+        StringBuilder url = new StringBuilder(baseUrl);
 
-            TransactionDto transactionDto = transactionService.updateTransactionStatus(txnRef, "SUCCESS");
+        if (responseCode.equals("00")) {
+            String successUrl = url.append("thanh-toan-thanh-cong?vnp_Amount=")
+                    .append(amount)
+                    .append("&vnp_OrderInfo=")
+                    .append(orderInfo)
+                    .append("&vnp_TxnRef=")
+                    .append(txnRef).toString();
+
+            TransactionDto transactionDto = transactionService.updateTransactionStatus(txnRef, String.valueOf(Transaction.TransactionStatus.SUCCESS));
 
             UserEntityDto userEntityDto = userService.getUserById(transactionDto.getUserId());
 
@@ -57,8 +65,10 @@ public class VNPayController {
             return ResponseEntity.status(302).header("Location", successUrl).build();
         }
 
-        transactionService.updateTransactionStatus(txnRef, "FAILED");
-        String failureUrl = baseUrl + "thanh-toan-that-bai";
+        String failureUrl = url.append("thanh-toan-that-bai?vnp_TxnRef=")
+                .append(txnRef).toString();
+
+        transactionService.updateTransactionStatus(txnRef, String.valueOf(Transaction.TransactionStatus.FAILED));
         return ResponseEntity.status(302).header("Location", failureUrl).build();
     }
 }
