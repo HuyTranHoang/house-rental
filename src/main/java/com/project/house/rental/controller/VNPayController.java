@@ -3,7 +3,6 @@ package com.project.house.rental.controller;
 import com.project.house.rental.dto.PaymentDto;
 import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
-import com.project.house.rental.dto.auth.UserEntityDto;
 import com.project.house.rental.entity.Transaction;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.service.TransactionService;
@@ -40,36 +39,31 @@ public class VNPayController {
 
     @GetMapping("/return")
     public ResponseEntity<String> returnPayment(
-            @RequestParam("vnp_Amount") String amount,
-            @RequestParam("vnp_OrderInfo") String orderInfo,
             @RequestParam("vnp_ResponseCode") String responseCode,
             @RequestParam("vnp_TxnRef") String txnRef
     ) throws CustomRuntimeException {
 
-        StringBuilder url = new StringBuilder(baseUrl);
+        String redirectUrl;
 
-        if (responseCode.equals("00")) {
-            String successUrl = url.append("thanh-toan-thanh-cong?vnp_Amount=")
-                    .append(amount)
-                    .append("&vnp_OrderInfo=")
-                    .append(orderInfo)
-                    .append("&vnp_TxnRef=")
-                    .append(txnRef).toString();
-
-            TransactionDto transactionDto = transactionService.updateTransactionStatus(txnRef, String.valueOf(Transaction.TransactionStatus.SUCCESS));
-
-            UserEntityDto userEntityDto = userService.getUserById(transactionDto.getUserId());
-
-            userService.updateBalance(userEntityDto.getId(), transactionDto.getAmount());
-
-            return ResponseEntity.status(302).header("Location", successUrl).build();
+        if ("00".equals(responseCode)) {
+            redirectUrl = baseUrl + handleSuccess(txnRef);
+        } else {
+            redirectUrl = baseUrl + handleFailure(txnRef);
         }
 
-        String failureUrl = url.append("thanh-toan-that-bai?vnp_TxnRef=")
-                .append(txnRef).toString();
+        return ResponseEntity.status(302).header("Location", redirectUrl).build();
+    }
 
+    private String handleSuccess(String txnRef) throws CustomRuntimeException {
+        TransactionDto transactionDto = transactionService.updateTransactionStatus(txnRef, String.valueOf(Transaction.TransactionStatus.SUCCESS));
+        userService.updateBalance(transactionDto.getUserId(), transactionDto.getAmount());
+
+        return String.format("thanh-toan-thanh-cong?vnp_TxnRef=%s", txnRef);
+    }
+
+    private String handleFailure(String txnRef) {
         transactionService.updateTransactionStatus(txnRef, String.valueOf(Transaction.TransactionStatus.FAILED));
-        return ResponseEntity.status(302).header("Location", failureUrl).build();
+        return String.format("thanh-toan-that-bai?vnp_TxnRef=%s", txnRef);
     }
 }
 
