@@ -5,7 +5,6 @@ import com.project.house.rental.entity.Favorite;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 @DecoratedWith(FavoriteMapperDecorator.class)

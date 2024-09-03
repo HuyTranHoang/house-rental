@@ -3,7 +3,6 @@ package com.project.house.rental.service;
 import com.project.house.rental.dto.FavoriteDto;
 import com.project.house.rental.dto.FavoritePropertyDto;
 import com.project.house.rental.dto.params.FavoriteParams;
-import com.project.house.rental.entity.Favorite;
 import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
 import jakarta.servlet.http.HttpServletRequest;
 
