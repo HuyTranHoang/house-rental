@@ -23,9 +23,4 @@ public interface DistrictService {
 
     Map<String, Object> getAllDistrictsWithParams(DistrictParams districtParams);
 
-    DistrictDto toDto(District district);
-
-    District toEntity(DistrictDto districtDto);
-
-    void updateEntityFromDto(District district, DistrictDto districtDto);
 }

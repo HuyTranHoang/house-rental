@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface CityMapper {
 
     CityMapper INSTANCE = Mappers.getMapper(CityMapper.class);
@@ -17,5 +17,6 @@ public interface CityMapper {
     City toEntity(CityDto cityDto);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     void updateFromDto(CityDto cityDto, @MappingTarget City city);
 }

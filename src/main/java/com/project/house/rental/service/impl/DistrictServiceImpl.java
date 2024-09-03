@@ -4,12 +4,11 @@ import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.DistrictDto;
 import com.project.house.rental.dto.params.DistrictParams;
-import com.project.house.rental.entity.City;
 import com.project.house.rental.entity.City_;
 import com.project.house.rental.entity.District;
 import com.project.house.rental.entity.District_;
 import com.project.house.rental.exception.ConflictException;
-import com.project.house.rental.repository.CityRepository;
+import com.project.house.rental.mapper.DistrictMapper;
 import com.project.house.rental.repository.DistrictRepository;
 import com.project.house.rental.service.DistrictService;
 import com.project.house.rental.specification.DistrictSpecification;
@@ -29,13 +28,13 @@ import java.util.Map;
 @Service
 public class DistrictServiceImpl implements DistrictService {
     private final DistrictRepository districtRepository;
-    private final CityRepository cityRepository;
     private final HibernateFilterHelper hibernateFilterHelper;
+    private final DistrictMapper districtMapper;
 
-    public DistrictServiceImpl(DistrictRepository districtRepository, CityRepository cityRepository, HibernateFilterHelper hibernateFilterHelper) {
+    public DistrictServiceImpl(DistrictRepository districtRepository, HibernateFilterHelper hibernateFilterHelper, DistrictMapper districtMapper) {
         this.districtRepository = districtRepository;
-        this.cityRepository = cityRepository;
         this.hibernateFilterHelper = hibernateFilterHelper;
+        this.districtMapper = districtMapper;
     }
 
 
@@ -51,7 +50,7 @@ public class DistrictServiceImpl implements DistrictService {
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_DISTRICT_FILTER);
 
         return districts.stream()
-                .map(this::toDto)
+                .map(districtMapper::toDto)
                 .toList();
     }
 
@@ -64,7 +63,7 @@ public class DistrictServiceImpl implements DistrictService {
             throw new NoResultException("Không tìm thấy quận với id: " + id);
         }
 
-        return toDto(district);
+        return districtMapper.toDto(district);
     }
 
     @Override
@@ -75,11 +74,11 @@ public class DistrictServiceImpl implements DistrictService {
             throw new ConflictException("Quận đã tồn tại trong thành phố này");
         }
 
-        District district = toEntity(districtDto);
+        District district = districtMapper.toEntity(districtDto);
 
         district = districtRepository.save(district);
 
-        return toDto(district);
+        return districtMapper.toDto(district);
     }
 
     @Override
@@ -96,11 +95,11 @@ public class DistrictServiceImpl implements DistrictService {
             throw new ConflictException("Quận đã tồn tại trong thành phố này");
         }
 
-        updateEntityFromDto(district, districtDto);
+        districtMapper.updateEntityFromDto(districtDto, district);
 
         district = districtRepository.save(district);
 
-        return toDto(district);
+        return districtMapper.toDto(district);
     }
 
     @Override
@@ -154,43 +153,12 @@ public class DistrictServiceImpl implements DistrictService {
         PageInfo pageInfo = new PageInfo(districtPage);
 
         List<DistrictDto> districtDtoList = districtPage.stream()
-                .map(this::toDto)
+                .map(districtMapper::toDto)
                 .toList();
 
         return Map.of(
                 "pageInfo", pageInfo,
                 "data", districtDtoList
         );
-    }
-
-    @Override
-    public DistrictDto toDto(District district) {
-        return DistrictDto.builder()
-                .id(district.getId())
-                .name(district.getName())
-                .cityId(district.getCity().getId())
-                .cityName(district.getCity().getName())
-                .createdAt(district.getCreatedAt())
-                .build();
-    }
-
-    @Override
-    public District toEntity(DistrictDto districtDto) {
-        City city = cityRepository.findById(districtDto.getCityId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy 'City' với id: " + districtDto.getCityId()));
-
-        return District.builder()
-                .name(districtDto.getName())
-                .city(city)
-                .build();
-    }
-
-    @Override
-    public void updateEntityFromDto(District district, DistrictDto districtDto) {
-        City city = cityRepository.findById(districtDto.getCityId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy 'City' với id: " + districtDto.getCityId()));
-
-        district.setName(districtDto.getName());
-        district.setCity(city);
     }
 }
