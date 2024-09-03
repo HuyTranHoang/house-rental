@@ -8,6 +8,7 @@ import com.project.house.rental.entity.Transaction;
 import com.project.house.rental.entity.Transaction_;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.exception.CustomRuntimeException;
+import com.project.house.rental.mapper.TransactionMapper;
 import com.project.house.rental.repository.TransactionRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
@@ -27,17 +28,20 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
+    private final TransactionMapper transactionMapper;
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository, JWTTokenProvider jwtTokenProvider, HibernateFilterHelper hibernateFilterHelper, UserRepository userRepository) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository, JWTTokenProvider jwtTokenProvider, HibernateFilterHelper hibernateFilterHelper, UserRepository userRepository, TransactionMapper transactionMapper) {
         this.transactionRepository = transactionRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
+        this.transactionMapper = transactionMapper;
     }
 
     @Override
@@ -76,7 +80,7 @@ public class TransactionServiceImpl implements TransactionService {
         PageInfo pageInfo = new PageInfo(transactionPage);
 
         List<TransactionDto> transactionDtoList = transactionPage.stream()
-                .map(this::toDto)
+                .map(transactionMapper::toDto)
                 .toList();
 
         return Map.of(
@@ -113,20 +117,20 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionRepository.save(transaction);
 
-        return toDto(transaction);
+        return transactionMapper.toDto(transaction);
     }
 
     @Override
     public TransactionDto updateTransactionStatus(String txnRef, String status) {
         Transaction transaction = transactionRepository.findByTransactionId(txnRef);
 
-        if (transaction != null) {
-            transaction.setStatus(Transaction.TransactionStatus.valueOf(status));
-            transactionRepository.save(transaction);
-            return toDto(transaction);
-        } else {
+        if (transaction == null) {
             throw new NoResultException("Không tìm thấy giao dịch với mã: " + txnRef);
         }
+
+        transaction.setStatus(Transaction.TransactionStatus.valueOf(status));
+        transactionRepository.save(transaction);
+        return transactionMapper.toDto(transaction);
     }
 
 
@@ -138,49 +142,16 @@ public class TransactionServiceImpl implements TransactionService {
             throw new RuntimeException("Không tìm thấy giao dịch với transactionId: " + transactionId);
         }
 
-        return toDto(transaction);
+        return transactionMapper.toDto(transaction);
     }
 
     @Override
-    public TransactionDto updateTransactionId(long id, String transactionId) {
+    public void updateTransactionId(long id, String transactionId) {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy giao dịch"));
 
         transaction.setTransactionId(transactionId);
-        Transaction updatedTransaction = transactionRepository.save(transaction);
-        return toDto(updatedTransaction);
-    }
-
-
-    @Override
-    public TransactionDto toDto(Transaction transaction) {
-        return TransactionDto.builder()
-                .id(transaction.getId())
-                .userId(transaction.getUser().getId())
-                .username(transaction.getUser().getUsername())
-                .transactionId(transaction.getTransactionId())
-                .amount(transaction.getAmount())
-                .transactionDate(transaction.getTransactionDate())
-                .transactionType(String.valueOf(transaction.getType()))
-                .status(String.valueOf(transaction.getStatus()))
-                .description(transaction.getDescription())
-                .build();
-    }
-
-    @Override
-    public Transaction toEntity(TransactionDto transactionDto) {
-        UserEntity user = userRepository.findById(transactionDto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        return Transaction.builder()
-                .user(user)
-                .transactionId(transactionDto.getTransactionId())
-                .amount(transactionDto.getAmount())
-                .transactionDate(transactionDto.getTransactionDate())
-                .type(Transaction.TransactionType.valueOf(transactionDto.getTransactionType()))
-                .status(Transaction.TransactionStatus.valueOf(transactionDto.getStatus()))
-                .description(transactionDto.getDescription())
-                .build();
+        transactionRepository.save(transaction);
     }
 
 }
