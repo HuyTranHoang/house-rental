@@ -14,7 +14,6 @@ import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.TransactionService;
 import com.project.house.rental.specification.TransactionSpecification;
-import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
@@ -37,7 +36,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final JWTTokenProvider jwtTokenProvider;
     private final TransactionMapper transactionMapper;
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository, JWTTokenProvider jwtTokenProvider, HibernateFilterHelper hibernateFilterHelper, UserRepository userRepository, TransactionMapper transactionMapper) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository, JWTTokenProvider jwtTokenProvider, UserRepository userRepository, TransactionMapper transactionMapper) {
         this.transactionRepository = transactionRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;

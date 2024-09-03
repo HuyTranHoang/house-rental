@@ -4,6 +4,7 @@ import com.project.house.rental.dto.TransactionDto;
 import com.project.house.rental.entity.Transaction;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.repository.auth.UserRepository;
+import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -21,7 +22,7 @@ public abstract class TransactionMapperDecorator implements TransactionMapper {
         Transaction transaction = delegate.toEntity(transactionDto);
 
         UserEntity user = userRepository.findById(transactionDto.getUserId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy user với id: " + transactionDto.getUserId()));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy user với id: " + transactionDto.getUserId()));
 
         transaction.setUser(user);
         return transaction;

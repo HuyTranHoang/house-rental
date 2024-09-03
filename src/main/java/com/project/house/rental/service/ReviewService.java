@@ -23,15 +23,6 @@ public interface ReviewService {
 
     Map<String, Object> getAllReviewsWithParams(ReviewParams reviewParams);
 
-    ReviewDto toDto(Review review);
-
-    Review toEntity(ReviewDto reviewDto);
-
-    void updateEntityFromDto(Review review, ReviewDto reviewDto);
-
     void deleteMultipleReviews(List<Long> ids);
 
-//    List<Review> findByHouseId(Long houseId);
-//    List<Review> findByUserId(Long userId);
-//    Review findByHouseIdAndUserId(Long houseId, Long userId);
 }
