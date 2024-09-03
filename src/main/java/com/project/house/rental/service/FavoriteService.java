@@ -26,10 +26,6 @@ public interface FavoriteService {
 
     void deleteFavoriteById(FavoritePrimaryKey favoritePrimaryKey);
 
-    FavoriteDto toDto(Favorite favorite);
-
-    Favorite toEntity(FavoriteDto favoriteDto);
-
     Map<String, Object> getAllFavoritesWithParams(FavoriteParams favoriteParams);
 
 }

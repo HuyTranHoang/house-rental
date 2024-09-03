@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<HttpResponse> handleAllExceptions(Exception ex, WebRequest request) {
+    public ResponseEntity<HttpResponse> handleAllExceptions(Exception ex) {
         HttpResponse httpResponse = new HttpResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
