@@ -4,8 +4,11 @@ import com.project.house.rental.dto.PaymentDto;
 import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
 import com.project.house.rental.dto.params.TransactionParams;
+import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.exception.CustomRuntimeException;
+import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.TransactionService;
+import com.project.house.rental.service.auth.UserService;
 import com.project.house.rental.service.vnPay.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,11 +24,13 @@ import java.util.Map;
 public class TransactionController {
 
     private final TransactionService transactionService;
-    public final VNPayService vnPayService;
+    private final VNPayService vnPayService;
+    private final JWTTokenProvider jwtTokenProvider;
 
-    public TransactionController(TransactionService transactionService, VNPayService vnPayService) {
+    public TransactionController(TransactionService transactionService, VNPayService vnPayService, JWTTokenProvider jwtTokenProvider) {
         this.transactionService = transactionService;
         this.vnPayService = vnPayService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @GetMapping({"", "/"})
@@ -58,6 +64,12 @@ public class TransactionController {
     public ResponseEntity<Void> updateTransactionStatus(@PathVariable String txnRef, @RequestParam String status) {
         transactionService.updateTransactionStatus(txnRef, status);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/user-history")
+    public ResponseEntity<Map<String, Object>> getUserTransactionHistory(HttpServletRequest request, TransactionParams transactionParams) {
+        Map<String, Object> transactions = transactionService.getUserTransactions(request, transactionParams);
+        return ResponseEntity.ok(transactions);
     }
 
     private String extractTxnRefFromUrl(String url) {

@@ -151,6 +151,19 @@ public class TransactionServiceImpl implements TransactionService {
         return toDto(updatedTransaction);
     }
 
+    public Map<String, Object> getUserTransactions(HttpServletRequest request, TransactionParams transactionParams) {
+        String username = jwtTokenProvider.getUsernameFromToken(request);
+        UserEntity currentUser = userRepository.findUserByUsername(username);
+
+        if (currentUser == null) {
+            throw new UsernameNotFoundException("Không tìm thấy tài khoản với username: " + username);
+        }
+
+        transactionParams.setUserId(currentUser.getId());
+
+        return getAllTransactionsWithParams(transactionParams);
+    }
+
 
     @Override
     public TransactionDto toDto(Transaction transaction) {
