@@ -3,6 +3,7 @@ package com.project.house.rental.mapper;
 import com.project.house.rental.dto.CityDto;
 import com.project.house.rental.entity.City;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
@@ -15,5 +16,6 @@ public interface CityMapper {
 
     City toEntity(CityDto cityDto);
 
+    @Mapping(target = "id", ignore = true)
     void updateFromDto(CityDto cityDto, @MappingTarget City city);
 }

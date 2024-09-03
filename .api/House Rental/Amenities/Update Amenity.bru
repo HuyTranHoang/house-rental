@@ -5,21 +5,17 @@ meta {
 }
 
 put {
-  url: {{host}}/api/amenities/:id
+  url: {{host}}/api/amenity/:id
   body: json
-  auth: bearer
+  auth: inherit
 }
 
 params:path {
-  id: 1
-}
-
-auth:bearer {
-  token: {{jwt}}
+  id: 37
 }
 
 body:json {
   {
-      "name": "Full Noi That"
+      "name": "Full Noi That 456"
   }
 }

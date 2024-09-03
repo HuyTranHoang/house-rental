@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/amenities")
+@RequestMapping("/api/amenity")
 public class AmenityController {
 
     private final AmenityService amenitiesService;
@@ -27,37 +27,37 @@ public class AmenityController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<AmenityDto>> getAllAmenityNoPaging() {
+    public ResponseEntity<List<AmenityDto>> getAllAmenitiesNoPaging() {
         List<AmenityDto> amenity = amenitiesService.getAllAmenities();
         return ResponseEntity.ok(amenity);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AmenityDto> getAmenitiesById(@PathVariable long id) {
+    public ResponseEntity<AmenityDto> getAmenityById(@PathVariable long id) {
         AmenityDto amenities = amenitiesService.getAmenityById(id);
         return ResponseEntity.ok(amenities);
     }
 
     @PostMapping({"/", ""})
-    public ResponseEntity<AmenityDto> createAmenities(@RequestBody @Valid AmenityDto amenitiesDto) {
+    public ResponseEntity<AmenityDto> createAmenity(@RequestBody @Valid AmenityDto amenitiesDto) {
         AmenityDto amenities = amenitiesService.createAmenity(amenitiesDto);
         return ResponseEntity.ok(amenities);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AmenityDto> updateAmenities(@PathVariable long id, @RequestBody @Valid AmenityDto amenitiesDto) {
+    public ResponseEntity<AmenityDto> updateAmenity(@PathVariable long id, @RequestBody @Valid AmenityDto amenitiesDto) {
         AmenityDto amenities = amenitiesService.updateAmenity(id, amenitiesDto);
         return ResponseEntity.ok(amenities);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAmenities(@PathVariable long id) {
+    public ResponseEntity<Void> deleteAmenity(@PathVariable long id) {
         amenitiesService.deleteAmenityById(id);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/delete-multiple")
-    public ResponseEntity<Void> deleteMultipleAmenities(@RequestBody Map<String, List<Long>> requestBody) {
+    public ResponseEntity<Void> deleteMultipleAmenity(@RequestBody Map<String, List<Long>> requestBody) {
         List<Long> ids = requestBody.get("ids");
         amenitiesService.deleteMultipleAmenities(ids);
         return ResponseEntity.noContent().build();
