@@ -21,10 +21,4 @@ public interface RoomTypeService {
     void deleteMultipleRoomTypes(List<Long> ids);
 
     Map<String, Object> getAllRoomTypesWithParams(RoomTypeParams roomTypeParams);
-
-    RoomTypeDto toDto(RoomType roomType);
-
-    RoomType toEntity(RoomTypeDto roomTypeDto);
-
-    void updateEntityFromDto(RoomType roomType, RoomTypeDto roomTypeDto);
 }
