@@ -2,7 +2,6 @@ package com.project.house.rental.service;
 
 import com.project.house.rental.dto.AmenityDto;
 import com.project.house.rental.dto.params.AmenityParams;
-import com.project.house.rental.entity.Amenity;
 
 import java.util.List;
 import java.util.Map;

@@ -1,7 +1,6 @@
 package com.project.house.rental.exception;
 
 import com.project.house.rental.common.HttpResponse;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

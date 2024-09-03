@@ -2,7 +2,10 @@ package com.project.house.rental.mapper;
 
 import com.project.house.rental.dto.DistrictDto;
 import com.project.house.rental.entity.District;
-import org.mapstruct.*;
+import org.mapstruct.DecoratedWith;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 @DecoratedWith(DistrictMapperDecorator.class)

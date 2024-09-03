@@ -2,7 +2,6 @@ package com.project.house.rental.service;
 
 import com.project.house.rental.dto.RoomTypeDto;
 import com.project.house.rental.dto.params.RoomTypeParams;
-import com.project.house.rental.entity.RoomType;
 
 import java.util.List;
 import java.util.Map;
