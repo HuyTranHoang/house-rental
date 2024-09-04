@@ -148,7 +148,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void deleteRoleById(long id) {
         Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy 'City' với id = " + id));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy vai trò với id: " + id));
 
         if (role.getName().equals("ROLE_ADMIN") || role.getName().equals("ROLE_USER")) {
             throw new IllegalArgumentException("Không thể xóa vai trò mặc định");
