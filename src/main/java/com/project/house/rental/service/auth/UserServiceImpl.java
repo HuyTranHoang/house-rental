@@ -53,18 +53,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final JWTTokenProvider jwtTokenProvider;
     private final CloudinaryService cloudinaryService;
-    private final PasswordResetRepository passwordResetRepository;
     private final HibernateFilterHelper hibernateFilterHelper;
     private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, EmailSenderService emailSenderService, PasswordEncoder passwordEncoder, JWTTokenProvider jwtTokenProvider, CloudinaryService cloudinaryService, PasswordResetRepository passwordResetRepository, HibernateFilterHelper hibernateFilterHelper, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, EmailSenderService emailSenderService, PasswordEncoder passwordEncoder, JWTTokenProvider jwtTokenProvider, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.emailSenderService = emailSenderService;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.cloudinaryService = cloudinaryService;
-        this.passwordResetRepository = passwordResetRepository;
         this.hibernateFilterHelper = hibernateFilterHelper;
         this.userMapper = userMapper;
     }
@@ -188,63 +186,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void sendEmailResetPassword(String email) throws CustomRuntimeException {
-        UserEntity user = userRepository.findUserByEmail(email);
-
-        if (user == null) {
-            throw new CustomRuntimeException("Không tìm thấy tài khoản với email này!");
-        }
-
-        PasswordReset passwordReset = passwordResetRepository.findByUserId(user.getId());
-
-        if (passwordReset != null) {
-            passwordResetRepository.delete(passwordReset);
-        }
-
-        PasswordReset newPasswordReset = PasswordReset.builder()
-                .token(jwtTokenProvider.generatePasswordResetToken(user.getUsername()))
-                .user(user)
-                .expiresAt(jwtTokenProvider.getPasswordResetTokenExpiration())
-                .isUsed(false)
-                .build();
-
-        passwordResetRepository.save(newPasswordReset);
-        emailSenderService.sendResetPasswordHTMLMail(user.getEmail(), newPasswordReset.getToken());
-    }
-
-    @Override
-    public UserEntityDto resetPassword(ResetPasswordDto resetPasswordDto) throws CustomRuntimeException {
-        String token = resetPasswordDto.getToken();
-        String password = resetPasswordDto.getNewPassword();
-
-        PasswordReset passwordReset = passwordResetRepository.findByToken(token);
-
-        if (passwordReset == null) {
-            throw new CustomRuntimeException("Token không hợp lệ!");
-        }
-
-        if (passwordReset.isUsed()) {
-            throw new CustomRuntimeException("Token đã được sử dụng!");
-        }
-
-        if (passwordReset.getExpiresAt().before(jwtTokenProvider.getCurrentDate())) {
-            throw new CustomRuntimeException("Token đã hết hạn!");
-        }
-
-        UserEntity user = passwordReset.getUser();
-
-        if (resetPasswordDto.getEmail() != null && !resetPasswordDto.getEmail().equals(user.getEmail())) {
-            throw new CustomRuntimeException("Email không khớp với tài khoản!");
-        }
-
-        user.setPassword(passwordEncoder.encode(password));
-        passwordReset.setUsed(true);
-        passwordResetRepository.save(passwordReset);
-
-        return userMapper.toDto(userRepository.save(user));
-    }
-
-    @Override
     public void deleteUser(long id) throws CustomRuntimeException {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
@@ -271,33 +212,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user.setBalance(newBalance);
         userRepository.save(user);
-    }
-
-    @Override
-    public UserEntityDto register(UserEntityDto user) throws CustomRuntimeException {
-
-        UserEntity existUsername = userRepository.findUserByUsername(user.getUsername());
-        if (existUsername != null) {
-            throw new CustomRuntimeException("Tài khoản đã tồn tại!");
-        }
-
-        UserEntity existEmail = userRepository.findUserByEmail(user.getEmail());
-        if (existEmail != null) {
-            throw new CustomRuntimeException("Email đã được đăng ký!");
-        }
-
-        String encodePassword = passwordEncoder.encode(user.getPassword());
-
-        user.setPassword(encodePassword);
-        user.setActive(true);
-        user.setNonLocked(true);
-        user.setRoles(List.of("ROLE_USER"));
-
-        //TODO: Bật lên khi demo
-//        emailSenderService.sendRegisterHTMLMail(user.getEmail());
-
-        UserEntity newUser = userMapper.toEntity(user);
-        return userMapper.toDto(userRepository.save(newUser));
     }
 
     @Override

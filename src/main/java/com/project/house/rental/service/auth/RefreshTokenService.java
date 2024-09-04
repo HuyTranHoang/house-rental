@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface RefreshTokenService {
 
-    RefreshToken createRefreshToken(long userId, String token);
+    void createRefreshToken(long userId, String token);
 
     Optional<RefreshToken> findByToken(String token);
 

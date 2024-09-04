@@ -11,6 +11,7 @@ import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.mapper.auth.UserMapper;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
+import com.project.house.rental.service.auth.AuthService;
 import com.project.house.rental.service.auth.RefreshTokenService;
 import com.project.house.rental.service.auth.UserService;
 import jakarta.validation.Valid;
@@ -28,25 +29,26 @@ import java.util.Optional;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthService authService;
     private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
     private final UserMapper userMapper;
 
-    public AuthController(UserRepository userRepository, JWTTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, UserService userService, RefreshTokenService refreshTokenService, UserMapper userMapper) {
+    public AuthController(AuthService authService, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService, UserMapper userMapper) {
+        this.authService = authService;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManager = authenticationManager;
-        this.userService = userService;
         this.refreshTokenService = refreshTokenService;
         this.userMapper = userMapper;
     }
 
+
     @PostMapping("/register")
     public ResponseEntity<UserEntityDto> register(@RequestBody @Valid UserEntityDto user) throws CustomRuntimeException {
-        UserEntityDto newUserEntityDto = userService.register(user);
+        UserEntityDto newUserEntityDto = authService.register(user);
         return ResponseEntity.ok(newUserEntityDto);
     }
 
@@ -125,13 +127,13 @@ public class AuthController {
 
     @PostMapping("/send-reset-password-email")
     public ResponseEntity<String> sendResetPasswordEmail(@RequestParam @NotEmpty(message = "Vui lòng nhập email") String email) throws CustomRuntimeException {
-        userService.sendEmailResetPassword(email);
+        authService.sendEmailResetPassword(email);
         return ResponseEntity.ok("Email sent successfully");
     }
 
     @PostMapping("/reset-password")
     public ResponseEntity<UserEntityDto> resetPassword(@RequestBody @Valid ResetPasswordDto resetPasswordDto) throws CustomRuntimeException {
-        UserEntityDto userEntityDto = userService.resetPassword(resetPasswordDto);
+        UserEntityDto userEntityDto = authService.resetPassword(resetPasswordDto);
         return ResponseEntity.ok(userEntityDto);
     }
 }
