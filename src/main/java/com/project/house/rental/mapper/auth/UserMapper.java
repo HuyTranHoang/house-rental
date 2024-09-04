@@ -12,6 +12,8 @@ import java.util.List;
 @DecoratedWith(UserMapperDecorator.class)
 public interface UserMapper {
 
+    @Mapping(target = "isActive", source = "active")
+    @Mapping(target = "isNonLocked", source = "nonLocked")
     @Mapping(target = "roles", source = "roles", qualifiedByName = "toRoleDtos")
     @Mapping(target = "authorities", source = "roles", qualifiedByName = "toAuthorityDtos")
     UserEntityDto toDto(UserEntity user);
