@@ -19,6 +19,7 @@ public interface RoleMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "authorities", ignore = true)
     void updateEntityFromDto(RoleDto roleDto, @MappingTarget Role role);
 
     @Named("toAuthorityDtos")

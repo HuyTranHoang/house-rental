@@ -8,6 +8,7 @@ import com.project.house.rental.entity.auth.RefreshToken;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.entity.auth.UserPrincipal;
 import com.project.house.rental.exception.CustomRuntimeException;
+import com.project.house.rental.mapper.auth.UserMapper;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.auth.RefreshTokenService;
@@ -32,13 +33,15 @@ public class AuthController {
     private final JWTTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
+    private final UserMapper userMapper;
 
-    public AuthController(UserRepository userRepository, JWTTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, UserService userService, RefreshTokenService refreshTokenService) {
+    public AuthController(UserRepository userRepository, JWTTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, UserService userService, RefreshTokenService refreshTokenService, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.refreshTokenService = refreshTokenService;
+        this.userMapper = userMapper;
     }
 
     @PostMapping("/register")
@@ -72,7 +75,7 @@ public class AuthController {
         return ResponseEntity.ok()
                 .headers(jwtHeader)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
-                .body(userService.toDto(loginUser));
+                .body(userMapper.toDto(loginUser));
     }
 
     @PostMapping("/logout")
@@ -106,7 +109,7 @@ public class AuthController {
 
             ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
                     .httpOnly(true)
-                    .secure(false) // Ensure this is set to true only if using HTTPS
+                    .secure(true)
                     .path("/")
                     .maxAge(SecurityConstant.REFRESH_TOKEN_EXPIRATION_TIME)
                     .build();
@@ -114,7 +117,7 @@ public class AuthController {
 
             return ResponseEntity.ok()
                     .headers(jwtHeader)
-                    .body(userService.toDto(loginUser));
+                    .body(userMapper.toDto(loginUser));
         } else {
             return ResponseEntity.status(403).body("Invalid refresh token");
         }

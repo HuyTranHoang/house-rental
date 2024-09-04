@@ -11,6 +11,7 @@ import com.project.house.rental.entity.City_;
 import com.project.house.rental.entity.auth.*;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.exception.UserAccountLockedException;
+import com.project.house.rental.mapper.auth.UserMapper;
 import com.project.house.rental.repository.auth.PasswordResetRepository;
 import com.project.house.rental.repository.auth.RoleRepository;
 import com.project.house.rental.repository.auth.UserRepository;
@@ -54,8 +55,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final CloudinaryService cloudinaryService;
     private final PasswordResetRepository passwordResetRepository;
     private final HibernateFilterHelper hibernateFilterHelper;
+    private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, EmailSenderService emailSenderService, PasswordEncoder passwordEncoder, JWTTokenProvider jwtTokenProvider, CloudinaryService cloudinaryService, PasswordResetRepository passwordResetRepository, HibernateFilterHelper hibernateFilterHelper) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, EmailSenderService emailSenderService, PasswordEncoder passwordEncoder, JWTTokenProvider jwtTokenProvider, CloudinaryService cloudinaryService, PasswordResetRepository passwordResetRepository, HibernateFilterHelper hibernateFilterHelper, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.emailSenderService = emailSenderService;
@@ -64,6 +66,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.cloudinaryService = cloudinaryService;
         this.passwordResetRepository = passwordResetRepository;
         this.hibernateFilterHelper = hibernateFilterHelper;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -109,7 +112,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         PageInfo pageInfo = new PageInfo(userPage);
 
         List<UserEntityDto> userEntityDtoList = userPage.stream()
-                .map(this::toDto)
+                .map(userMapper::toDto)
                 .toList();
 
         return Map.of(
@@ -123,7 +126,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new NoResultException("Không tìm thấy tài khoản!"));
 
-        return toDto(user);
+        return userMapper.toDto(user);
     }
 
     @Override
@@ -162,8 +165,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         //TODO: Bật lên khi demo
         //emailSenderService.sendRegisterHTMLMail(user.getEmail());
 
-        UserEntity newUser = toEntity(user);
-        return toDto(userRepository.save(newUser));
+        UserEntity newUser = userMapper.toEntity(user);
+        return userMapper.toDto(userRepository.save(newUser));
     }
 
     @Override
@@ -171,8 +174,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         UserEntity existUser = userRepository.findById(id)
                 .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
 
-        updateEntityFromDto(existUser, user);
-        return toDto(userRepository.save(existUser));
+        userMapper.updateEntityFromDto(user, existUser);
+        return userMapper.toDto(userRepository.save(existUser));
     }
 
     @Override
@@ -181,7 +184,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
 
         user.setNonLocked(!user.isNonLocked());
-        return toDto(userRepository.save(user));
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
@@ -238,7 +241,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         passwordReset.setUsed(true);
         passwordResetRepository.save(passwordReset);
 
-        return toDto(userRepository.save(user));
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
@@ -293,8 +296,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         //TODO: Bật lên khi demo
 //        emailSenderService.sendRegisterHTMLMail(user.getEmail());
 
-        UserEntity newUser = toEntity(user);
-        return toDto(userRepository.save(newUser));
+        UserEntity newUser = userMapper.toEntity(user);
+        return userMapper.toDto(userRepository.save(newUser));
     }
 
     @Override
@@ -317,7 +320,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         user.setRoles(rolesUpdate);
-        return toDto(userRepository.save(user));
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
@@ -351,7 +354,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setLastName(profileDto.getLastName());
         user.setPhoneNumber(profileDto.getPhoneNumber());
 
-        return toDto(userRepository.save(user));
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
@@ -372,7 +375,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
 
-        return toDto(userRepository.save(user));
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
@@ -396,7 +399,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         String publicId = String.format("avatar/%s", UUID.randomUUID());
 
-        Map cloudinaryResponse = cloudinaryService.upload(avatar,publicId);
+        Map cloudinaryResponse = cloudinaryService.upload(avatar, publicId);
 
         String avatarPublicId = (String) cloudinaryResponse.get("public_id");
 
@@ -404,101 +407,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user.setAvatarUrl(optimizedUrl);
 
-        return toDto(userRepository.save(user));
+        return userMapper.toDto(userRepository.save(user));
     }
 
-    /*
-        Helper methods
-     */
-
-    public UserEntityDto toDto(UserEntity user) {
-        List<String> roles = user.getRoles().stream()
-                .map(Role::getName)
-                .toList();
-
-        List<String> authorities = user.getRoles().stream()
-                .map(Role::getAuthorities)
-                .flatMap(authorityList -> authorityList.stream().map(Authority::getPrivilege))
-                .distinct()
-                .toList();
-
-        return UserEntityDto.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .phoneNumber(user.getPhoneNumber())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .avatarUrl(user.getAvatarUrl())
-                .balance(user.getBalance())
-                .isActive(user.isActive())
-                .isNonLocked(user.isNonLocked())
-                .roles(roles)
-                .authorities(authorities)
-                .createdAt(user.getCreatedAt())
-                .build();
-    }
-
-    private UserEntity toEntity(UserEntityDto userDto) {
-        List<Role> roles = userDto.getRoles().stream()
-                .map(roleRepository::findRoleByNameIgnoreCase)
-                .toList();
-
-        List<Authority> authorities = userDto.getRoles().stream()
-                .map(roleRepository::findRoleByNameIgnoreCase)
-                .flatMap(role -> role.getAuthorities().stream())
-                .distinct()
-                .toList();
-
-        return UserEntity.builder()
-                .username(userDto.getUsername())
-                .password(userDto.getPassword())
-                .email(userDto.getEmail())
-                .phoneNumber(userDto.getPhoneNumber())
-                .firstName(userDto.getFirstName())
-                .lastName(userDto.getLastName())
-                .avatarUrl(userDto.getAvatarUrl())
-                .balance(userDto.getBalance())
-                .isActive(userDto.isActive())
-                .isNonLocked(userDto.isNonLocked())
-                .roles(roles)
-                .authorities(authorities)
-                .build();
-    }
-
-    private void updateEntityFromDto(UserEntity user, UserEntityDto userDto) throws CustomRuntimeException {
-        // Ensure roles are modifiable
-        List<Role> roles = new ArrayList<>(userDto.getRoles().stream()
-                .map(roleName -> {
-                    Role role = roleRepository.findRoleByNameIgnoreCase(roleName);
-                    if (role == null) {
-                        throw new IllegalArgumentException("Không tìm thấy quyền: " + roleName);
-                    }
-                    return role;
-                })
-                .toList());
-
-        if (roles.isEmpty() || roles.contains(null)) {
-            throw new CustomRuntimeException("Vui lòng chọn ít nhất một quyền hợp lệ cho tài khoản!");
-        }
-
-        List<Authority> authorities = new ArrayList<>(userDto.getRoles().stream()
-                .map(roleRepository::findRoleByNameIgnoreCase)
-                .flatMap(role -> role.getAuthorities().stream())
-                .distinct()
-                .toList());
-
-        user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-        user.setEmail(userDto.getEmail());
-        user.setPhoneNumber(userDto.getPhoneNumber());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setAvatarUrl(userDto.getAvatarUrl());
-        user.setBalance(userDto.getBalance());
-        user.setActive(userDto.isActive());
-        user.setNonLocked(userDto.isNonLocked());
-        user.setRoles(roles);
-        user.setAuthorities(authorities);
-    }
 }

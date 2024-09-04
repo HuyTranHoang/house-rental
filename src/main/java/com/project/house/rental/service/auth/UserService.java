@@ -43,8 +43,6 @@ public interface UserService {
 
     UserEntityDto updateRole(long id, List<String> roles) throws CustomRuntimeException;
 
-    UserEntityDto toDto(UserEntity user);
-
     void deleteMultipleUsers(List<Long> ids);
 
     void updateBalance(long id, double amount) throws CustomRuntimeException;
