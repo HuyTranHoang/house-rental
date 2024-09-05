@@ -18,8 +18,6 @@ public interface TransactionService {
 
     TransactionDto findByTransactionId(String transactionId); //transactionId là Mã giao dịch khi thanh toán bằng VNPay
   
-    TransactionDto updateTransactionId(long id, String transactionId);
-
     Map<String, Object> getUserTransactions(HttpServletRequest request, TransactionParams transactionParams);
   
     void updateTransactionId(long id, String transactionId);

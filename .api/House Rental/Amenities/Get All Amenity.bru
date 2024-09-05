@@ -13,3 +13,12 @@ get {
 auth:bearer {
   token: {{jwt}}
 }
+
+docs {
+  **GET /api/amenity/all**
+  
+  * **Mô tả:** Lấy thông tin của một tất cả tiện nghi.
+  * **Phản hồi:**
+      * **200 OK:** Trả về thông tin tiện nghi dưới dạng JSON
+  
+}

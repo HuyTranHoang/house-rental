@@ -11,9 +11,20 @@ get {
 }
 
 params:path {
-  id: 1
+  id: 111
 }
 
 auth:bearer {
   token: {{jwt}}
+}
+
+docs {
+  **GET /api/amenity/{id}**
+  
+  * **Mô tả:** Lấy thông tin của một tiện nghi cụ thể.
+  * **Tham số:**
+      * **id:** ID của tiện nghi (long)
+  * **Phản hồi:**
+      * **200 OK:** Trả về thông tin tiện nghi dưới dạng JSON
+      * **400 BAD_REQUEST:** Tiện nghi không tồn tại
 }

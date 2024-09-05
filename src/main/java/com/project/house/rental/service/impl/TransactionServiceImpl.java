@@ -152,8 +152,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy giao dịch"));
 
         transaction.setTransactionId(transactionId);
-        Transaction updatedTransaction = transactionRepository.save(transaction);
-        return toDto(updatedTransaction);
+        transactionRepository.save(transaction);
     }
 
     public Map<String, Object> getUserTransactions(HttpServletRequest request, TransactionParams transactionParams) {
