@@ -17,8 +17,12 @@ public interface TransactionService {
     TransactionDto updateTransactionStatus(String txnRef, String status);
 
     TransactionDto findByTransactionId(String transactionId); //transactionId là Mã giao dịch khi thanh toán bằng VNPay
-
-    void updateTransactionId(long id, String transactionId);
   
+    TransactionDto updateTransactionId(long id, String transactionId);
+
+    Map<String, Object> getUserTransactions(HttpServletRequest request, TransactionParams transactionParams);
+  
+    void updateTransactionId(long id, String transactionId);
+
 }
 

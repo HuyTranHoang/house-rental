@@ -55,6 +55,8 @@ public class TransactionServiceImpl implements TransactionService {
             case "amountAsc" -> Sort.by(Transaction_.AMOUNT);
             case "statusDesc" -> Sort.by(Transaction_.STATUS).descending();
             case "statusAsc" -> Sort.by(Transaction_.STATUS);
+            case "transactionTypeDesc" -> Sort.by(Transaction_.TYPE).descending();
+            case "transactionTypeAsc" -> Sort.by(Transaction_.TYPE);
             case "transactionDateDesc" -> Sort.by(Transaction_.TRANSACTION_DATE).descending();
             case "transactionDateAsc" -> Sort.by(Transaction_.TRANSACTION_DATE);
             default -> Sort.by(Transaction_.ID).ascending();
@@ -150,7 +152,21 @@ public class TransactionServiceImpl implements TransactionService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy giao dịch"));
 
         transaction.setTransactionId(transactionId);
-        transactionRepository.save(transaction);
+        Transaction updatedTransaction = transactionRepository.save(transaction);
+        return toDto(updatedTransaction);
+    }
+
+    public Map<String, Object> getUserTransactions(HttpServletRequest request, TransactionParams transactionParams) {
+        String username = jwtTokenProvider.getUsernameFromToken(request);
+        UserEntity currentUser = userRepository.findUserByUsername(username);
+
+        if (currentUser == null) {
+            throw new UsernameNotFoundException("Không tìm thấy tài khoản với username: " + username);
+        }
+
+        transactionParams.setUserId(currentUser.getId());
+
+        return getAllTransactionsWithParams(transactionParams);
     }
 
 }

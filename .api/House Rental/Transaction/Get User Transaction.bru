@@ -1,0 +1,17 @@
+meta {
+  name: Get User Transaction
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{host}}/api/transaction
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~status: FAILED
+  ~minAmount: 0
+  ~maxAmount: 0
+}
