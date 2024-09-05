@@ -52,6 +52,8 @@ public class TransactionServiceImpl implements TransactionService {
             case "amountAsc" -> Sort.by(Transaction_.AMOUNT);
             case "statusDesc" -> Sort.by(Transaction_.STATUS).descending();
             case "statusAsc" -> Sort.by(Transaction_.STATUS);
+            case "transactionTypeDesc" -> Sort.by(Transaction_.TYPE).descending();
+            case "transactionTypeAsc" -> Sort.by(Transaction_.TYPE);
             case "transactionDateDesc" -> Sort.by(Transaction_.TRANSACTION_DATE).descending();
             case "transactionDateAsc" -> Sort.by(Transaction_.TRANSACTION_DATE);
             default -> Sort.by(Transaction_.ID).ascending();

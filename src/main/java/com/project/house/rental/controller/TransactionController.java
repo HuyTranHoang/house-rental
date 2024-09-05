@@ -67,7 +67,7 @@ public class TransactionController {
     }
 
     @GetMapping("/user-history")
-    public ResponseEntity<Map<String, Object>> getUserTransactionHistory(HttpServletRequest request, TransactionParams transactionParams) {
+    public ResponseEntity<Map<String, Object>> getUserTransactionHistory(HttpServletRequest request,@ModelAttribute TransactionParams transactionParams) {
         Map<String, Object> transactions = transactionService.getUserTransactions(request, transactionParams);
         return ResponseEntity.ok(transactions);
     }
