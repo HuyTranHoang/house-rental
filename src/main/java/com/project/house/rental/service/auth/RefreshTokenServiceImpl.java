@@ -18,14 +18,14 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public RefreshToken createRefreshToken(long userId, String token) {
+    public void createRefreshToken(long userId, String token) {
         RefreshToken refreshToken = RefreshToken.builder()
                 .userId(userId)
                 .token(token)
                 .expiryDate(new Date(System.currentTimeMillis() + SecurityConstant.REFRESH_TOKEN_EXPIRATION_TIME))
                 .build();
 
-        return refreshTokenRepository.save(refreshToken);
+        refreshTokenRepository.save(refreshToken);
     }
 
 

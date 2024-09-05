@@ -7,6 +7,7 @@ import com.project.house.rental.dto.params.CityParams;
 import com.project.house.rental.entity.City;
 import com.project.house.rental.entity.City_;
 import com.project.house.rental.exception.ConflictException;
+import com.project.house.rental.mapper.CityMapper;
 import com.project.house.rental.repository.CityRepository;
 import com.project.house.rental.service.CityService;
 import com.project.house.rental.specification.CitySpecification;
@@ -42,7 +43,7 @@ public class CityServiceImpl implements CityService {
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_CITY_FILTER);
 
         return cityList.stream()
-                .map(this::toDto)
+                .map(CityMapper.INSTANCE::toDto)
                 .toList();
     }
 
@@ -55,7 +56,7 @@ public class CityServiceImpl implements CityService {
             throw new NoResultException("Không tìm thấy 'City' với id = " + id);
         }
 
-        return toDto(city);
+        return CityMapper.INSTANCE.toDto(city);
     }
 
     @Override
@@ -71,9 +72,9 @@ public class CityServiceImpl implements CityService {
             throw new ConflictException("Tên thành phố đã tồn tại");
         }
 
-        City city = toEntity(cityDto);
+        City city = CityMapper.INSTANCE.toEntity(cityDto);
         city = cityRepository.save(city);
-        return toDto(city);
+        return CityMapper.INSTANCE.toDto(city);
     }
 
     @Override
@@ -94,10 +95,10 @@ public class CityServiceImpl implements CityService {
             throw new ConflictException("Tên thành phố đã tồn tại");
         }
 
-        updateEntityFromDto(city, cityDto);
+        CityMapper.INSTANCE.updateFromDto(cityDto, city);
         city = cityRepository.save(city);
 
-        return toDto(city);
+        return CityMapper.INSTANCE.toDto(city);
     }
 
     @Override
@@ -149,7 +150,7 @@ public class CityServiceImpl implements CityService {
         PageInfo pageInfo = new PageInfo(cityPage);
 
         List<CityDto> cityDtoList = cityPage.stream()
-                .map(this::toDto)
+                .map(CityMapper.INSTANCE::toDto)
                 .toList();
 
         return Map.of(
@@ -157,24 +158,5 @@ public class CityServiceImpl implements CityService {
                 "data", cityDtoList
         );
     }
-
-    public CityDto toDto(City city) {
-        return CityDto.builder()
-                .id(city.getId())
-                .name(city.getName())
-                .createdAt(city.getCreatedAt())
-                .build();
-    }
-
-    public City toEntity(CityDto cityDto) {
-        return City.builder()
-                .name(cityDto.getName())
-                .build();
-    }
-
-    public void updateEntityFromDto(City city, CityDto cityDto) {
-        city.setName(cityDto.getName());
-    }
-
 
 }

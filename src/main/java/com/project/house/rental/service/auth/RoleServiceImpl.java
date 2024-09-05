@@ -4,10 +4,10 @@ import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.auth.RoleDto;
 import com.project.house.rental.dto.params.RoleParams;
-import com.project.house.rental.entity.auth.Authority;
 import com.project.house.rental.entity.auth.Role;
 import com.project.house.rental.entity.auth.Role_;
 import com.project.house.rental.exception.ConflictException;
+import com.project.house.rental.mapper.auth.RoleMapper;
 import com.project.house.rental.repository.auth.AuthorityRepository;
 import com.project.house.rental.repository.auth.RoleRepository;
 import com.project.house.rental.specification.RoleSpecification;
@@ -29,11 +29,13 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
     private final AuthorityRepository authorityRepository;
     private final HibernateFilterHelper hibernateFilterHelper;
+    private final RoleMapper roleMapper;
 
-    public RoleServiceImpl(RoleRepository roleRepository, AuthorityRepository authorityRepository, HibernateFilterHelper hibernateFilterHelper) {
+    public RoleServiceImpl(RoleRepository roleRepository, AuthorityRepository authorityRepository, HibernateFilterHelper hibernateFilterHelper, RoleMapper roleMapper) {
         this.roleRepository = roleRepository;
         this.authorityRepository = authorityRepository;
         this.hibernateFilterHelper = hibernateFilterHelper;
+        this.roleMapper = roleMapper;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class RoleServiceImpl implements RoleService {
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROLE_FILTER);
 
         return roles.stream()
-                .map(this::toDto)
+                .map(roleMapper::toDto)
                 .toList();
     }
 
@@ -82,7 +84,7 @@ public class RoleServiceImpl implements RoleService {
         PageInfo pageInfo = new PageInfo(rolePage);
 
         List<RoleDto> roleDtoList = rolePage.stream()
-                .map(this::toDto)
+                .map(roleMapper::toDto)
                 .toList();
 
         return Map.of(
@@ -99,7 +101,7 @@ public class RoleServiceImpl implements RoleService {
             throw new NoResultException("Không tìm thấy vai trò với id: " + id);
         }
 
-        return toDto(role);
+        return roleMapper.toDto(role);
     }
 
     @Override
@@ -113,10 +115,10 @@ public class RoleServiceImpl implements RoleService {
             throw new ConflictException("Vai trò đã tồn tại");
         }
 
-        Role role = toEntity(roleDto);
+        Role role = roleMapper.toEntity(roleDto);
         roleRepository.save(role);
 
-        return toDto(role);
+        return roleMapper.toDto(role);
     }
 
     @Override
@@ -139,16 +141,16 @@ public class RoleServiceImpl implements RoleService {
             throw new ConflictException("Vai trò đã tồn tại");
         }
 
-        updateEntityFromDto(role, roleDto);
+        roleMapper.updateEntityFromDto(roleDto, role);
         roleRepository.save(role);
 
-        return toDto(role);
+        return roleMapper.toDto(role);
     }
 
     @Override
     public void deleteRoleById(long id) {
         Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy 'City' với id = " + id));
+                .orElseThrow(() -> new NoResultException("Không tìm thấy vai trò với id: " + id));
 
         if (role.getName().equals("ROLE_ADMIN") || role.getName().equals("ROLE_USER")) {
             throw new IllegalArgumentException("Không thể xóa vai trò mặc định");
@@ -161,46 +163,5 @@ public class RoleServiceImpl implements RoleService {
     public void deleteMultipleRoles(List<Long> ids) {
         List<Role> roles = roleRepository.findAllById(ids);
         roleRepository.deleteAll(roles);
-    }
-
-    @Override
-    public RoleDto toDto(Role role) {
-        List<String> authorityPrivileges = role.getAuthorities().stream()
-                .map(Authority::getPrivilege)
-                .toList();
-
-        return RoleDto.builder()
-                .id(role.getId())
-                .name(role.getName())
-                .authorityPrivileges(authorityPrivileges)
-                .description(role.getDescription())
-                .createdAt(role.getCreatedAt())
-                .build();
-    }
-
-    @Override
-    public Role toEntity(RoleDto roleDto) {
-        List<Authority> authorities = authorityRepository
-                .findAllByPrivilegeIn(roleDto.getAuthorityPrivileges());
-
-        if (authorities.size() != roleDto.getAuthorityPrivileges().size()) {
-            throw new NoResultException("Không tìm thấy quyền đuộc cung cấp");
-        }
-
-        return Role.builder()
-                .name(roleDto.getName())
-                .description(roleDto.getDescription())
-                .authorities(authorities)
-                .build();
-    }
-
-    @Override
-    public void updateEntityFromDto(Role role, RoleDto roleDto) {
-        List<Authority> authorities = authorityRepository
-                .findAllByPrivilegeIn(roleDto.getAuthorityPrivileges());
-
-        role.setName(roleDto.getName());
-        role.setDescription(roleDto.getDescription());
-        role.setAuthorities(authorities);
     }
 }

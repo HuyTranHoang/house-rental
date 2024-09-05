@@ -8,8 +8,10 @@ import com.project.house.rental.entity.auth.RefreshToken;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.entity.auth.UserPrincipal;
 import com.project.house.rental.exception.CustomRuntimeException;
+import com.project.house.rental.mapper.auth.UserMapper;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
+import com.project.house.rental.service.auth.AuthService;
 import com.project.house.rental.service.auth.RefreshTokenService;
 import com.project.house.rental.service.auth.UserService;
 import jakarta.validation.Valid;
@@ -21,30 +23,32 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthService authService;
     private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
+    private final UserMapper userMapper;
 
-    public AuthController(UserRepository userRepository, JWTTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, UserService userService, RefreshTokenService refreshTokenService) {
+    public AuthController(AuthService authService, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService, UserMapper userMapper) {
+        this.authService = authService;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManager = authenticationManager;
-        this.userService = userService;
         this.refreshTokenService = refreshTokenService;
+        this.userMapper = userMapper;
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<UserEntityDto> register(@RequestBody @Valid UserEntityDto user) throws CustomRuntimeException {
-        UserEntityDto newUserEntityDto = userService.register(user);
+        UserEntityDto newUserEntityDto = authService.register(user);
         return ResponseEntity.ok(newUserEntityDto);
     }
 
@@ -73,7 +77,7 @@ public class AuthController {
         return ResponseEntity.ok()
                 .headers(jwtHeader)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
-                .body(userService.toDto(loginUser));
+                .body(userMapper.toDto(loginUser));
     }
 
     @PostMapping("/logout")
@@ -107,7 +111,7 @@ public class AuthController {
 
             ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
                     .httpOnly(true)
-                    .secure(false) // Ensure this is set to true only if using HTTPS
+                    .secure(true)
                     .path("/")
                     .maxAge(SecurityConstant.REFRESH_TOKEN_EXPIRATION_TIME)
                     .build();
@@ -115,7 +119,7 @@ public class AuthController {
 
             return ResponseEntity.ok()
                     .headers(jwtHeader)
-                    .body(userService.toDto(loginUser));
+                    .body(userMapper.toDto(loginUser));
         } else {
             return ResponseEntity.status(403).body("Invalid refresh token");
         }
@@ -123,13 +127,13 @@ public class AuthController {
 
     @PostMapping("/send-reset-password-email")
     public ResponseEntity<String> sendResetPasswordEmail(@RequestParam @NotEmpty(message = "Vui lòng nhập email") String email) throws CustomRuntimeException {
-        userService.sendEmailResetPassword(email);
+        authService.sendEmailResetPassword(email);
         return ResponseEntity.ok("Email sent successfully");
     }
 
     @PostMapping("/reset-password")
     public ResponseEntity<UserEntityDto> resetPassword(@RequestBody @Valid ResetPasswordDto resetPasswordDto) throws CustomRuntimeException {
-        UserEntityDto userEntityDto = userService.resetPassword(resetPasswordDto);
+        UserEntityDto userEntityDto = authService.resetPassword(resetPasswordDto);
         return ResponseEntity.ok(userEntityDto);
     }
 }

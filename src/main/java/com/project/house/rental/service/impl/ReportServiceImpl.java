@@ -10,6 +10,7 @@ import com.project.house.rental.entity.Report;
 import com.project.house.rental.entity.Report_;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.entity.auth.UserEntity_;
+import com.project.house.rental.mapper.ReportMapper;
 import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.repository.ReportRepository;
 import com.project.house.rental.repository.auth.UserRepository;
@@ -41,14 +42,16 @@ public class ReportServiceImpl implements ReportService {
     private final PropertyRepository propertyRepository;
     private final EmailSenderService emailSenderService;
     private final HibernateFilterHelper hibernateFilterHelper;
+    private final ReportMapper reportMapper;
 
-    public ReportServiceImpl(ReportRepository reportRepository, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, PropertyRepository propertyRepository, EmailSenderService emailSenderService, HibernateFilterHelper hibernateFilterHelper) {
+    public ReportServiceImpl(ReportRepository reportRepository, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, PropertyRepository propertyRepository, EmailSenderService emailSenderService, HibernateFilterHelper hibernateFilterHelper, ReportMapper reportMapper) {
         this.reportRepository = reportRepository;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.propertyRepository = propertyRepository;
         this.emailSenderService = emailSenderService;
         this.hibernateFilterHelper = hibernateFilterHelper;
+        this.reportMapper = reportMapper;
     }
 
     public List<ReportDto> getAllReports(String username) {
@@ -61,7 +64,7 @@ public class ReportServiceImpl implements ReportService {
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_REPORT_FILTER);
 
         return reportList.stream()
-                .map(this::toDto)
+                .map(reportMapper::toDto)
                 .toList();
     }
 
@@ -73,7 +76,7 @@ public class ReportServiceImpl implements ReportService {
             throw new NoResultException("Không tìm thấy report với id: " + id);
         }
 
-        return toDto(report);
+        return reportMapper.toDto(report);
     }
 
     @Override
@@ -87,14 +90,14 @@ public class ReportServiceImpl implements ReportService {
 
         reportDto.setUserId(currentUser.getId());
 
-        Report newReport = toEntity(reportDto);
+        Report newReport = reportMapper.toEntity(reportDto);
 
         newReport.setStatus(Report.ReportStatus.PENDING);
 
         // TODO: Bật lên khi test demo
 //         emailSenderService.sendReportHTMLMail(currentUser.getEmail(), currentUser.getUsername(), newReport.getProperty().getTitle());
 
-        return toDto(reportRepository.save(newReport));
+        return reportMapper.toDto(reportRepository.save(newReport));
     }
 
     @Override
@@ -147,7 +150,7 @@ public class ReportServiceImpl implements ReportService {
         PageInfo pageInfo = new PageInfo(reportPage);
 
         List<ReportDto> reportDtoList = reportPage.stream()
-                .map(this::toDto)
+                .map(reportMapper::toDto)
                 .toList();
 
         return Map.of(
@@ -197,47 +200,6 @@ public class ReportServiceImpl implements ReportService {
         reportRepository.save(report);
     }
 
-    /*
-        Helper method
-     */
-
-    @Override
-    public ReportDto toDto(Report report) {
-        return ReportDto.builder()
-                .id(report.getId())
-                .userId(report.getUser().getId())
-                .username(report.getUser().getUsername())
-                .propertyId(report.getProperty().getId())
-                .title(report.getProperty().getTitle())
-                .reason(report.getReason())
-                .status(String.valueOf(report.getStatus()))
-                .category(String.valueOf(report.getCategory()))
-                .createdAt(report.getCreatedAt())
-                .build();
-    }
-
-    @Override
-    public Report toEntity(ReportDto reportDto) {
-        UserEntity currentUser = userRepository.findById(reportDto.getUserId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy user với id: " + reportDto.getUserId()));
-
-        Property currentProperty = propertyRepository.findByIdWithFilter(reportDto.getPropertyId());
-        if (currentProperty == null) {
-            throw new NoResultException("Không tìm thấy bài đăng!");
-        }
-
-        if (!isValidReportCategory(reportDto.getCategory())) {
-            throw new IllegalArgumentException("Danh mục [" + reportDto.getCategory() + "] không hợp lệ");
-        }
-
-        return Report.builder()
-                .user(currentUser)
-                .property(currentProperty)
-                .reason(reportDto.getReason())
-                .category(Report.ReportCategory.valueOf(reportDto.getCategory()))
-                .build();
-    }
-
     private boolean isValidReportStatus(String status) {
         try {
             Report.ReportStatus.valueOf(status);
@@ -247,12 +209,4 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
-    private boolean isValidReportCategory(String cateogry) {
-        try {
-            Report.ReportCategory.valueOf(cateogry);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-    }
 }

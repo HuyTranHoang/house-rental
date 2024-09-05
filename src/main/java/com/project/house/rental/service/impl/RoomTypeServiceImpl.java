@@ -7,6 +7,7 @@ import com.project.house.rental.dto.params.RoomTypeParams;
 import com.project.house.rental.entity.RoomType;
 import com.project.house.rental.entity.RoomType_;
 import com.project.house.rental.exception.ConflictException;
+import com.project.house.rental.mapper.RoomTypeMapper;
 import com.project.house.rental.repository.RoomTypeRepository;
 import com.project.house.rental.service.RoomTypeService;
 import com.project.house.rental.specification.RoomTypeSpecification;
@@ -41,7 +42,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ROOM_TYPE_FILTER);
 
         return roomTypeList.stream()
-                .map(this::toDto)
+                .map(RoomTypeMapper.INSTANCE::toDto)
                 .toList();
     }
 
@@ -54,7 +55,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             throw new NoResultException("Không tìm thấy loại phòng với id = " + id);
         }
 
-        return toDto(roomType);
+        return RoomTypeMapper.INSTANCE.toDto(roomType);
     }
 
     @Override
@@ -69,11 +70,11 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             throw new ConflictException("Loại phòng đã tồn tại");
         }
 
-        RoomType roomType = toEntity(roomTypeDto);
+        RoomType roomType = RoomTypeMapper.INSTANCE.toEntity(roomTypeDto);
 
         roomType = roomTypeRepository.save(roomType);
 
-        return toDto(roomType);
+        return RoomTypeMapper.INSTANCE.toDto(roomType);
     }
 
     @Override
@@ -95,11 +96,11 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             throw new ConflictException("Loại phòng đã tồn tại");
         }
 
-        updateEntityFromDto(roomType, roomTypeDto);
+        RoomTypeMapper.INSTANCE.updateFromDto(roomTypeDto, roomType);
 
         roomType = roomTypeRepository.save(roomType);
 
-        return toDto(roomType);
+        return RoomTypeMapper.INSTANCE.toDto(roomType);
     }
 
     @Override
@@ -151,7 +152,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         PageInfo pageInfo = new PageInfo(roomTypePage);
 
         List<RoomTypeDto> roomTypeDtoList = roomTypePage.stream()
-                .map(this::toDto)
+                .map(RoomTypeMapper.INSTANCE::toDto)
                 .toList();
 
         return Map.of(
@@ -160,24 +161,4 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         );
     }
 
-    @Override
-    public RoomTypeDto toDto(RoomType roomType) {
-        return RoomTypeDto.builder()
-                .id(roomType.getId())
-                .name(roomType.getName())
-                .createdAt(roomType.getCreatedAt())
-                .build();
-    }
-
-    @Override
-    public RoomType toEntity(RoomTypeDto roomTypeDto) {
-        return RoomType.builder()
-                .name(roomTypeDto.getName())
-                .build();
-    }
-
-    @Override
-    public void updateEntityFromDto(RoomType roomType, RoomTypeDto roomTypeDto) {
-        roomType.setName(roomTypeDto.getName());
-    }
 }

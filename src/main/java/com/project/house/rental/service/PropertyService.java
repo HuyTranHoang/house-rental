@@ -18,12 +18,6 @@ public interface PropertyService {
 
     void deletePropertyById(long id);
 
-    PropertyDto toDto(Property property);
-
-    Property toEntity(PropertyDto propertyDto);
-
-    void updateEntityFromDto(Property property, PropertyDto propertyDto);
-
     Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams);
 
     PropertyDto blockProperty(long id, String status);

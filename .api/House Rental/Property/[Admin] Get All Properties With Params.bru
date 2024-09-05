@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: {{host}}/api/properties/admin?status=PENDING
+  url: {{host}}/api/properties/admin
   body: none
   auth: none
 }
 
 params:query {
-  status: PENDING
+  ~status: PENDING
   ~minPrice: 0
   ~maxPrice: 0
   ~minArea: 0

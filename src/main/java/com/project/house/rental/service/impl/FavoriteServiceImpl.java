@@ -6,11 +6,14 @@ import com.project.house.rental.dto.FavoriteDto;
 import com.project.house.rental.dto.FavoritePropertyDto;
 import com.project.house.rental.dto.PropertyDto;
 import com.project.house.rental.dto.params.FavoriteParams;
-import com.project.house.rental.entity.*;
+import com.project.house.rental.entity.Favorite;
+import com.project.house.rental.entity.Favorite_;
+import com.project.house.rental.entity.PropertyImage;
+import com.project.house.rental.entity.Property_;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
+import com.project.house.rental.mapper.FavoriteMapper;
 import com.project.house.rental.repository.FavoriteRepository;
-import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.FavoriteService;
@@ -25,7 +28,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -36,16 +38,16 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
     private final UserRepository userRepository;
-    private final PropertyRepository propertyRepository;
     private final HibernateFilterHelper hibernateFilterHelper;
     private final JWTTokenProvider jwtTokenProvider;
+    private final FavoriteMapper favoriteMapper;
 
-    public FavoriteServiceImpl(FavoriteRepository favoriteRepository, UserRepository userRepository, PropertyRepository propertyRepository, HibernateFilterHelper hibernateFilterHelper, JWTTokenProvider jwtTokenProvider) {
+    public FavoriteServiceImpl(FavoriteRepository favoriteRepository, UserRepository userRepository, HibernateFilterHelper hibernateFilterHelper, JWTTokenProvider jwtTokenProvider, FavoriteMapper favoriteMapper) {
         this.favoriteRepository = favoriteRepository;
         this.userRepository = userRepository;
-        this.propertyRepository = propertyRepository;
         this.hibernateFilterHelper = hibernateFilterHelper;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.favoriteMapper = favoriteMapper;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_FAVORITE_FILTER);
 
         return favorites.stream()
-                .map(this::toDto)
+                .map(favoriteMapper::toDto)
                 .toList();
     }
 
@@ -70,7 +72,7 @@ public class FavoriteServiceImpl implements FavoriteService {
             throw new NoResultException("Không tìm thấy yêu thích với id: " + favoritePrimaryKey);
         }
 
-        return toDto(favorite);
+        return favoriteMapper.toDto(favorite);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         List<Favorite> favorites = favoriteRepository.findByUserIdWithFilter(userId);
 
         return favorites.stream()
-                .map(this::toDto)
+                .map(favoriteMapper::toDto)
                 .toList();
     }
 
@@ -117,7 +119,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         List<Favorite> favorites = favoriteRepository.findByPropertyIdWithFilter(propertyId);
 
         return favorites.stream()
-                .map(this::toDto)
+                .map(favoriteMapper::toDto)
                 .toList();
     }
 
@@ -145,12 +147,12 @@ public class FavoriteServiceImpl implements FavoriteService {
         if (existingFavorite != null && !existingFavorite.isDeleted()) {
             existingFavorite.setDeleted(false);
             favoriteRepository.save(existingFavorite);
-            return toDto(existingFavorite);
+            return favoriteMapper.toDto(existingFavorite);
         }
 
-        Favorite favorite = toEntity(favoriteDto);
+        Favorite favorite = favoriteMapper.toEntity(favoriteDto);
         favorite = favoriteRepository.save(favorite);
-        return toDto(favorite);
+        return favoriteMapper.toDto(favorite);
     }
 
     @Override
@@ -163,38 +165,6 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         favorite.setDeleted(true);
         favoriteRepository.save(favorite);
-    }
-
-    @Override
-    public FavoriteDto toDto(Favorite favorite) {
-        return FavoriteDto.builder()
-                .userId(favorite.getUser().getId())
-                .username(favorite.getUser().getUsername())
-                .propertyId(favorite.getProperty().getId())
-                .propertyTitle(favorite.getProperty().getTitle())
-                .createdAt(favorite.getCreatedAt())
-                .build();
-    }
-
-    @Override
-    public Favorite toEntity(FavoriteDto favoriteDto) {
-        UserEntity userEntity = userRepository.findById(favoriteDto.getUserId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy người dùng với id: " + favoriteDto.getUserId()));
-
-        Property property = propertyRepository.findById(favoriteDto.getPropertyId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng với id: " + favoriteDto.getPropertyId()));
-
-        FavoritePrimaryKey favoritePrimaryKey = FavoritePrimaryKey.builder()
-                .userId(favoriteDto.getUserId())
-                .propertyId(favoriteDto.getPropertyId())
-                .build();
-
-        return Favorite.builder()
-                .favoritePrimaryKey(favoritePrimaryKey)
-                .user(userEntity)
-                .property(property)
-                .createdAt(new Date())
-                .build();
     }
 
     @Override
@@ -233,7 +203,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         PageInfo pageInfo = new PageInfo(cityPage);
 
         List<FavoriteDto> favoriteDtoList = cityPage.stream()
-                .map(this::toDto)
+                .map(favoriteMapper::toDto)
                 .toList();
 
         return Map.of(

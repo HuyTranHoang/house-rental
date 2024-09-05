@@ -7,6 +7,7 @@ import com.project.house.rental.dto.params.AmenityParams;
 import com.project.house.rental.entity.Amenity;
 import com.project.house.rental.entity.Amenity_;
 import com.project.house.rental.exception.ConflictException;
+import com.project.house.rental.mapper.AmenityMapper;
 import com.project.house.rental.repository.AmenityRepository;
 import com.project.house.rental.service.AmenityService;
 import com.project.house.rental.specification.AmenitySpecification;
@@ -42,7 +43,7 @@ public class AmenityServiceImpl implements AmenityService {
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_AMENITY_FILTER);
 
         return amenities.stream()
-                .map(this::toDto)
+                .map(AmenityMapper.INSTANCE::toDto)
                 .toList();
     }
 
@@ -54,7 +55,7 @@ public class AmenityServiceImpl implements AmenityService {
             throw new NoResultException("Không tìm thấy tiện ích với id = " + id);
         }
 
-        return toDto(amenity);
+        return AmenityMapper.INSTANCE.toDto(amenity);
     }
 
     @Override
@@ -65,16 +66,16 @@ public class AmenityServiceImpl implements AmenityService {
             throw new ConflictException("Tiện ích đã tồn tại");
         }
 
-        Amenity amenities = toEntity(amenityDto);
-        amenities = amenityRepository.save(amenities);
-        return toDto(amenities);
+        Amenity amenity = AmenityMapper.INSTANCE.toEntity(amenityDto);
+        amenity = amenityRepository.save(amenity);
+        return AmenityMapper.INSTANCE.toDto(amenity);
     }
 
     @Override
     public AmenityDto updateAmenity(long id, AmenityDto amenityDto) {
-        Amenity amenities = amenityRepository.findByIdWithFilter(id);
+        Amenity amenity = amenityRepository.findByIdWithFilter(id);
 
-        if (amenities == null) {
+        if (amenity == null) {
             throw new NoResultException("Không tìm thấy tiện ích với id = " + id);
         }
 
@@ -84,10 +85,10 @@ public class AmenityServiceImpl implements AmenityService {
             throw new ConflictException("Tiện ích đã tồn tại");
         }
 
-        updateEntityFromDto(amenities, amenityDto);
-        amenities = amenityRepository.save(amenities);
+        AmenityMapper.INSTANCE.updateFromDto(amenityDto, amenity);
+        amenity = amenityRepository.save(amenity);
 
-        return toDto(amenities);
+        return AmenityMapper.INSTANCE.toDto(amenity);
     }
 
     @Override
@@ -139,7 +140,7 @@ public class AmenityServiceImpl implements AmenityService {
         PageInfo pageInfo = new PageInfo(amenityPage);
 
         List<AmenityDto> amenityDtoList = amenityPage.stream()
-                .map(this::toDto)
+                .map(AmenityMapper.INSTANCE::toDto)
                 .toList();
 
         return Map.of(
@@ -148,24 +149,4 @@ public class AmenityServiceImpl implements AmenityService {
         );
     }
 
-    @Override
-    public AmenityDto toDto(Amenity amenities) {
-        return AmenityDto.builder()
-                .id(amenities.getId())
-                .name(amenities.getName())
-                .createdAt(amenities.getCreatedAt())
-                .build();
-    }
-
-    @Override
-    public Amenity toEntity(AmenityDto amenitiesDto) {
-        return Amenity.builder()
-                .name(amenitiesDto.getName())
-                .build();
-    }
-
-    @Override
-    public void updateEntityFromDto(Amenity amenities, AmenityDto amenitiesDto) {
-        amenities.setName(amenitiesDto.getName());
-    }
 }

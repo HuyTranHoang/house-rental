@@ -5,9 +5,6 @@ import com.project.house.rental.entity.auth.Authority;
 
 import java.util.List;
 
-public interface AuthorityService
-{
+public interface AuthorityService {
     List<AuthorityDto> getAllAuthorities();
-
-    AuthorityDto toDto(Authority authority);
 }

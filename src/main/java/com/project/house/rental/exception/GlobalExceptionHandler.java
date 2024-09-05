@@ -1,5 +1,6 @@
 package com.project.house.rental.exception;
 
+import com.project.house.rental.common.HttpResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,5 +22,16 @@ public class GlobalExceptionHandler {
                 "message", ex.getMessage()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<HttpResponse> handleAllExceptions(Exception ex) {
+        HttpResponse httpResponse = new HttpResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase().toUpperCase(),
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(httpResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -16,18 +16,10 @@ public interface ReportService {
 
     ReportDto createReport(ReportDto reportDto, HttpServletRequest request);
 
-//    ReportDto updateReport(long id, ReportDto reportDto);
-
     void deleteReportById(long id);
 
     Map<String, Object> getAllReportsWithParams(ReportParams reportParams);
 
     void updateReportStatus(long reportId, String status);
-
-    ReportDto toDto(Report report);
-
-    Report toEntity(ReportDto reportDto);
-
-//    void updateEntityFromDto(Report report, ReportDto reportDto);
 
 }

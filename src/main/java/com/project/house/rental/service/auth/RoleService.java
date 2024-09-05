@@ -23,9 +23,4 @@ public interface RoleService {
 
     void deleteMultipleRoles(List<Long> ids);
 
-    RoleDto toDto(Role role);
-
-    Role toEntity(RoleDto roleDto);
-
-    void updateEntityFromDto(Role role, RoleDto roleDto);
 }

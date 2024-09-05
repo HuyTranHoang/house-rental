@@ -1,6 +1,7 @@
 package com.project.house.rental.service.email;
 
 import com.project.house.rental.dto.email.ContactDto;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -48,14 +49,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             Context context = new Context();
             context.setVariable("username", to);
             String text = templateEngine.process("register-email-template", context);
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setPriority(1);
-            helper.setSubject("Chào mừng bạn đến với Mogu");
-            helper.setFrom("huy.th878@aptechlearning.edu.vn");
-            helper.setTo(to);
-            helper.setText(text, true);
-            javaMailSender.send(message);
+            createMessage(to, text, "Mogu - Đăng ký tài khoản");
         } catch (Exception e) {
             throw new RuntimeException("Failed to send email");
         }
@@ -100,14 +94,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             context.setVariable("email", to);
             context.setVariable("token", token);
             String text = templateEngine.process("reset-password-email-template", context);
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setPriority(1);
-            helper.setSubject("Mogu - Đặt lại mật khẩu");
-            helper.setFrom("huy.th878@aptechlearning.edu.vn");
-            helper.setTo(to);
-            helper.setText(text, true);
-            javaMailSender.send(message);
+            createMessage(to, text, "Mogu - Đặt lại mật khẩu");
         } catch (Exception e) {
             throw new RuntimeException("Failed to send email");
         }
@@ -121,14 +108,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             context.setVariable("username", username);
             context.setVariable("propertyTitle", propertyTitle);
             String text = templateEngine.process("report-email-template", context);
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setPriority(1);
-            helper.setSubject("Mogu - Báo cáo bài đăng");
-            helper.setFrom("huy.th878@aptechlearning.edu.vn");
-            helper.setTo(to);
-            helper.setText(text, true);
-            javaMailSender.send(message);
+            createMessage(to, text, "Mogu - Báo cáo bài đăng");
         } catch (Exception e) {
             throw new RuntimeException("Failed to send email");
         }
@@ -141,16 +121,20 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             context.setVariable("username", username);
             context.setVariable("propertyTitle", propertyTitle);
             String text = templateEngine.process("block-email-template", context);
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setPriority(1);
-            helper.setSubject("Mogu - Báo cáo bài đăng");
-            helper.setFrom("huy.th878@aptechlearning.edu.vn");
-            helper.setTo(to);
-            helper.setText(text, true);
-            javaMailSender.send(message);
+            createMessage(to, text, "Mogu - Thông báo khóa tài khoản");
         } catch (Exception e) {
             throw new RuntimeException("Failed to send email");
         }
+    }
+
+    private void createMessage(String to, String text, String subject) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setPriority(1);
+        helper.setSubject(subject);
+        helper.setFrom("huy.th878@aptechlearning.edu.vn");
+        helper.setTo(to);
+        helper.setText(text, true);
+        javaMailSender.send(message);
     }
 }

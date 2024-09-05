@@ -27,10 +27,6 @@ public interface UserService {
 
     UserEntityDto lockUser(long id) throws CustomRuntimeException;
 
-    void sendEmailResetPassword(String email) throws CustomRuntimeException;
-
-    UserEntityDto resetPassword(ResetPasswordDto resetPasswordDto) throws CustomRuntimeException;
-
     void deleteUser(long id) throws CustomRuntimeException;
 
     UserEntityDto updateProfile(ProfileDto profileDto, HttpServletRequest request) throws CustomRuntimeException;
@@ -39,11 +35,7 @@ public interface UserService {
 
     UserEntityDto updateAvatar(MultipartFile avatar, HttpServletRequest request) throws CustomRuntimeException, IOException;
 
-    UserEntityDto register(UserEntityDto user) throws CustomRuntimeException;
-
     UserEntityDto updateRole(long id, List<String> roles) throws CustomRuntimeException;
-
-    UserEntityDto toDto(UserEntity user);
 
     void deleteMultipleUsers(List<Long> ids);
 

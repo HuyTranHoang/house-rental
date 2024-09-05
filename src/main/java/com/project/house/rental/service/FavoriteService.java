@@ -3,7 +3,6 @@ package com.project.house.rental.service;
 import com.project.house.rental.dto.FavoriteDto;
 import com.project.house.rental.dto.FavoritePropertyDto;
 import com.project.house.rental.dto.params.FavoriteParams;
-import com.project.house.rental.entity.Favorite;
 import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -25,10 +24,6 @@ public interface FavoriteService {
     FavoriteDto createFavorite(FavoriteDto favoriteDto, HttpServletRequest request);
 
     void deleteFavoriteById(FavoritePrimaryKey favoritePrimaryKey);
-
-    FavoriteDto toDto(Favorite favorite);
-
-    Favorite toEntity(FavoriteDto favoriteDto);
 
     Map<String, Object> getAllFavoritesWithParams(FavoriteParams favoriteParams);
 
