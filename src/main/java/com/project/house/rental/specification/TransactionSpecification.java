@@ -17,6 +17,15 @@ public class TransactionSpecification {
         };
     }
 
+    public static Specification<Transaction> filterByTransactionId(String transactionId) {
+        return (root, query, cb) -> {
+            if(!StringUtils.hasLength(transactionId))
+                return cb.conjunction();
+
+            return cb.equal(root.get(Transaction_.TRANSACTION_ID), transactionId);
+        };
+    }
+
     public static Specification<Transaction> filterByStatus(String status) {
         return (root, query, cb) -> {
             if(!StringUtils.hasLength(status))
