@@ -17,12 +17,12 @@ public class TransactionSpecification {
         };
     }
 
-    public static Specification<Transaction> filterByTransactionId(String transactionId) {
+    public static Specification<Transaction> searchByTransactionId(String transactionId) {
         return (root, query, cb) -> {
             if(!StringUtils.hasLength(transactionId))
                 return cb.conjunction();
 
-            return cb.equal(root.get(Transaction_.TRANSACTION_ID), transactionId);
+            return cb.like(root.get(Transaction_.TRANSACTION_ID), "%" + transactionId + "%");
         };
     }
 
