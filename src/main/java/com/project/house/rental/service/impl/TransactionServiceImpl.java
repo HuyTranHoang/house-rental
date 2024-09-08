@@ -49,7 +49,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .and(TransactionSpecification.filterByStatus(transactionParams.getStatus()))
                 .and(TransactionSpecification.filterByTransactionType(transactionParams.getTransactionType()))
                 .and(TransactionSpecification.filterByAmount(transactionParams.getMinAmount(), transactionParams.getMaxAmount()))
-                .and(TransactionSpecification.filterByTransactionId(transactionParams.getTransactionId()));
+                .and(TransactionSpecification.searchByTransactionId(transactionParams.getTransactionId()));
 
         Sort sort = switch (transactionParams.getSortBy()) {
             case "amountDesc" -> Sort.by(Transaction_.AMOUNT).descending();
