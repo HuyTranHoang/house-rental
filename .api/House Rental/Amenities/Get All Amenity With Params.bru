@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: {{host}}/api/amenity?pageNumber=1
+  url: {{host}}/api/amenity
   body: none
   auth: bearer
 }
 
 params:query {
-  pageNumber: 1
+  ~pageNumber: 1
   ~name: 
   ~sortBy: 
   ~pageSize: 

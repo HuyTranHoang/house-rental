@@ -14,7 +14,7 @@ public class ReviewSpecification {
             if (rating == 0)
                 return cb.conjunction();
 
-            return cb.equal(root.get(Review_.RATING), rating);
+            return cb.equal(root.get    (Review_.RATING), rating);
         };
     }
 

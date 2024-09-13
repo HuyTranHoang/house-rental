@@ -5,12 +5,13 @@ meta {
 }
 
 get {
-  url: {{host}}/api/transaction
+  url: {{host}}/api/transaction?transactionType=DEPOSIT
   body: none
   auth: inherit
 }
 
 params:query {
+  transactionType: DEPOSIT
   ~transactionId: 46116223
   ~status: FAILED
   ~userId: 2
