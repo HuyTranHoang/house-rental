@@ -60,7 +60,10 @@ public class AmenityServiceImpl implements AmenityService {
 
     @Override
     public AmenityDto createAmenity(AmenityDto amenityDto) {
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_AMENITY_FILTER);
         Amenity existingAmenity = amenityRepository.findByNameIgnoreCase(amenityDto.getName());
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_AMENITY_FILTER);
 
         if (existingAmenity != null) {
             throw new ConflictException("Tiện ích đã tồn tại");

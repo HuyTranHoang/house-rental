@@ -68,7 +68,10 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public DistrictDto createDistrict(DistrictDto districtDto) {
+
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_DISTRICT_FILTER);
         District existingDistrict = districtRepository.findByNameAndCityId(districtDto.getName(), districtDto.getCityId());
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_DISTRICT_FILTER);
 
         if (existingDistrict != null) {
             throw new ConflictException("Quận đã tồn tại trong thành phố này");
