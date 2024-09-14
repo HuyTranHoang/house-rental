@@ -18,6 +18,8 @@ public interface UserMapper {
     @Mapping(target = "authorities", source = "roles", qualifiedByName = "toAuthorityDtos")
     UserEntityDto toDto(UserEntity user);
 
+    @Mapping(target = "isActive", source = "active")
+    @Mapping(target = "isNonLocked", source = "nonLocked")
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "authorities", ignore = true)
     UserEntity toEntity(UserEntityDto userDto);
