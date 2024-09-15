@@ -48,24 +48,28 @@ public class UserController {
         return ResponseEntity.ok(userEntityDto);
     }
 
+    @PreAuthorize("hasAnyAuthority('user:create', 'admin:all')")
     @PostMapping({"", "/"})
     public ResponseEntity<UserEntityDto> addNewUser(@RequestBody @Valid UserEntityDto user) throws CustomRuntimeException {
         UserEntityDto userEntityDto = userService.addNewUser(user);
         return ResponseEntity.ok(userEntityDto);
     }
 
+    @PreAuthorize("hasAnyAuthority('user:update', 'admin:all')")
     @PutMapping("/{id}")
     public ResponseEntity<UserEntityDto> updateUser(@PathVariable long id, @RequestBody @Valid UserEntityDto user) throws CustomRuntimeException {
         UserEntityDto userEntityDto = userService.updateUser(id, user);
         return ResponseEntity.ok(userEntityDto);
     }
 
+    @PreAuthorize("hasAnyAuthority('user:delete', 'admin:all')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable long id) throws CustomRuntimeException {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('user:update', 'admin:all')")
     @PutMapping("/lock/{id}")
     public ResponseEntity<UserEntityDto> lockUser(@PathVariable long id) throws CustomRuntimeException {
         UserEntityDto userEntityDto = userService.lockUser(id);
@@ -84,6 +88,7 @@ public class UserController {
         return ResponseEntity.ok(userEntityDto);
     }
 
+    @PreAuthorize("hasAnyAuthority('role:update', 'admin:all')")
     @PutMapping("/update-role/{id}")
     public ResponseEntity<UserEntityDto> updateRole(@PathVariable long id, @RequestBody Map<String, List<String>> requestBody) throws CustomRuntimeException {
         List<String> roles = requestBody.get("roles");
@@ -91,6 +96,7 @@ public class UserController {
         return ResponseEntity.ok(userEntityDto);
     }
 
+    @PreAuthorize("hasAnyAuthority('user:delete', 'admin:all')")
     @DeleteMapping("/delete-multiple")
     public ResponseEntity<Void> deleteMultipleUsers(@RequestBody Map<String, List<Long>> requestBody) {
         List<Long> ids = requestBody.get("ids");
@@ -98,6 +104,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('user:update', 'admin:all')")
     @PutMapping("/balance/{id}")
     public ResponseEntity<Void> updateBalance(@PathVariable Long id, @RequestBody Map<String, Double> requestBody) throws CustomRuntimeException {
         double amount = requestBody.get("amount");
