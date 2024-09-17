@@ -44,6 +44,10 @@ public class PropertyDto {
 
     boolean isBlocked = Boolean.FALSE;
 
+    boolean isPriority = Boolean.FALSE;
+
+    Date priorityExpiration;
+
     long userId;
 
     String userName;

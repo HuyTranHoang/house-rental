@@ -23,6 +23,8 @@ public interface PropertyMapper {
     @Mapping(source = "district.name", target = "districtName")
     @Mapping(source = "amenities", target = "amenities", qualifiedByName = "amenityName")
     @Mapping(source = "propertyImages", target = "propertyImages", qualifiedByName = "imageUrl")
+    @Mapping(source = "isPriority", target = "isPriority")
+    @Mapping(source = "priorityExpiration", target = "priorityExpiration")
     PropertyDto toDto(Property property);
 
     @Mapping(target = "amenities", ignore = true)

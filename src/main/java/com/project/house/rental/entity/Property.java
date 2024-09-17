@@ -10,6 +10,7 @@ import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Getter
@@ -89,6 +90,15 @@ public class Property extends BaseEntity {
 
     @OneToMany(mappedBy = "property")
     List<Favorite> favorites;
+
+    @Column(name = "is_priority", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    boolean isPriority = false;
+
+    @Column(name = "priority_expiration")
+    Timestamp priorityExpiration;
+
+    @Column(name = "refresh_day")
+    Timestamp refreshDay;
 
     public enum PropertyStatus {
         PENDING,

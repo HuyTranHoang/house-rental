@@ -21,10 +21,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -238,6 +240,16 @@ public class PropertyServiceImpl implements PropertyService {
             return false;
         }
     }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void updateExpiredPriorities() {
+        List<Property> expiredProperties = propertyRepository.findByPriorityExpirationBeforeAndIsPriorityTrue(new Timestamp(System.currentTimeMillis()));
+        expiredProperties.forEach(property -> {
+            property.setPriority(false);
+            propertyRepository.save(property);
+        });
+    }
+
 
 
 }
