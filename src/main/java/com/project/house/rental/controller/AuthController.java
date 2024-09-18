@@ -105,7 +105,7 @@ public class AuthController {
             UserEntity loginUser = userRepository.findUserById(token.getUserId());
 
             if (!loginUser.isNonLocked()) {
-                refreshTokenService.deleteByToken(refreshToken);
+//                refreshTokenService.deleteByToken(refreshToken);
                 throw new CustomRuntimeException("Tài khoản của bạn đã bị khóa");
             }
 
