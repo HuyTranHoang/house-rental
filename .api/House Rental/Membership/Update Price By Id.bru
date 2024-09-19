@@ -1,0 +1,21 @@
+meta {
+  name: Update Price By Id
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{localhost}}/api/membership/price/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 5
+}
+
+body:json {
+  {
+    "price": 1000
+  }
+}

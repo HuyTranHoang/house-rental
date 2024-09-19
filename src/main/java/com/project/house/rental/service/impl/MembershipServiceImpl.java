@@ -6,11 +6,14 @@ import com.project.house.rental.dto.MembershipDto;
 import com.project.house.rental.dto.params.MembershipParams;
 import com.project.house.rental.entity.Membership;
 import com.project.house.rental.entity.Membership_;
+import com.project.house.rental.exception.ConflictException;
+import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.mapper.MembershipMapper;
 import com.project.house.rental.repository.MembershipRepository;
 import com.project.house.rental.service.MembershipService;
 import com.project.house.rental.specification.MembershipSpecifition;
 import com.project.house.rental.utils.HibernateFilterHelper;
+import jakarta.persistence.NoResultException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -86,5 +89,84 @@ public class MembershipServiceImpl implements MembershipService {
                 "pageInfo", pageInfo,
                 "data", membershipDtoList
         );
+    }
+
+    @Override
+    public MembershipDto getMembershipById(long id) {
+        Membership membership = membershipRepository.findByIdWithFilter(id);
+
+        if (membership == null) {
+            throw new NoResultException("Không tìm thấy Memberships với id = " + id);
+        }
+
+        return MembershipMapper.INSTANCE.toDto(membership);
+    }
+
+    @Override
+    public MembershipDto updateMembership(long id, MembershipDto membershipDto) {
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_MEMBERSHIP_FILTER);
+
+        Membership membership = membershipRepository.findByIdWithFilter(id);
+
+        if (membership == null) {
+            throw new NoResultException("Không tìm thấy hạng mức thành viên với id = " + id);
+        }
+
+        Membership existingMembership = membershipRepository.findByNameIgnoreCase(membershipDto.getName());
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_MEMBERSHIP_FILTER);
+
+        if (existingMembership != null && existingMembership.getId() != id) {
+            throw new ConflictException("Tên hạng mức thành viên đã tồn tại");
+        }
+
+        MembershipMapper.INSTANCE.updateFromDto(membershipDto, membership);
+        membership = membershipRepository.save(membership);
+
+        return MembershipMapper.INSTANCE.toDto(membership);
+    }
+
+    @Override
+    public void deleteMembershipById(long id) {
+        Membership membership = membershipRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy 'Membership' với id = " + id));
+
+        membershipRepository.deleteById(membership.getId());
+    }
+
+    @Override
+    public void deleteMultipleMemberships(List<Long> ids) {
+        List<Membership> membershipList = membershipRepository.findAllById(ids);
+        membershipRepository.deleteAll(membershipList);
+    }
+
+    @Override
+    public MembershipDto createMembership(MembershipDto membershipDto) {
+        hibernateFilterHelper.enableFilter(FilterConstant.DELETE_MEMBERSHIP_FILTER);
+
+        Membership existingMembership = membershipRepository.findByNameIgnoreCase(membershipDto.getName());
+
+        hibernateFilterHelper.disableFilter(FilterConstant.DELETE_MEMBERSHIP_FILTER);
+
+        if (existingMembership != null) {
+            throw new ConflictException("Tên hạng mức thành viên đã tồn tại");
+        }
+
+        Membership membership = MembershipMapper.INSTANCE.toEntity(membershipDto);
+        membership = membershipRepository.save(membership);
+        return MembershipMapper.INSTANCE.toDto(membership);
+    }
+
+    @Override
+    public void updatePrice(long id, double price) throws CustomRuntimeException {
+        Membership membership = membershipRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy 'Membership' với id = " + id));
+
+        if (price < 0) {
+            throw new CustomRuntimeException("Số tiền không thể nhỏ hơn 0!");
+        }
+
+        membership.setPrice(price);
+        membershipRepository.save(membership);
     }
 }

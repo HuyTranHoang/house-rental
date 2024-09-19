@@ -1,11 +1,11 @@
 meta {
-  name: Delete Multi City
+  name: Delete Multi Membership
   type: http
   seq: 6
 }
 
 delete {
-  url: {{host}}/api/city/delete-multiple
+  url: {{localhost}}/api/membership/delete-multiple
   body: json
   auth: inherit
 }
@@ -13,9 +13,8 @@ delete {
 body:json {
   {
     "ids": [
-      6,
-      7,
-      8
+      4,
+      5
     ]
   }
 }

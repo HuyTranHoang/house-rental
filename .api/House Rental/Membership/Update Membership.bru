@@ -1,0 +1,27 @@
+meta {
+  name: Update Membership
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{localhost}}/api/membership/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 4
+}
+
+body:json {
+  {
+    "name": "test 5",
+    "price": 5000.00,
+    "durationDays": 15,
+    "priority": 5,
+    "refresh": 4,
+    "description": "This is desciption"
+    
+  }
+}
