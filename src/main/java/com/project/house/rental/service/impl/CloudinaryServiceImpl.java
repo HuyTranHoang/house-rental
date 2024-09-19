@@ -60,7 +60,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
             }
 
             String publicId = (String) uploadResult.get("public_id");
-            String url = (String) uploadResult.get("url");
+            String url = (String) uploadResult.get("secure_url");
             result.put(publicId, url);
         }
 
@@ -86,6 +86,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     public String getOptimizedImage(String publicId) {
         return cloudinary.url()
                 .transformation(new Transformation().quality("auto").fetchFormat("auto"))
+                .secure(true)
                 .generate(publicId);
     }
 }
