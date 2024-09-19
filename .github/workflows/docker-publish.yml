@@ -33,21 +33,13 @@ jobs:
           echo VNPAY_TMN_CODE=${{ secrets.VNPAY_TMN_CODE }} >> .env
           echo VNPAY_HASH_SECRET=${{ secrets.VNPAY_HASH_SECRET }} >> .env
 
-      - name: Build with Maven
-        run: mvn clean package -DskipTests
-
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build Docker image
-        run: docker build -t sosovi/house_rental:latest .
-
-
-      - name: Verify Docker image
-        run: docker images sosovi/house_rental:latest
-
-      - name: Push Docker image
-        run: docker push sosovi/house_rental:latest
+      - name: Build and push Docker image
+        run: |
+          docker build -t sosovi/house_rental:latest .
+          docker push sosovi/house_rental:latest
 
       - name: Deploy to Render
         run: |
