@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public abstract class PropertyMapperDecorator implements PropertyMapper {
 
@@ -79,12 +78,14 @@ public abstract class PropertyMapperDecorator implements PropertyMapper {
         property.setRoomType(roomType);
         property.setUser(user);
         property.setDistrict(district);
+        property.setAmenities(amenities);
+        property.setPropertyImages(propertyImages);
 
-        property.getAmenities().clear();
-        property.getAmenities().addAll(amenities);
+//        property.getAmenities().clear();
+//        property.getAmenities().addAll(amenities);
 
-        property.getPropertyImages().clear();
-        property.getPropertyImages().addAll(propertyImages);
+//        property.getPropertyImages().clear();
+//        property.getPropertyImages().addAll(propertyImages);
 
         return property;
     }
@@ -118,9 +119,10 @@ public abstract class PropertyMapperDecorator implements PropertyMapper {
         property.setDistrict(district);
         property.setUser(user);
         property.setRoomType(roomType);
+        property.setAmenities(amenities);
 
-        property.getAmenities().clear();
-        property.getAmenities().addAll(amenities);
+//        property.getAmenities().clear();
+//        property.getAmenities().addAll(amenities);
     }
 
     private boolean isValidPropertyStatus(String status) {
