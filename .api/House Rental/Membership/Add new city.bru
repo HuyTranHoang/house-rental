@@ -1,0 +1,17 @@
+meta {
+  name: Add new city
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{host}}/api/city
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "name": "test"
+  }
+}

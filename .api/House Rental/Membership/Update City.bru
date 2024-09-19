@@ -1,0 +1,21 @@
+meta {
+  name: Update City
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{host}}/api/city/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 6
+}
+
+body:json {
+  {
+      "name": "Hồ Chí Minh 123"
+  }
+}

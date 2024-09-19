@@ -1,0 +1,21 @@
+meta {
+  name: Delete Multi City
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{host}}/api/city/delete-multiple
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "ids": [
+      6,
+      7,
+      8
+    ]
+  }
+}

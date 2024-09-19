@@ -1,0 +1,15 @@
+meta {
+  name: Delete City
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{host}}/api/city/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 7
+}
