@@ -13,7 +13,6 @@ import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.auth.AuthService;
 import com.project.house.rental.service.auth.RefreshTokenService;
-import com.project.house.rental.service.auth.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.HttpHeaders;
@@ -71,6 +70,7 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
+                .sameSite("None")
                 .maxAge(SecurityConstant.REFRESH_TOKEN_EXPIRATION_TIME)
                 .build();
 
@@ -88,6 +88,7 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
+                .sameSite("None")
                 .maxAge(0)
                 .build();
 
