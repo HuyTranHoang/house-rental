@@ -97,6 +97,7 @@ public class UserMemberShipServiceImpl implements UserMembershipService {
         // Kiểm tra trùng Membership ==> Gia hạng
         if ((userMembership.getMembership().getId()) == (userMembershipDto.getMembershipId())) {
             userMembership.setEndDate(Date.from(userMembership.getEndDate().toInstant().plus(Duration.ofDays(membership.getDurationDays()))));
+
         } else {
             // Kiểm tra khác Membership ==> Nâng hạng
             userMembership.setMembership(membership);
@@ -105,11 +106,24 @@ public class UserMemberShipServiceImpl implements UserMembershipService {
             userMembership.setStatus(UserMembership.Status.ACTIVE);
         }
 
-        // Cộng giá trị của gói vào các giới hạn
-        userMembership.setTotalPriorityLimit(userMembership.getTotalPriorityLimit() + membership.getPriority());
-        userMembership.setTotalRefreshLimit(userMembership.getTotalRefreshLimit() + membership.getRefresh());
+        // Cộng limit
+        int newPriorityLimit = userMembership.getTotalPriorityLimit() - userMembership.getPriorityPostsUsed() + membership.getPriority();
+        userMembership.setTotalPriorityLimit(newPriorityLimit);
+        int newRefreshLimit = userMembership.getTotalRefreshLimit() - userMembership.getRefreshesPostsUsed() + membership.getRefresh();
+        userMembership.setTotalRefreshLimit(newRefreshLimit);
+
+        // Set lượt đã dùng về 0
+        userMembership.setPriorityPostsUsed(0);
+        userMembership.setRefreshesPostsUsed(0);
 
         UserMembership updatedUserMembership = userMembershipRepository.save(userMembership);
+
+        //Cập nhật lại balance của User
+        UserEntity user = userRepository.findById(updatedUserMembership.getUser().getId())
+                .orElseThrow(() -> new NoResultException("Không tìm thấy User"));
+        double newBalance = user.getBalance() - membership.getPrice();
+        user.setBalance(newBalance);
+        userRepository.save(user);
 
         return userMembershipMapper.toDto(updatedUserMembership);
     }
