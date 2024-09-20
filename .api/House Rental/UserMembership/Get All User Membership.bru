@@ -1,0 +1,15 @@
+meta {
+  name: Get All User Membership
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{localhost}}/api/user-membership/all
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

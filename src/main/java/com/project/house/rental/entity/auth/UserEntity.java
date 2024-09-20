@@ -85,4 +85,7 @@ public class UserEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     List<Transaction> transactions;
+
+    @OneToOne(mappedBy = "user")
+    UserMembership userMembership;
 }

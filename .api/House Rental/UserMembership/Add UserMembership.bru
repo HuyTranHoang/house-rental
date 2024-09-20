@@ -1,0 +1,15 @@
+meta {
+  name: Add UserMembership
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{localhost}}/api/user-membership/:userId
+  body: json
+  auth: inherit
+}
+
+params:path {
+  userId: 4
+}

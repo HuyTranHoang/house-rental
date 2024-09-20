@@ -3,6 +3,7 @@ package com.project.house.rental.entity;
 import com.project.house.rental.constant.FilterConstant;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,6 +11,8 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -41,5 +44,8 @@ public class Membership extends BaseEntity {
 
     @Column(name = "description", columnDefinition = "TEXT")
     String description;
+
+    @OneToMany(mappedBy = "membership")
+    List<UserMembership> userMemberships;
 
 }

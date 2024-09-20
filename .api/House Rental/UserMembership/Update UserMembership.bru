@@ -1,0 +1,21 @@
+meta {
+  name: Update UserMembership
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{localhost}}/api/user-membership/:userId
+  body: json
+  auth: inherit
+}
+
+params:path {
+  userId: 4
+}
+
+body:json {
+  {
+    "membershipId": 2
+  }
+}
