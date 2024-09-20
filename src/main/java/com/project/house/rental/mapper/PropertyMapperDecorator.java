@@ -10,6 +10,7 @@ import com.project.house.rental.repository.RoomTypeRepository;
 import com.project.house.rental.repository.AmenityRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import jakarta.persistence.NoResultException;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,6 +41,26 @@ public abstract class PropertyMapperDecorator implements PropertyMapper {
 
     @Autowired
     private PropertyImageRepository propertyImageRepository;
+
+    @Mapping(source = "city.name", target = "cityName")
+    @Override
+    public PropertyDto toDto(Property property) {
+        PropertyDto propertyDto = delegate.toDto(property);
+
+        if (property.getAmenities() != null) {
+            propertyDto.setAmenities(property.getAmenities().stream()
+                    .map(Amenity::getName)
+                    .toList());
+        }
+
+        if (property.getPropertyImages() != null) {
+            propertyDto.setPropertyImages(property.getPropertyImages().stream()
+                    .map(PropertyImage::getImageUrl)
+                    .toList());
+        }
+
+        return propertyDto;
+    }
 
     @Override
     public Property toEntity(PropertyDto propertyDto) {

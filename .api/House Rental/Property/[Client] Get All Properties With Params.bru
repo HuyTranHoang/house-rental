@@ -5,20 +5,20 @@ meta {
 }
 
 get {
-  url: {{host}}/api/properties
+  url: {{host}}/api/properties?minArea=0&maxArea=30
   body: none
   auth: none
 }
 
 params:query {
+  minArea: 0
+  maxArea: 30
   ~search: rất đẹp
   ~sortBy: priceAsc
   ~pageNumber: 0
   ~roomTypeId: 1
   ~minPrice: 2000
   ~maxPrice: 123
-  ~minArea: 
-  ~maxArea: 
   ~pageSize: 1
   ~cityId: 2
   ~districtId: 12
