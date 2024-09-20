@@ -94,6 +94,16 @@ public class UserMemberShipServiceImpl implements UserMembershipService {
         Membership membership = membershipRepository.findById(userMembershipDto.getMembershipId())
                 .orElseThrow(() -> new NoResultException("Không tìm thấy Membership"));
 
+        //Cập nhật lại balance của User
+        UserEntity user = userRepository.findById(userMembershipDto.getUserId())
+                .orElseThrow(() -> new NoResultException("Không tìm thấy User"));
+        double newBalance = user.getBalance() - membership.getPrice();
+        if (newBalance < 0) {
+            throw new IllegalArgumentException("Số dư không đủ để mua gói thành viên.");
+        }
+        user.setBalance(newBalance);
+        userRepository.save(user);
+
         // Kiểm tra trùng Membership ==> Gia hạng
         if ((userMembership.getMembership().getId()) == (userMembershipDto.getMembershipId())) {
             userMembership.setEndDate(Date.from(userMembership.getEndDate().toInstant().plus(Duration.ofDays(membership.getDurationDays()))));
@@ -118,12 +128,7 @@ public class UserMemberShipServiceImpl implements UserMembershipService {
 
         UserMembership updatedUserMembership = userMembershipRepository.save(userMembership);
 
-        //Cập nhật lại balance của User
-        UserEntity user = userRepository.findById(updatedUserMembership.getUser().getId())
-                .orElseThrow(() -> new NoResultException("Không tìm thấy User"));
-        double newBalance = user.getBalance() - membership.getPrice();
-        user.setBalance(newBalance);
-        userRepository.save(user);
+
 
         return userMembershipMapper.toDto(updatedUserMembership);
     }
