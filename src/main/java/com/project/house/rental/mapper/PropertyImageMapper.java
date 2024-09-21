@@ -10,8 +10,6 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 @DecoratedWith(PropertyImageMapperDecorator.class)
 public interface PropertyImageMapper {
-    @Mapping(source = "property.id", target = "propertyId")
-    @Mapping(source = "property.title", target = "propertyTitle")
     PropertyImageDto toDto(PropertyImage propertyImage);
 
     PropertyImage toEntity(PropertyImageDto propertyImageDto);

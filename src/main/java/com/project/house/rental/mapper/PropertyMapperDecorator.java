@@ -85,10 +85,22 @@ public abstract class PropertyMapperDecorator implements PropertyMapper {
 
         List<PropertyImage> propertyImages = new ArrayList<>();
 
-        if (propertyDto.getPropertyImages() != null) {
-            propertyImages = propertyDto.getPropertyImages().stream()
-                    .map(propertyImageRepository::findByImageUrl)
-                    .toList();
+        if (property.getAmenities() == null) {
+            property.setAmenities(new ArrayList<>());
+        }
+
+//        if (propertyDto.getPropertyImages() != null) {
+//            propertyImages = propertyDto.getPropertyImages().stream()
+//                    .map(image -> PropertyImage.builder()
+//                            .imageUrl(image.getImageUrl())
+//                            .blurhash(image.getBlurhash())
+//                            .build()
+//                    )
+//                    .toList();
+//        }
+
+        if (property.getPropertyImages() == null) {
+            property.setPropertyImages(new ArrayList<>());
         }
 
         if (!isValidPropertyStatus(propertyDto.getStatus())) {

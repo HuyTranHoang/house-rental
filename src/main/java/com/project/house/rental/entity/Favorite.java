@@ -37,7 +37,7 @@ public class Favorite {
     Property property;
 
     @Column(name = "is_deleted")
-    boolean isDeleted = Boolean.FALSE;
+    boolean isDeleted;
 
     @Column(name = "created_at")
     @CreationTimestamp

@@ -24,4 +24,6 @@ public class FilterConstant {
     public static final String DELETE_FAVORITE_FILTER = "deletedFavoriteFilter";
     public static final String DELETE_ROLE_FILTER = "deletedRoleFilter";
     public static final String DELETE_USER_FILTER = "deletedUserFilter";
+    public static final String DELETE_MEMBERSHIP_FILTER = "deletedMembershipFilter";
+    public static final String DELETE_USER_MEMBERSHIP_FILTER = "deletedUserMembershipFilter";
 }

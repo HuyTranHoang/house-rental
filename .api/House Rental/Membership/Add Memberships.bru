@@ -1,0 +1,23 @@
+meta {
+  name: Add Memberships
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{localhost}}/api/membership
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "test 2",
+    "price": 10000.00,
+    "durationDays": 15,
+    "priority": 5,
+    "refresh": 4,
+    "description": "This is desciption"
+    
+  }
+}

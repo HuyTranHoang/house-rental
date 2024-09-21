@@ -40,14 +40,14 @@ public class Report {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
-    ReportCategory category = ReportCategory.OTHER;
+    ReportCategory category;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    ReportStatus status = ReportStatus.PENDING;
+    ReportStatus status;
 
     @Column(name = "is_deleted")
-    boolean isDeleted = Boolean.FALSE;
+    boolean isDeleted;
 
     @Column(name = "created_at")
     @CreationTimestamp
