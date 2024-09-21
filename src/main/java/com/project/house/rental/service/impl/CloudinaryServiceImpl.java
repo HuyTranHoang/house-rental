@@ -90,6 +90,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     public String getOptimizedImage(String publicId) {
         return cloudinary.url()
                 .transformation(new Transformation().quality("auto").fetchFormat("auto"))
+                .secure(true)
                 .generate(publicId);
     }
 }

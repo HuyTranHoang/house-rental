@@ -13,7 +13,6 @@ import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.auth.AuthService;
 import com.project.house.rental.service.auth.RefreshTokenService;
-import com.project.house.rental.service.auth.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.HttpHeaders;
@@ -71,6 +70,7 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
+                .sameSite("None")
                 .maxAge(SecurityConstant.REFRESH_TOKEN_EXPIRATION_TIME)
                 .build();
 
@@ -88,6 +88,7 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
+                .sameSite("None")
                 .maxAge(0)
                 .build();
 
@@ -97,12 +98,18 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@CookieValue("refreshToken") String refreshToken) {
+    public ResponseEntity<?> refreshToken(@CookieValue("refreshToken") String refreshToken) throws CustomRuntimeException {
         Optional<RefreshToken> optionalRefreshToken = refreshTokenService.findByToken(refreshToken);
 
         if (optionalRefreshToken.isPresent()) {
             RefreshToken token = optionalRefreshToken.get();
             UserEntity loginUser = userRepository.findUserById(token.getUserId());
+
+            if (!loginUser.isNonLocked()) {
+//                refreshTokenService.deleteByToken(refreshToken);
+                throw new CustomRuntimeException("Tài khoản của bạn đã bị khóa");
+            }
+
             UserPrincipal userPrincipal = new UserPrincipal(loginUser);
             String newAccessToken = jwtTokenProvider.generateAccessToken(userPrincipal);
 
@@ -121,7 +128,7 @@ public class AuthController {
                     .headers(jwtHeader)
                     .body(userMapper.toDto(loginUser));
         } else {
-            return ResponseEntity.status(403).body("Invalid refresh token");
+            throw new CustomRuntimeException("Refresh token không hợp lệ");
         }
     }
 

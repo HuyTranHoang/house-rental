@@ -4,11 +4,8 @@ import com.project.house.rental.dto.PropertyDto;
 import com.project.house.rental.dto.PropertyImageBlurhashDto;
 import com.project.house.rental.dto.PropertyImageDto;
 import com.project.house.rental.entity.Amenity;
-import com.project.house.rental.entity.Property;
-import com.project.house.rental.entity.PropertyImage;
-import org.mapstruct.*;
 
-import java.util.List;
+
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 @DecoratedWith(PropertyMapperDecorator.class)

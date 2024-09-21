@@ -24,6 +24,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleConflictException(ConflictException ex) {
+        Map<String, Object> errorResponse = Map.of(
+                "timeStamp", LocalDateTime.now().toString(),
+                "statusCode", HttpStatus.CONFLICT.value(),
+                "httpStatus", HttpStatus.CONFLICT,
+                "reason", "Conflict",
+                "message", ex.getMessage()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<HttpResponse> handleAllExceptions(Exception ex) {
         HttpResponse httpResponse = new HttpResponse(

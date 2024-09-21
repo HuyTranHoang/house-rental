@@ -305,6 +305,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         String oldAvatarUrl = user.getAvatarUrl();
+        if (oldAvatarUrl == null) {
+            oldAvatarUrl = "";
+        }
+
         int index = oldAvatarUrl.indexOf("v1/");
         if (index != -1) {
             String publicId = oldAvatarUrl.substring(index + 3);
