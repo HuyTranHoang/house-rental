@@ -12,10 +12,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FavoritePropertyDto {
-
     long userId;
-
-    String username;
 
     List<PropertyDto> properties;
 }

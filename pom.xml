@@ -153,6 +153,12 @@
 			<version>${lombok-mapstruct-binding.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>io.trbl</groupId>
+			<artifactId>blurhash</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

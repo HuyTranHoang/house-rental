@@ -42,9 +42,9 @@ public class PropertyDto {
     @NotEmpty(message = "Vui lòng chọn trạng thái")
     String status;
 
-    boolean isBlocked = Boolean.FALSE;
+    boolean isBlocked;
 
-    boolean isPriority = Boolean.FALSE;
+    boolean isPriority;
 
     Date priorityExpiration;
 
@@ -66,7 +66,7 @@ public class PropertyDto {
 
     List<String> amenities;
 
-    List<String> propertyImages;
+    List<PropertyImageBlurhashDto> propertyImages;
 
     Date createdAt;
 
