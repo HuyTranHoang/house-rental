@@ -8,7 +8,6 @@ import com.project.house.rental.entity.Property;
 import com.project.house.rental.entity.PropertyImage;
 import com.project.house.rental.entity.Property_;
 import com.project.house.rental.mapper.PropertyMapper;
-import com.project.house.rental.repository.PropertyImageRepository;
 import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.service.PropertyService;
@@ -36,15 +35,13 @@ import java.util.Map;
 public class PropertyServiceImpl implements PropertyService {
 
     private final PropertyRepository propertyRepository;
-    private final PropertyImageRepository propertyImageRepository;
     private final CloudinaryService cloudinaryService;
     private final HibernateFilterHelper hibernateFilterHelper;
     private final PropertyMapper propertyMapper;
     private final EmailSenderService emailSenderService;
 
-    public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper, PropertyMapper propertyMapper, EmailSenderService emailSenderService) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper, PropertyMapper propertyMapper, EmailSenderService emailSenderService) {
         this.propertyRepository = propertyRepository;
-        this.propertyImageRepository = propertyImageRepository;
         this.cloudinaryService = cloudinaryService;
         this.hibernateFilterHelper = hibernateFilterHelper;
         this.propertyMapper = propertyMapper;
@@ -66,27 +63,42 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public PropertyDto createProperty(PropertyDto propertyDto, MultipartFile[] images) throws IOException {
         Property property = propertyMapper.toEntity(propertyDto);
-        property = propertyRepository.save(property);
-
         List<PropertyImage> propertyImages = new ArrayList<>();
 
         if (images != null && images.length > 0) {
-            Map<String, String> cloudinaryResponse = cloudinaryService.uploadImages(images);
+            Map<String, Object> cloudinaryResponse = cloudinaryService.uploadImages(images);
 
-            for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
-                PropertyImage propertyImage = PropertyImage.builder()
-                        .imageUrl(cloudinaryService.getOptimizedImage(entry.getKey()))
-                        .publicId(entry.getKey())
-                        .blurhash(entry.getValue())
-                        .property(property)
-                        .build();
-                propertyImages.add(propertyImage);
+            for (Map.Entry<String, Object> entry : cloudinaryResponse.entrySet()) {
+                String publicId = entry.getKey();
+                Object value = entry.getValue();
+
+                if (value instanceof Map<?, ?> imageDetails) {
+                    String blurhash = (String) imageDetails.get("blurhash");
+                    String imageName = (String) imageDetails.get("imageName");
+
+                    PropertyImage propertyImage = PropertyImage.builder()
+                            .imageUrl(cloudinaryService.getOptimizedImage(publicId))
+                            .publicId(publicId)
+                            .blurhash(blurhash)
+                            .property(property)
+                            .build();
+
+                    if (propertyDto.getThumbnailOriginalName().equals(imageName)) {
+                        property.setThumbnailUrl(propertyImage.getImageUrl());
+                        property.setThumbnailBlurhash(propertyImage.getBlurhash());
+                    }
+
+                    propertyImages.add(propertyImage);
+                } else {
+                    throw new IllegalStateException("Unexpected value type in cloudinary response");
+                }
             }
-            propertyImageRepository.saveAll(propertyImages);
         }
 
         property.setPropertyImages(propertyImages);
 
+
+        propertyRepository.save(property);
         return propertyMapper.toDto(property);
     }
 
@@ -98,25 +110,53 @@ public class PropertyServiceImpl implements PropertyService {
             throw new NoResultException("Không tìm thấy bất động sản với id: " + id);
         }
 
+        // Update images if provided
         if (images != null && images.length > 0) {
-            Map<String, String> cloudinaryResponse = cloudinaryService.uploadImages(images);
+            Map<String, Object> cloudinaryResponse = cloudinaryService.uploadImages(images);
 
-            for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
-                PropertyImage propertyImage = PropertyImage.builder()
-                        .imageUrl(cloudinaryService.getOptimizedImage(entry.getKey()))
-                        .publicId(entry.getKey())
-                        .blurhash(entry.getValue())
-                        .property(property)
-                        .build();
-                property.getPropertyImages().add(propertyImage);
+            for (Map.Entry<String, Object> entry : cloudinaryResponse.entrySet()) {
+                String publicId = entry.getKey();
+                Object value = entry.getValue();
+
+                if (value instanceof Map<?, ?> imageDetails) {
+                    String blurhash = (String) imageDetails.get("blurhash");
+
+                    PropertyImage propertyImage = PropertyImage.builder()
+                            .imageUrl(cloudinaryService.getOptimizedImage(publicId))
+                            .publicId(publicId)
+                            .blurhash(blurhash)
+                            .property(property)
+                            .build();
+
+                    property.getPropertyImages().add(propertyImage);
+                } else {
+                    throw new IllegalStateException("Unexpected value type in cloudinary response");
+                }
             }
-            propertyImageRepository.saveAll(property.getPropertyImages());
         }
 
         propertyMapper.updateEntityFromDto(propertyDto, property);
 
-        propertyRepository.save(property);
+        // Handle deleted images
+//        property.getPropertyImages().forEach(propertyImage -> {
+//            if (propertyImage.isDeleted()) {
+//                propertyImageRepository.delete(propertyImage);
+//            }
+//        });
 
+        // Update thumbnail if specified
+//        String thumbnailOriginalName = propertyDto.getThumbnailOriginalName();
+//        if (thumbnailOriginalName != null) {
+//            property.getPropertyImages().stream()
+//                    .filter(image -> thumbnailOriginalName.equals(image.getPublicId()))
+//                    .findFirst()
+//                    .ifPresent(thumbnailImage -> {
+//                        property.setThumbnailUrl(thumbnailImage.getImageUrl());
+//                        property.setThumbnailBlurhash(thumbnailImage.getBlurhash());
+//                    });
+//        }
+
+        propertyRepository.save(property);
         return propertyMapper.toDto(property);
     }
 
@@ -251,7 +291,6 @@ public class PropertyServiceImpl implements PropertyService {
             propertyRepository.save(property);
         });
     }
-
 
 
 }

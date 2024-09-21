@@ -26,6 +26,7 @@ public interface PropertyMapper {
     @Mapping(source = "propertyImages", target = "propertyImages", qualifiedByName = "imageUrl")
     @Mapping(source = "priority", target = "isPriority")
     @Mapping(source = "priorityExpiration", target = "priorityExpiration")
+    @Mapping(source = "thumbnailBlurhash", target = "thumbnailBlurhash")
     PropertyDto toDto(Property property);
 
     @Mapping(target = "amenities", ignore = true)
@@ -39,14 +40,14 @@ public interface PropertyMapper {
     void updateEntityFromDto(PropertyDto propertyDto, @MappingTarget Property property);
 
     @Named("amenityName")
-    public static List<String> amenityName(List<Amenity> amenities) {
+    static List<String> amenityName(List<Amenity> amenities) {
         return amenities.stream()
                 .map(Amenity::getName)
                 .toList();
     }
 
     @Named("imageUrl")
-    public static List<PropertyImageBlurhashDto> imageUrl(List<PropertyImage> propertyImages) {
+    static List<PropertyImageBlurhashDto> imageUrl(List<PropertyImage> propertyImages) {
         return propertyImages.stream()
                 .filter(image -> !image.isDeleted())
                 .map(image -> PropertyImageBlurhashDto.builder()

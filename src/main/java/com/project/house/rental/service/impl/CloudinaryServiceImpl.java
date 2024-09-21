@@ -51,8 +51,8 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     }
 
     @Override
-    public Map<String, String> uploadImages(MultipartFile[] files) throws IOException {
-        Map<String, String> result = new HashMap<>();
+    public Map<String, Object> uploadImages(MultipartFile[] files) throws IOException {
+        Map<String, Object> result = new HashMap<>();
 
         for (MultipartFile file : files) {
             File fileToUpload = convertMultiPartToFile(file);
@@ -65,7 +65,9 @@ public class CloudinaryServiceImpl implements CloudinaryService {
             String publicId = (String) uploadResult.get("public_id");
             BufferedImage image = ImageIO.read(file.getInputStream());
             String blurHash = BlurHash.encode(image);
-            result.put(publicId, blurHash);
+            String imageName = file.getOriginalFilename();
+
+            result.put(publicId, Map.of("blurhash", blurHash, "imageName", imageName));
         }
 
         return result;

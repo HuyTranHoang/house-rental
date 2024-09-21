@@ -88,6 +88,12 @@ public class Property extends BaseEntity {
     @OneToMany(mappedBy = "property")
     List<PropertyImage> propertyImages;
 
+    @Column(name = "thumbnail_url")
+    String thumbnailUrl;
+
+    @Column(name = "thumbnail_blurhash")
+    String thumbnailBlurhash;
+
     @OneToMany(mappedBy = "property")
     List<Favorite> favorites;
 

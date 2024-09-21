@@ -68,6 +68,12 @@ public class PropertyDto {
 
     List<PropertyImageBlurhashDto> propertyImages;
 
+    String thumbnailUrl;
+
+    String thumbnailBlurhash;
+
+    String thumbnailOriginalName;
+
     Date createdAt;
 
 }

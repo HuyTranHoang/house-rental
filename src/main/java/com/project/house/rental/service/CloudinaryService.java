@@ -9,7 +9,7 @@ import java.util.Map;
 public interface CloudinaryService {
     Map upload(MultipartFile file, String publicId) throws IOException;
 
-    Map<String, String> uploadImages(MultipartFile[] files) throws IOException;
+    Map<String, Object> uploadImages(MultipartFile[] files) throws IOException;
 
     Map delete(String publicId) throws IOException;
 
