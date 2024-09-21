@@ -1,1 +1,0 @@
-ALTER TABLE property_images ADD COLUMN blurhash VARCHAR(255);

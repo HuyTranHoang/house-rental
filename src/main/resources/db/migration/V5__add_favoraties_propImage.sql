@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS property_images
     property_id INT,
     public_id VARCHAR(255),
     image_url   VARCHAR(255) NOT NULL,
+    blurhash VARCHAR(255),
     is_deleted  BOOLEAN      NOT NULL DEFAULT FALSE,
     created_at  TIMESTAMPTZ           DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMPTZ           DEFAULT CURRENT_TIMESTAMP,

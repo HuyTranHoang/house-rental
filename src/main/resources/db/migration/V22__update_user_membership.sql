@@ -1,1 +1,0 @@
-ALTER TABLE user_memberships ADD COLUMN is_deleted BOOLEAN DEFAULT FALSE;
