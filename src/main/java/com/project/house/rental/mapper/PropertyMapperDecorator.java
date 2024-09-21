@@ -69,11 +69,15 @@ public abstract class PropertyMapperDecorator implements PropertyMapper {
             property.setAmenities(new ArrayList<>());
         }
 
-        if (propertyDto.getPropertyImages() != null) {
-            propertyImages = propertyDto.getPropertyImages().stream()
-                    .map(propertyImageRepository::findByImageUrl)
-                    .toList();
-        }
+//        if (propertyDto.getPropertyImages() != null) {
+//            propertyImages = propertyDto.getPropertyImages().stream()
+//                    .map(image -> PropertyImage.builder()
+//                            .imageUrl(image.getImageUrl())
+//                            .blurhash(image.getBlurhash())
+//                            .build()
+//                    )
+//                    .toList();
+//        }
 
         if (property.getPropertyImages() == null) {
             property.setPropertyImages(new ArrayList<>());
@@ -91,8 +95,8 @@ public abstract class PropertyMapperDecorator implements PropertyMapper {
         property.getAmenities().clear();
         property.getAmenities().addAll(amenities);
 
-        property.getPropertyImages().clear();
-        property.getPropertyImages().addAll(propertyImages);
+//        property.getPropertyImages().clear();
+//        property.getPropertyImages().addAll(propertyImages);
 
         return property;
     }

@@ -18,7 +18,8 @@ public class PropertyImageDto {
     @NotEmpty(message = "PublicId không được để trống")
     String publicId;
 
+    String blurhash;
+
     long propertyId;
 
-    String propertyTitle;
 }

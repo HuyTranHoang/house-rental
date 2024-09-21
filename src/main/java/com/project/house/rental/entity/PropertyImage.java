@@ -27,6 +27,8 @@ public class PropertyImage extends BaseEntity {
     @Column(name = "public_id")
     String publicId;
 
+    String blurhash;
+
     @ManyToOne
     @JoinColumn(name = "property_id")
     Property property;

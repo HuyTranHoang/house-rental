@@ -77,6 +77,7 @@ public class PropertyServiceImpl implements PropertyService {
                 PropertyImage propertyImage = PropertyImage.builder()
                         .imageUrl(cloudinaryService.getOptimizedImage(entry.getKey()))
                         .publicId(entry.getKey())
+                        .blurhash(entry.getValue())
                         .property(property)
                         .build();
                 propertyImages.add(propertyImage);
@@ -104,6 +105,7 @@ public class PropertyServiceImpl implements PropertyService {
                 PropertyImage propertyImage = PropertyImage.builder()
                         .imageUrl(cloudinaryService.getOptimizedImage(entry.getKey()))
                         .publicId(entry.getKey())
+                        .blurhash(entry.getValue())
                         .property(property)
                         .build();
                 property.getPropertyImages().add(propertyImage);

@@ -51,7 +51,7 @@ public class Property extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", columnDefinition = "ENUM('PENDING', 'RESOLVED','REJECTED') DEFAULT 'PENDING'")
-    PropertyStatus status = PropertyStatus.PENDING;
+    PropertyStatus status;
 
     @Column(name = "is_blocked")
     boolean isBlocked;
@@ -93,7 +93,7 @@ public class Property extends BaseEntity {
     List<Favorite> favorites;
 
     @Column(name = "is_priority", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
-    boolean isPriority = false;
+    boolean isPriority;
 
     @Column(name = "priority_expiration")
     Timestamp priorityExpiration;

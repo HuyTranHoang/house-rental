@@ -1,6 +1,8 @@
 package com.project.house.rental.mapper;
 
 import com.project.house.rental.dto.PropertyDto;
+import com.project.house.rental.dto.PropertyImageBlurhashDto;
+import com.project.house.rental.dto.PropertyImageDto;
 import com.project.house.rental.entity.Amenity;
 import com.project.house.rental.entity.Property;
 import com.project.house.rental.entity.PropertyImage;
@@ -45,10 +47,13 @@ public interface PropertyMapper {
     }
 
     @Named("imageUrl")
-    public static List<String> imageUrl(List<PropertyImage> propertyImages) {
+    public static List<PropertyImageBlurhashDto> imageUrl(List<PropertyImage> propertyImages) {
         return propertyImages.stream()
                 .filter(image -> !image.isDeleted())
-                .map(PropertyImage::getImageUrl)
+                .map(image -> PropertyImageBlurhashDto.builder()
+                        .imageUrl(image.getImageUrl())
+                        .blurhash(image.getBlurhash())
+                        .build())
                 .toList();
     }
 }
