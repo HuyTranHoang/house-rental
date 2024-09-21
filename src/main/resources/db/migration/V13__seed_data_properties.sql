@@ -6,7 +6,8 @@ VALUES (1, 'Cho Thuê Phòng Q1.cửa sổ.fuff nội thất.mới keng.2tr8',
 <p>🥰 Giá 2tr8. (phòng ở tầng 2 full nội thất.kệ nấu ăn trước phòng ,nước nóng, quạt,máy giặt chung, cửa sổ, tủ lạnh và máy lạnh, tủ quần áo....vv).</p>
 <p>Toilet chung với 1người sạch sẽ kế bên phòng.&nbsp;</p>
 <p>✔️Điện 4k,nước 100/ng,xe+wifi+rác free,không phát sinh chi phí.</p>
-<p>😍ai có nhu cầu vui lòng IB hoặc liên hệ 0838.999988.0975.572.901.', 2800000, 'Trần Đình Xu, Phường Nguyễn Cư Trinh, Quận 1, TPHCM</p>', 15, 1, 'PENDING', 1, 1, 1, 1, false, false,
+<p>😍ai có nhu cầu vui lòng IB hoặc liên hệ 0838.999988.0975.572.901.', 2800000,
+        'Trần Đình Xu, Phường Nguyễn Cư Trinh, Quận 1, TPHCM</p>', 15, 1, 'PENDING', 1, 1, 1, 1, false, false,
         random_date_within_14_days(), now()),
        (2, 'Phòng rất đẹp 7A/9 Thành Thái, P.14, Quận 10 (Khoá Vân Tay, giờ tự do)',
         '<p>Phòng cho thuê thiết kế rất đẹp có nhiều tiện ích tuyệt vời ngay trung tâm Quận 10, địa chỉ: 7A/9 Thành Thái, Phường 14, Quận 10, TP. HCM.</p>
@@ -65,20 +66,31 @@ VALUES (1, 1),
        (3, 31)
 ON CONFLICT (property_id, amenity_id) DO NOTHING;
 
-INSERT INTO property_images(property_id, image_url)
-VALUES (1, 'https://cloud.mogi.vn/images/2024/08/02/452/2fe40f6efd024a938d725676e7eb33b5.jpg'),
-       (2, 'https://cloud.mogi.vn/images/2024/05/13/006/8c555c3ed46846f28e6ce640cd8be5de.jpg'),
-       (2, 'https://cloud.mogi.vn/images/2024/06/13/145/cb463a3f4d604ac5ab75db9870b2b2b5.jpg'),
-       (2, 'https://cloud.mogi.vn/images/2024/06/13/146/52e87e84b654415b8d0d5330add313e4.jpg'),
-       (2, 'https://cloud.mogi.vn/images/2024/06/13/147/e1070de59c4d483f87450a497adef8b8.jpg'),
-       (3, 'https://cloud.mogi.vn/images/2024/03/04/132/eb8ba1ddc12f4a59abcd01b8942024fc.jpg'),
-       (3, 'https://cloud.mogi.vn/images/2024/03/04/137/9dbda80cdac846c0af0d9cf7f62e8420.jpg'),
-       (3, 'https://cloud.mogi.vn/images/2024/03/04/143/1c6cd8f31f1047f79495ff4580ce00ac.jpg'),
-       (3, 'https://cloud.mogi.vn/images/2020/08/18/120/f9bc95cb39d5462887620d0afd860634.jpg'),
-       (3, 'https://cloud.mogi.vn/images/2020/08/18/121/e42f37e6baa44372949bd684fcee469c.jpg'),
-       (3, 'https://cloud.mogi.vn/images/2020/08/18/123/98ef032c15f948ddb757a93b2364f88f.jpg'),
-       (3, 'https://cloud.mogi.vn/images/2023/04/25/175/da000f9250774e4ebfde96e02bb68f78.jpg'),
-       (3, 'https://cloud.mogi.vn/images/2023/04/25/176/7b0aa38b39494f3baee74efbad75be84.jpg');
+INSERT INTO property_images(property_id, image_url, blurhash)
+VALUES (1, 'https://cloud.mogi.vn/images/2024/08/02/452/2fe40f6efd024a938d725676e7eb33b5.jpg',
+        'eKODXv4oIT9G-;VtIVRjMxt7~qt6%2xZIURikCxut7Rjx^jYRjx]Rj'),
+       (2, 'https://cloud.mogi.vn/images/2024/05/13/006/8c555c3ed46846f28e6ce640cd8be5de.jpg',
+        'egG+]^%3g1niSg%%xvadozjF%NXARjt4WBx^V?RjogaynhRjaxt7WC'),
+       (2, 'https://cloud.mogi.vn/images/2024/06/13/145/cb463a3f4d604ac5ab75db9870b2b2b5.jpg',
+        'eKI5Vlb1D*M|RP_N_3%2xut6Di%g%MoLRkD*M{jaIot6IBRjRjRjj['),
+       (2, 'https://cloud.mogi.vn/images/2024/06/13/146/52e87e84b654415b8d0d5330add313e4.jpg',
+        'eAI=0;000g8^D*X.?F?IxvozraxUIpR*%MD%IA-qngM|_4NFM{WFt7'),
+       (3, 'https://cloud.mogi.vn/images/2024/03/04/132/eb8ba1ddc12f4a59abcd01b8942024fc.jpg',
+        'eAKw|M%j.T~q%M~Ax]tS4nM_0Ks:IT-;oz.9ITxZf+WXD+t6aeogIU'),
+       (3, 'https://cloud.mogi.vn/images/2024/03/04/137/9dbda80cdac846c0af0d9cf7f62e8420.jpg',
+        'e9JkcY00A1J$x^^iImT04o4m4._4RO?b%M?wIUaJ%2bX4:odoIRjog'),
+       (3, 'https://cloud.mogi.vn/images/2024/03/04/143/1c6cd8f31f1047f79495ff4580ce00ac.jpg',
+        'ePHLuSISIT.8M__4%MoJWDWBIUoexuM|t6Mwa~j]V@ogxZRjWBt6a#'),
+       (3, 'https://cloud.mogi.vn/images/2020/08/18/120/f9bc95cb39d5462887620d0afd860634.jpg',
+        'eMO3UkRPOY~qIA}%-;flROxu^$Sh%MxutR.9xu9ZNJD%-nE1afMxt7'),
+       (3, 'https://cloud.mogi.vn/images/2020/08/18/121/e42f37e6baa44372949bd684fcee469c.jpg',
+        'eFJ8hgtT4m?^%N?aMxbIITWX00Di-:WCMwRO?cNHV@-;Mdi^WAoJa{'),
+       (3, 'https://cloud.mogi.vn/images/2020/08/18/123/98ef032c15f948ddb757a93b2364f88f.jpg',
+        'eDI=DL00?aD%-=}*s+NH-pM_n2_3RO%MM|_NVsxuIot7IAS5M|%Mad'),
+       (3, 'https://cloud.mogi.vn/images/2023/04/25/175/da000f9250774e4ebfde96e02bb68f78.jpg',
+        'eGJuDi?w?dIUIn?HM_NHs-n$x_Mxs+WCt7x]V?s;X8Ribwf5V?o#WB'),
+       (3, 'https://cloud.mogi.vn/images/2023/04/25/176/7b0aa38b39494f3baee74efbad75be84.jpg',
+        'eQK-zqRi%h?wt6tRt7xbxuoeM{aKbHozWBxvWCoLofj?adoJogWBog');
 
 INSERT INTO reviews(id, user_id, property_id, rating, comment, is_deleted, created_at, updated_at)
 VALUES (1, 1, 1, 5, 'Nhà đẹp giá rẻ !!!!', false, random_date_within_14_days(), now()),
