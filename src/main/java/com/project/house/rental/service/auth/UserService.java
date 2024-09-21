@@ -2,10 +2,8 @@ package com.project.house.rental.service.auth;
 
 import com.project.house.rental.dto.auth.ChangePasswordDto;
 import com.project.house.rental.dto.auth.ProfileDto;
-import com.project.house.rental.dto.auth.ResetPasswordDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
 import com.project.house.rental.dto.params.UserParams;
-import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.exception.CustomRuntimeException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;

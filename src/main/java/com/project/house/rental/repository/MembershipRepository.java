@@ -1,9 +1,7 @@
 package com.project.house.rental.repository;
 
 
-import com.project.house.rental.entity.Favorite;
 import com.project.house.rental.entity.Membership;
-import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

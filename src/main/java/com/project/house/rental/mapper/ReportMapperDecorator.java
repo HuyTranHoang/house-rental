@@ -1,8 +1,8 @@
 package com.project.house.rental.mapper;
 
 import com.project.house.rental.dto.ReportDto;
-import com.project.house.rental.entity.Report;
 import com.project.house.rental.entity.Property;
+import com.project.house.rental.entity.Report;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.repository.auth.UserRepository;

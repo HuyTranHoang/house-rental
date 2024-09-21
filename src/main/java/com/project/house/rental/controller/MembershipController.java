@@ -1,8 +1,6 @@
 package com.project.house.rental.controller;
 
-import com.project.house.rental.dto.CityDto;
 import com.project.house.rental.dto.MembershipDto;
-import com.project.house.rental.dto.params.CityParams;
 import com.project.house.rental.dto.params.MembershipParams;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.service.MembershipService;

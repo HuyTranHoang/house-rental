@@ -1,13 +1,9 @@
 package com.project.house.rental.entity;
 
-import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.entity.auth.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
 import java.util.Date;

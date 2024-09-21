@@ -11,7 +11,6 @@ import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

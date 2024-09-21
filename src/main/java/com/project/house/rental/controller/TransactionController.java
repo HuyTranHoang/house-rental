@@ -4,11 +4,9 @@ import com.project.house.rental.dto.PaymentDto;
 import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
 import com.project.house.rental.dto.params.TransactionParams;
-import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.TransactionService;
-import com.project.house.rental.service.auth.UserService;
 import com.project.house.rental.service.vnPay.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Map;
 
 @RestController

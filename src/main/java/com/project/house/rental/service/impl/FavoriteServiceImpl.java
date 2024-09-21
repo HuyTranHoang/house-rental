@@ -2,11 +2,12 @@ package com.project.house.rental.service.impl;
 
 import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.constant.FilterConstant;
-import com.project.house.rental.dto.*;
+import com.project.house.rental.dto.FavoriteDto;
+import com.project.house.rental.dto.FavoritePropertyDto;
+import com.project.house.rental.dto.PropertyDto;
 import com.project.house.rental.dto.params.FavoriteParams;
 import com.project.house.rental.entity.Favorite;
 import com.project.house.rental.entity.Favorite_;
-import com.project.house.rental.entity.PropertyImage;
 import com.project.house.rental.entity.Property_;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.entity.compositeKey.FavoritePrimaryKey;
@@ -29,8 +30,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-
-import static java.util.stream.Collectors.groupingBy;
 
 @Service
 public class FavoriteServiceImpl implements FavoriteService {

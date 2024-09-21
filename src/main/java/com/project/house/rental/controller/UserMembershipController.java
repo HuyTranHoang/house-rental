@@ -1,11 +1,7 @@
 package com.project.house.rental.controller;
 
-import com.project.house.rental.dto.DistrictDto;
-import com.project.house.rental.dto.MembershipDto;
 import com.project.house.rental.dto.UserMembershipDto;
 import com.project.house.rental.service.UserMembershipService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

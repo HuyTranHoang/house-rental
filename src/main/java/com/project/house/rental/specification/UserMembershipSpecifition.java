@@ -1,8 +1,9 @@
 package com.project.house.rental.specification;
 
-import com.project.house.rental.entity.*;
+import com.project.house.rental.entity.Membership_;
+import com.project.house.rental.entity.UserMembership;
+import com.project.house.rental.entity.UserMembership_;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.util.StringUtils;
 
 public class UserMembershipSpecifition {
     public static Specification<UserMembership> filterByMembership(long membershipId) {
