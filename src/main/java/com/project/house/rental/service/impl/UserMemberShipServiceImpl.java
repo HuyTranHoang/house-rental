@@ -14,6 +14,7 @@ import com.project.house.rental.specification.UserMembershipSpecifition;
 import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.persistence.NoResultException;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -136,6 +137,43 @@ public class UserMemberShipServiceImpl implements UserMembershipService {
     @Override
     public UserMembershipDto getUserMembershipByUsername(String username) {
         return null;
+    }
+
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    //@Scheduled(cron = "0 * * * * ?") Test chạy mỗi phút
+    public void updateExpiredUserMemberships() {
+        List<UserMembership> userMemberships = userMembershipRepository.findByEndDateBeforeAndStatusNot(new Date(), UserMembership.Status.EXPIRED);
+
+        Membership freeMembership = membershipRepository.findByNameIgnoreCase("Free");
+        if (freeMembership == null) {
+            throw new RuntimeException("Không tìm thấy hạng mức thành viên FREE");
+        }
+
+        for (UserMembership userMembership : userMemberships) {
+            if (!userMembership.getStatus().equals(UserMembership.Status.EXPIRED)) {
+                userMembership.setStatus(UserMembership.Status.EXPIRED);
+                userMembership.setMembership(freeMembership);
+                userMembership.setPriorityPostsUsed(0);
+                userMembership.setRefreshesPostsUsed(0);
+                userMembership.setTotalPriorityLimit(freeMembership.getPriority());
+                userMembership.setTotalRefreshLimit(freeMembership.getRefresh());
+
+                userMembershipRepository.save(userMembership);
+            }
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 1 * ?")
+    public void resetPostLimitsForExpiredMemberships() {
+        List<UserMembership> expiredMemberships = userMembershipRepository.findByStatus(UserMembership.Status.EXPIRED);
+
+        for (UserMembership userMembership : expiredMemberships) {
+            userMembership.setPriorityPostsUsed(0);
+            userMembership.setRefreshesPostsUsed(0);
+
+            userMembershipRepository.save(userMembership);
+        }
     }
 
 
