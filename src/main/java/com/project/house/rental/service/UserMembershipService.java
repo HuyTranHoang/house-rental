@@ -13,5 +13,5 @@ public interface UserMembershipService {
 
     UserMembershipDto updateUserMembership(UserMembershipDto userMembershipDto);
 
-    UserMembershipDto getUserMembershipByUsername(String username);
+    UserMembershipDto getUserMembershipByUserId(long userId);
 }
