@@ -11,6 +11,7 @@ import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.mapper.auth.UserMapper;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
+import com.project.house.rental.service.UserMembershipService;
 import com.project.house.rental.service.auth.AuthService;
 import com.project.house.rental.service.auth.RefreshTokenService;
 import jakarta.validation.Valid;
@@ -34,20 +35,23 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
     private final UserMapper userMapper;
+    private final UserMembershipService userMembershipService;
 
-    public AuthController(AuthService authService, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService, UserMapper userMapper) {
+    public AuthController(AuthService authService, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService, UserMapper userMapper, UserMembershipService userMembershipService) {
         this.authService = authService;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManager = authenticationManager;
         this.refreshTokenService = refreshTokenService;
         this.userMapper = userMapper;
+        this.userMembershipService = userMembershipService;
     }
 
 
     @PostMapping("/register")
     public ResponseEntity<UserEntityDto> register(@RequestBody @Valid UserEntityDto user) throws CustomRuntimeException {
         UserEntityDto newUserEntityDto = authService.register(user);
+        userMembershipService.createUserMembership(newUserEntityDto.getId());
         return ResponseEntity.ok(newUserEntityDto);
     }
 

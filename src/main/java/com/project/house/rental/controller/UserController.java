@@ -5,6 +5,7 @@ import com.project.house.rental.dto.auth.ProfileDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
 import com.project.house.rental.dto.params.UserParams;
 import com.project.house.rental.exception.CustomRuntimeException;
+import com.project.house.rental.service.UserMembershipService;
 import com.project.house.rental.service.auth.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -22,9 +23,11 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final UserMembershipService userMembershipService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserMembershipService userMembershipService) {
         this.userService = userService;
+        this.userMembershipService = userMembershipService;
     }
 
     @PreAuthorize("hasAnyAuthority('user:update', 'admin:all')")
@@ -52,6 +55,7 @@ public class UserController {
     @PostMapping({"", "/"})
     public ResponseEntity<UserEntityDto> addNewUser(@RequestBody @Valid UserEntityDto user) throws CustomRuntimeException {
         UserEntityDto userEntityDto = userService.addNewUser(user);
+        userMembershipService.createUserMembership(userEntityDto.getId());
         return ResponseEntity.ok(userEntityDto);
     }
 

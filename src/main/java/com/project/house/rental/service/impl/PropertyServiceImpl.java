@@ -8,6 +8,7 @@ import com.project.house.rental.entity.Property;
 import com.project.house.rental.entity.PropertyImage;
 import com.project.house.rental.entity.Property_;
 import com.project.house.rental.mapper.PropertyMapper;
+import com.project.house.rental.repository.PropertyImageRepository;
 import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.service.PropertyService;
@@ -38,13 +39,15 @@ public class PropertyServiceImpl implements PropertyService {
     private final CloudinaryService cloudinaryService;
     private final HibernateFilterHelper hibernateFilterHelper;
     private final PropertyMapper propertyMapper;
+    private final PropertyImageRepository propertyImageRepository;
     private final EmailSenderService emailSenderService;
 
-    public PropertyServiceImpl(PropertyRepository propertyRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper, PropertyMapper propertyMapper, EmailSenderService emailSenderService) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper, PropertyMapper propertyMapper, PropertyImageRepository propertyImageRepository, EmailSenderService emailSenderService) {
         this.propertyRepository = propertyRepository;
         this.cloudinaryService = cloudinaryService;
         this.hibernateFilterHelper = hibernateFilterHelper;
         this.propertyMapper = propertyMapper;
+        this.propertyImageRepository = propertyImageRepository;
         this.emailSenderService = emailSenderService;
     }
 
@@ -96,16 +99,15 @@ public class PropertyServiceImpl implements PropertyService {
         }
 
         property.setPropertyImages(propertyImages);
-
-
         propertyRepository.save(property);
+        propertyImageRepository.saveAll(propertyImages);
+
         return propertyMapper.toDto(property);
     }
 
     @Override
     public PropertyDto updateProperty(long id, PropertyDto propertyDto, MultipartFile[] images) throws IOException {
         Property property = propertyRepository.findByIdWithFilter(id);
-
         if (property == null) {
             throw new NoResultException("Không tìm thấy bất động sản với id: " + id);
         }
@@ -127,7 +129,7 @@ public class PropertyServiceImpl implements PropertyService {
                             .blurhash(blurhash)
                             .property(property)
                             .build();
-
+                    propertyImageRepository.save(propertyImage);
                     property.getPropertyImages().add(propertyImage);
                 } else {
                     throw new IllegalStateException("Unexpected value type in cloudinary response");
@@ -138,11 +140,11 @@ public class PropertyServiceImpl implements PropertyService {
         propertyMapper.updateEntityFromDto(propertyDto, property);
 
         // Handle deleted images
-//        property.getPropertyImages().forEach(propertyImage -> {
-//            if (propertyImage.isDeleted()) {
-//                propertyImageRepository.delete(propertyImage);
-//            }
-//        });
+        property.getPropertyImages().forEach(propertyImage -> {
+            if (propertyImage.isDeleted()) {
+                propertyImageRepository.delete(propertyImage);
+            }
+        });
 
         // Update thumbnail if specified
 //        String thumbnailOriginalName = propertyDto.getThumbnailOriginalName();
