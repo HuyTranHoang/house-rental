@@ -34,4 +34,10 @@ public class UserMembershipController {
         UserMembershipDto updatedMembership = userMembershipService.updateUserMembership(userMembershipDto);
         return ResponseEntity.ok(updatedMembership);
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserMembershipDto> getByUserId(@PathVariable long userId) {
+        UserMembershipDto userMembership = userMembershipService.getUserMembershipByUserId(userId);
+        return ResponseEntity.ok(userMembership);
+    }
 }
