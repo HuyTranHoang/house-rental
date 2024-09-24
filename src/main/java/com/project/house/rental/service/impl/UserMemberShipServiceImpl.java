@@ -135,8 +135,12 @@ public class UserMemberShipServiceImpl implements UserMembershipService {
     }
 
     @Override
-    public UserMembershipDto getUserMembershipByUsername(String username) {
-        return null;
+    public UserMembershipDto getUserMembershipByUserId(long userId) {
+        UserMembership userMembership = userMembershipRepository.findByUserId(userId);
+        if (userMembership == null) {
+            throw new NoResultException("Không tìm thấy 'UserMembership' với id = " + userId);
+        }
+        return userMembershipMapper.toDto(userMembership);
     }
 
 

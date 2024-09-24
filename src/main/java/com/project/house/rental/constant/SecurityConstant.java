@@ -39,7 +39,6 @@ public class SecurityConstant {
             "/api/vnpay/**",
             "/api/transaction/**",
             "/api/user/**",
-            "/api/membership/**"
     };
 
     public static final String[] RESOURCE_URLS = {
