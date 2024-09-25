@@ -4,6 +4,7 @@ import com.project.house.rental.dto.PaymentDto;
 import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
 import com.project.house.rental.dto.params.TransactionParams;
+import com.project.house.rental.entity.Transaction;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.TransactionService;
@@ -42,7 +43,7 @@ public class TransactionController {
         return ResponseEntity.ok(transactionDto);
     }
 
-    @PostMapping
+    @PostMapping("/deposit")
     public ResponseEntity<PaymentDto> createTransaction(@RequestBody PaymentRequest paymentRequest, HttpServletRequest request) throws CustomRuntimeException {
         TransactionDto transaction = transactionService.createTransaction(paymentRequest, request);
 
@@ -55,6 +56,12 @@ public class TransactionController {
         transactionService.updateTransactionId(transaction.getId(), txnRef);
 
         return ResponseEntity.ok(paymentDto);
+    }
+
+    @PostMapping("/withdrawal")
+    public ResponseEntity<TransactionDto> createTransactionWithdrawal(@RequestBody PaymentRequest paymentRequest, HttpServletRequest request) throws CustomRuntimeException {
+        TransactionDto transaction = transactionService.createTransaction(paymentRequest, request);
+        return ResponseEntity.ok(transaction);
     }
 
     @PutMapping("/status/{txnRef}")
