@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -112,7 +113,9 @@ public class TransactionServiceImpl implements TransactionService {
         if (paymentRequest.getType().equalsIgnoreCase("DEPOSIT")) {
             transaction.setType(Transaction.TransactionType.DEPOSIT);
         } else if (paymentRequest.getType().equalsIgnoreCase("WITHDRAWAL")) {
+            transaction.setTransactionId(getRandomNumber(8));
             transaction.setType(Transaction.TransactionType.WITHDRAWAL);
+            transaction.setStatus(Transaction.TransactionStatus.SUCCESS);
         } else {
             throw new CustomRuntimeException("Loại giao dịch không hợp lệ");
         }
@@ -169,4 +172,13 @@ public class TransactionServiceImpl implements TransactionService {
         return getAllTransactionsWithParams(transactionParams);
     }
 
+    private String getRandomNumber(int len) {
+        Random rnd = new Random();
+        String chars = "0123456789";
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            sb.append(chars.charAt(rnd.nextInt(chars.length())));
+        }
+        return sb.toString();
+    }
 }
