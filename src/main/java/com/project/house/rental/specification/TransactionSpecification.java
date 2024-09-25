@@ -1,8 +1,9 @@
 package com.project.house.rental.specification;
 
-import com.project.house.rental.entity.Transaction;
-import com.project.house.rental.entity.Transaction_;
+import com.project.house.rental.entity.*;
+import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.entity.auth.UserEntity_;
+import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
@@ -17,14 +18,22 @@ public class TransactionSpecification {
         };
     }
 
-    public static Specification<Transaction> searchByTransactionId(String transactionId) {
+    public static Specification<Transaction> searchByTransactionIdUsername(String search) {
         return (root, query, cb) -> {
-            if(!StringUtils.hasLength(transactionId))
+            if (!StringUtils.hasLength(search)) {
                 return cb.conjunction();
+            }
 
-            return cb.like(root.get(Transaction_.TRANSACTION_ID), "%" + transactionId + "%");
+            Join<Transaction, UserEntity> userJoin = root.join(Transaction_.USER);
+
+            return cb.or(
+                    cb.like(cb.lower(root.get(Transaction_.TRANSACTION_ID)), "%" + search.toLowerCase() + "%"),
+                    cb.like(cb.lower(userJoin.get(UserEntity_.USERNAME)), "%" + search.toLowerCase() + "%")
+            );
+
         };
     }
+
 
     public static Specification<Transaction> filterByStatus(String status) {
         return (root, query, cb) -> {
