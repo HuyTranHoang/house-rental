@@ -1,0 +1,23 @@
+meta {
+  name: Update Report Status
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{host}}/api/comment-reports/:id?status=APPROVED
+  body: json
+  auth: bearer
+}
+
+params:query {
+  status: APPROVED
+}
+
+params:path {
+  id: 1
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

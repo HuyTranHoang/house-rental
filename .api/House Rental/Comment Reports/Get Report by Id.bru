@@ -1,0 +1,19 @@
+meta {
+  name: Get Report by Id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{host}}/api/comment-reports/:id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 1
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

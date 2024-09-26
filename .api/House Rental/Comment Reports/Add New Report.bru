@@ -1,0 +1,23 @@
+meta {
+  name: Add New Report
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{host}}/api/comment-reports
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "commentId": 1,
+    "reason": "This is reason",
+    "category": "SCAM"
+  }
+}
