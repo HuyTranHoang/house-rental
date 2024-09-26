@@ -109,6 +109,9 @@ public class Property extends BaseEntity {
     @Column(name = "is_hidden")
     boolean isHidden;
 
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
+    List<Report> reports;
+
     public enum PropertyStatus {
         PENDING,
         APPROVED,

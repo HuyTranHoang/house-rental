@@ -2,16 +2,15 @@ package com.project.house.rental.entity;
 
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.entity.auth.UserEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,4 +34,7 @@ public class Comment extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     UserEntity user;
+
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    List<CommentReport> commentReports;
 }

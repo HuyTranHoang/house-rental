@@ -88,4 +88,10 @@ public class UserEntity extends BaseEntity {
 
     @OneToOne(mappedBy = "user")
     UserMembership userMembership;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<Report> reports;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<CommentReport> commentReports;
 }
