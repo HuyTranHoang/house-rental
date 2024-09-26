@@ -1,6 +1,7 @@
 package com.project.house.rental.specification;
 
 import com.project.house.rental.entity.*;
+import com.project.house.rental.entity.auth.UserEntity_;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
@@ -121,6 +122,16 @@ public class PropertySpecification {
                 return cb.conjunction();
             }
             return cb.equal(root.get(Property_.status), status);
+        };
+    }
+
+    public static Specification<Property> filterByUserId(long userId) {
+        return (root, query, cb) -> {
+            if (userId == 0) {
+                return cb.conjunction();
+            }
+
+            return cb.equal(root.get(Property_.USER).get(UserEntity_.ID), userId);
         };
     }
 

@@ -28,4 +28,6 @@ public class PropertyParams extends PaginationParams {
     private String status;
 
     private String sortBy = "createdAtDesc";
+
+    private long userId;
 }

@@ -171,7 +171,7 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
 
-    private Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams, boolean forClient) {
+    public Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams) {
         Specification<Property> spec = PropertySpecification.searchByCityDistrictLocation(propertyParams.getSearch())
                 .and(PropertySpecification.filterByCityId(propertyParams.getCityId()))
                 .and(PropertySpecification.filterByDistrictId(propertyParams.getDistrictId()))
@@ -179,7 +179,8 @@ public class PropertyServiceImpl implements PropertyService {
                 .and(PropertySpecification.filterByPrice(propertyParams.getMinPrice(), propertyParams.getMaxPrice()))
                 .and(PropertySpecification.filterByArea(propertyParams.getMinArea(), propertyParams.getMaxArea()))
                 .and(PropertySpecification.filterByCreatedDate(propertyParams.getNumOfDays()))
-                .and(PropertySpecification.filterByStatus(propertyParams.getStatus()));
+                .and(PropertySpecification.filterByStatus(propertyParams.getStatus()))
+                .and(PropertySpecification.filterByUserId(propertyParams.getUserId()));
 
 
         Sort sort = switch (propertyParams.getSortBy()) {
@@ -206,18 +207,10 @@ public class PropertyServiceImpl implements PropertyService {
         );
 
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
-        if (forClient) {
-            hibernateFilterHelper.enableFilter(FilterConstant.BLOCK_PROPERTY_FILTER);
-            hibernateFilterHelper.enableFilter(FilterConstant.STATUS_PROPERTY_FILTER);
-        }
 
         Page<Property> propertyPage = propertyRepository.findAll(spec, pageable);
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
-        if (forClient) {
-            hibernateFilterHelper.disableFilter(FilterConstant.BLOCK_PROPERTY_FILTER);
-            hibernateFilterHelper.disableFilter(FilterConstant.STATUS_PROPERTY_FILTER);
-        }
 
         PageInfo pageInfo = new PageInfo(propertyPage);
 
@@ -229,16 +222,6 @@ public class PropertyServiceImpl implements PropertyService {
                 "pageInfo", pageInfo,
                 "data", propertyDtoList
         );
-    }
-
-    @Override
-    public Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams) {
-        return getAllPropertiesWithParams(propertyParams, false);
-    }
-
-    @Override
-    public Map<String, Object> getAllPropertiesWithParamsForClient(PropertyParams propertyParams) {
-        return getAllPropertiesWithParams(propertyParams, true);
     }
 
     @Override
