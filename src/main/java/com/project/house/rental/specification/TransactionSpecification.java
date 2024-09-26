@@ -1,6 +1,7 @@
 package com.project.house.rental.specification;
 
-import com.project.house.rental.entity.*;
+import com.project.house.rental.entity.Transaction;
+import com.project.house.rental.entity.Transaction_;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.entity.auth.UserEntity_;
 import jakarta.persistence.criteria.Join;

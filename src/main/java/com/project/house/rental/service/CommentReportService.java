@@ -2,7 +2,6 @@ package com.project.house.rental.service;
 
 import com.project.house.rental.dto.CommentReportDto;
 import com.project.house.rental.dto.params.CommentReportParams;
-import com.project.house.rental.dto.params.ReportParams;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;

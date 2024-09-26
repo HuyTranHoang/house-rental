@@ -4,7 +4,6 @@ import com.project.house.rental.dto.PaymentDto;
 import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
 import com.project.house.rental.dto.params.TransactionParams;
-import com.project.house.rental.entity.Transaction;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.TransactionService;

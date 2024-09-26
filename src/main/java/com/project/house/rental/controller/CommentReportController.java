@@ -1,14 +1,10 @@
 package com.project.house.rental.controller;
 
 import com.project.house.rental.dto.CommentReportDto;
-import com.project.house.rental.dto.ReportDto;
 import com.project.house.rental.dto.params.CommentReportParams;
-import com.project.house.rental.dto.params.ReportParams;
 import com.project.house.rental.service.CommentReportService;
-import com.project.house.rental.service.ReportService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
