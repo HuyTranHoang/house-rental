@@ -30,4 +30,6 @@ public class PropertyParams extends PaginationParams {
     private String sortBy = "createdAtDesc";
 
     private long userId;
+
+    private String isBlocked;
 }

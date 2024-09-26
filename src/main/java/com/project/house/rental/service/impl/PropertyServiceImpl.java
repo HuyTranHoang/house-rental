@@ -180,7 +180,8 @@ public class PropertyServiceImpl implements PropertyService {
                 .and(PropertySpecification.filterByArea(propertyParams.getMinArea(), propertyParams.getMaxArea()))
                 .and(PropertySpecification.filterByCreatedDate(propertyParams.getNumOfDays()))
                 .and(PropertySpecification.filterByStatus(propertyParams.getStatus()))
-                .and(PropertySpecification.filterByUserId(propertyParams.getUserId()));
+                .and(PropertySpecification.filterByUserId(propertyParams.getUserId()))
+                .and(PropertySpecification.filterByBlocked(propertyParams.getIsBlocked()));
 
 
         Sort sort = switch (propertyParams.getSortBy()) {

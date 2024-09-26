@@ -125,6 +125,20 @@ public class PropertySpecification {
         };
     }
 
+    public static Specification<Property> filterByBlocked(String status) {
+        return (root, query, cb) -> {
+            if (!StringUtils.hasLength(status)) {
+                return cb.conjunction();
+            }
+
+            if (status.equals("true")) {
+                return cb.equal(root.get(Property_.IS_BLOCKED), true);
+            } else {
+                return cb.equal(root.get(Property_.IS_BLOCKED), false);
+            }
+        };
+    }
+
     public static Specification<Property> filterByUserId(long userId) {
         return (root, query, cb) -> {
             if (userId == 0) {

@@ -5,12 +5,13 @@ meta {
 }
 
 get {
-  url: {{host}}/api/properties/admin
+  url: {{host}}/api/properties?isBlocked=true
   body: none
   auth: none
 }
 
 params:query {
+  isBlocked: true
   ~status: PENDING
   ~minPrice: 0
   ~maxPrice: 0
