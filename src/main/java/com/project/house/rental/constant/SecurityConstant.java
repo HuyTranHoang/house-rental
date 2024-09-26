@@ -33,7 +33,7 @@ public class SecurityConstant {
             "/api/amenity/**",
             "/api/room-type/**",
             "/api/properties/**",
-            "/api/review/**",
+            "/api/comment/**",
             "/api/property-images/**",
             "/api/favorite/**",
             "/api/vnpay/**",
