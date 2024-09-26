@@ -11,6 +11,7 @@ import org.mapstruct.MappingTarget;
 @DecoratedWith(CommentMapperDecorator.class)
 public interface CommentMapper {
 
+    @Mapping(source = "blocked", target = "isBlocked")
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.username", target = "userName")
     @Mapping(source = "user.avatarUrl", target = "userAvatar")

@@ -27,6 +27,9 @@ public class Comment extends BaseEntity {
 
     String comment;
 
+    @Column(name = "is_blocked")
+    boolean isBlocked;
+
     @ManyToOne
     @JoinColumn(name = "property_id")
     Property property;

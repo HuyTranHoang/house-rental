@@ -18,5 +18,4 @@ public interface ReportMapper {
     ReportDto toDto(Report report);
 
     Report toEntity(ReportDto reportDto);
-
 }

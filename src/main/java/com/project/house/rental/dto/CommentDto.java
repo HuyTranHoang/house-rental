@@ -31,4 +31,6 @@ public class CommentDto {
     String userAvatar;
 
     Date createdAt;
+
+    boolean isBlocked;
 }
