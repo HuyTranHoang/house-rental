@@ -185,7 +185,8 @@ public class PropertyServiceImpl implements PropertyService {
                 .and(PropertySpecification.filterByCreatedDate(propertyParams.getNumOfDays()))
                 .and(PropertySpecification.filterByStatus(propertyParams.getStatus()))
                 .and(PropertySpecification.filterByUserId(propertyParams.getUserId()))
-                .and(PropertySpecification.filterByBlocked(propertyParams.getIsBlocked()));
+                .and(PropertySpecification.filterByBlocked(propertyParams.getIsBlocked()))
+                .and(PropertySpecification.filterByHidden(propertyParams.getIsHidden()));
 
 
         Sort sort = switch (propertyParams.getSortBy()) {

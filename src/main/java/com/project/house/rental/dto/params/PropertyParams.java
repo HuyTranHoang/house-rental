@@ -32,4 +32,6 @@ public class PropertyParams extends PaginationParams {
     private long userId;
 
     private String isBlocked;
+
+    private String isHidden;
 }
