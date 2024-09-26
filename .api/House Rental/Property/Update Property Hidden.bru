@@ -1,0 +1,19 @@
+meta {
+  name: Update Property Hidden
+  type: http
+  seq: 10
+}
+
+put {
+  url: {{host}}/api/properties/hide/:id
+  body: json
+  auth: bearer
+}
+
+params:path {
+  id: 44
+}
+
+auth:bearer {
+  token: {{jwt}}
+}

@@ -1,0 +1,2 @@
+ALTER TABLE properties
+    ADD COLUMN is_hidden BOOLEAN NOT NULL DEFAULT FALSE;

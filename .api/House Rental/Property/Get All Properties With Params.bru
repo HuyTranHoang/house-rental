@@ -5,13 +5,14 @@ meta {
 }
 
 get {
-  url: {{host}}/api/properties?isBlocked=true
+  url: {{host}}/api/properties?userId=1
   body: none
   auth: none
 }
 
 params:query {
-  isBlocked: true
+  userId: 1
+  ~isBlocked: true
   ~status: PENDING
   ~minPrice: 0
   ~maxPrice: 0
@@ -25,5 +26,4 @@ params:query {
   ~pageSize: 1
   ~cityId: 2
   ~districtId: 12
-  ~userId: 1
 }

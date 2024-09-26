@@ -10,12 +10,14 @@ import com.project.house.rental.entity.Property_;
 import com.project.house.rental.mapper.PropertyMapper;
 import com.project.house.rental.repository.PropertyImageRepository;
 import com.project.house.rental.repository.PropertyRepository;
+import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.service.PropertyService;
 import com.project.house.rental.service.email.EmailSenderService;
 import com.project.house.rental.specification.PropertySpecification;
 import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.persistence.NoResultException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,14 +42,16 @@ public class PropertyServiceImpl implements PropertyService {
     private final HibernateFilterHelper hibernateFilterHelper;
     private final PropertyMapper propertyMapper;
     private final PropertyImageRepository propertyImageRepository;
+    private final JWTTokenProvider jwtTokenProvider;
     private final EmailSenderService emailSenderService;
 
-    public PropertyServiceImpl(PropertyRepository propertyRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper, PropertyMapper propertyMapper, PropertyImageRepository propertyImageRepository, EmailSenderService emailSenderService) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper, PropertyMapper propertyMapper, PropertyImageRepository propertyImageRepository, JWTTokenProvider jwtTokenProvider, EmailSenderService emailSenderService) {
         this.propertyRepository = propertyRepository;
         this.cloudinaryService = cloudinaryService;
         this.hibernateFilterHelper = hibernateFilterHelper;
         this.propertyMapper = propertyMapper;
         this.propertyImageRepository = propertyImageRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
         this.emailSenderService = emailSenderService;
     }
 
@@ -255,6 +259,22 @@ public class PropertyServiceImpl implements PropertyService {
         }
 
         property.setStatus(Property.PropertyStatus.valueOf(status));
+        propertyRepository.save(property);
+        return propertyMapper.toDto(property);
+    }
+
+    @Override
+    public PropertyDto hideProperty(long id, HttpServletRequest request) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
+
+        String username = jwtTokenProvider.getUsernameFromToken(request);
+
+        if (!property.getUser().getUsername().equals(username)) {
+            throw new IllegalArgumentException("Bạn không có quyền thực hiện hành động này !");
+        }
+
+        property.setHidden(!property.isHidden());
         propertyRepository.save(property);
         return propertyMapper.toDto(property);
     }

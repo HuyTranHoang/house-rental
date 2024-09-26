@@ -3,6 +3,7 @@ package com.project.house.rental.controller;
 import com.project.house.rental.dto.PropertyDto;
 import com.project.house.rental.dto.params.PropertyParams;
 import com.project.house.rental.service.PropertyService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +64,12 @@ public class PropertyController {
     @PutMapping("/status/{id}")
     public ResponseEntity<PropertyDto> updatePropertyStatus(@PathVariable Long id, @RequestParam String status) {
         PropertyDto propertyDto = propertyService.updatePropertyStatus(id, status);
+        return ResponseEntity.ok(propertyDto);
+    }
+
+    @PutMapping("/hide/{id}")
+    public ResponseEntity<PropertyDto> hideProperty(@PathVariable Long id, HttpServletRequest request) {
+        PropertyDto propertyDto = propertyService.hideProperty(id, request);
         return ResponseEntity.ok(propertyDto);
     }
 

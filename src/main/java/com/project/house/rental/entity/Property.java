@@ -97,7 +97,7 @@ public class Property extends BaseEntity {
     @OneToMany(mappedBy = "property")
     List<Favorite> favorites;
 
-    @Column(name = "is_priority", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "is_priority")
     boolean isPriority;
 
     @Column(name = "priority_expiration")
@@ -105,6 +105,9 @@ public class Property extends BaseEntity {
 
     @Column(name = "refresh_day")
     Timestamp refreshDay;
+
+    @Column(name = "is_hidden")
+    boolean isHidden;
 
     public enum PropertyStatus {
         PENDING,

@@ -14,6 +14,7 @@ import java.util.List;
 public interface PropertyMapper {
 
     @Mapping(source = "blocked", target = "isBlocked")
+    @Mapping(source = "hidden", target = "isHidden")
     @Mapping(source = "city.id", target = "cityId")
     @Mapping(source = "city.name", target = "cityName")
     @Mapping(source = "roomType.id", target = "roomTypeId")

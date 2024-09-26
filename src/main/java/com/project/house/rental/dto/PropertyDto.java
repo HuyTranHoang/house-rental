@@ -74,6 +74,8 @@ public class PropertyDto {
 
     String thumbnailOriginalName;
 
+    boolean isHidden;
+
     Date createdAt;
 
 }
