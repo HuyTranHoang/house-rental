@@ -19,14 +19,12 @@ import org.hibernate.annotations.SQLDelete;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "reviews")
+@Table(name = "comments")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@SQLDelete(sql = "UPDATE reviews SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE comments SET is_deleted = true WHERE id = ?")
 @FilterDef(name = FilterConstant.DELETE_REVIEW_FILTER, parameters = @ParamDef(name = FilterConstant.IS_DELETED, type = Boolean.class))
 @Filter(name = FilterConstant.DELETE_REVIEW_FILTER, condition = FilterConstant.CONDITION)
-public class Review extends BaseEntity {
-
-    int rating;
+public class Comment extends BaseEntity {
 
     String comment;
 
@@ -37,5 +35,4 @@ public class Review extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     UserEntity user;
-
 }

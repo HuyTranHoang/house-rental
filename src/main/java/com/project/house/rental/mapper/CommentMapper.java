@@ -1,26 +1,26 @@
 package com.project.house.rental.mapper;
 
-import com.project.house.rental.dto.ReviewDto;
-import com.project.house.rental.entity.Review;
+import com.project.house.rental.dto.CommentDto;
+import com.project.house.rental.entity.Comment;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
-@DecoratedWith(ReviewMapperDecorator.class)
-public interface ReviewMapper {
+@DecoratedWith(CommentMapperDecorator.class)
+public interface CommentMapper {
 
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.username", target = "userName")
     @Mapping(source = "user.avatarUrl", target = "userAvatar")
     @Mapping(source = "property.id", target = "propertyId")
     @Mapping(source = "property.title", target = "propertyTitle")
-    ReviewDto toDto(Review review);
+    CommentDto toDto(Comment comment);
 
-    Review toEntity(ReviewDto reviewDto);
+    Comment toEntity(CommentDto commentDto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    void updateEntityFromDto(ReviewDto reviewDto, @MappingTarget Review review);
+    void updateEntityFromDto(CommentDto commentDto, @MappingTarget Comment comment);
 }

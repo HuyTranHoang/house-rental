@@ -1,11 +1,11 @@
 meta {
-  name: Update Review
+  name: Update Comment
   type: http
   seq: 6
 }
 
 put {
-  url: {{host}}/api/review/:id
+  url: {{host}}/api/comment/:id
   body: json
   auth: bearer
 }

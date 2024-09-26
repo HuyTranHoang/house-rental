@@ -1,11 +1,11 @@
 meta {
-  name: Delete Review
+  name: Delete Comment
   type: http
   seq: 5
 }
 
 delete {
-  url: {{host}}/api/review/:id
+  url: {{host}}/api/comment/:id
   body: json
   auth: bearer
 }

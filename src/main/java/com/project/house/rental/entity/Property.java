@@ -83,7 +83,7 @@ public class Property extends BaseEntity {
     List<Amenity> amenities;
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
-    List<Review> reviews;
+    List<Comment> comments;
 
     @OneToMany(mappedBy = "property")
     List<PropertyImage> propertyImages;

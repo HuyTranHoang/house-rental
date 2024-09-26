@@ -78,7 +78,7 @@ public class UserEntity extends BaseEntity {
     PasswordReset passwordReset;
 
     @OneToMany(mappedBy = "user")
-    List<Review> reviews;
+    List<Comment> comments;
 
     @OneToMany(mappedBy = "user")
     List<Favorite> favorites;

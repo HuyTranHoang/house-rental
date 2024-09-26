@@ -1,19 +1,18 @@
 meta {
-  name: Get All Reviews With Params
+  name: Get All Comment With Params
   type: http
   seq: 3
 }
 
 get {
-  url: {{host}}/api/review?propertyId=6
+  url: {{host}}/api/comment
   body: none
-  auth: none
+  auth: inherit
 }
 
 params:query {
-  propertyId: 6
+  ~propertyId: 6
   ~search: cho thuê
   ~userId: 1
-  ~rating: 1
   ~sortBy: createdAtDesc
 }

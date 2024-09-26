@@ -5,9 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReviewParams extends PaginationParams {
-    private int rating;
-
+public class CommentParams extends PaginationParams {
     private String search;
 
     private long userId;
