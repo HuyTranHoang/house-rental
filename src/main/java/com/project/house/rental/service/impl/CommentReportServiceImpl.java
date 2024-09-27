@@ -12,7 +12,6 @@ import com.project.house.rental.entity.auth.UserEntity_;
 import com.project.house.rental.mapper.CommentReportMapper;
 import com.project.house.rental.repository.CommentReportRepository;
 import com.project.house.rental.repository.CommentRepository;
-import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.CommentReportService;
@@ -39,17 +38,15 @@ public class CommentReportServiceImpl implements CommentReportService {
     private final CommentReportRepository commentReportRepository;
     private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
-    private final PropertyRepository propertyRepository;
-    private final EmailSenderService emailSenderService;
     private final HibernateFilterHelper hibernateFilterHelper;
     private final CommentReportMapper commentReportMapper;
     private final CommentRepository commentRepository;
+    private final EmailSenderService emailSenderService;
 
-    public CommentReportServiceImpl(CommentReportRepository commentReportRepository, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, PropertyRepository propertyRepository, EmailSenderService emailSenderService, HibernateFilterHelper hibernateFilterHelper, CommentReportMapper commentReportMapper, CommentRepository commentRepository) {
+    public CommentReportServiceImpl(CommentReportRepository commentReportRepository, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, EmailSenderService emailSenderService, HibernateFilterHelper hibernateFilterHelper, CommentReportMapper commentReportMapper, CommentRepository commentRepository) {
         this.commentReportRepository = commentReportRepository;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.propertyRepository = propertyRepository;
         this.emailSenderService = emailSenderService;
         this.hibernateFilterHelper = hibernateFilterHelper;
         this.commentReportMapper = commentReportMapper;
