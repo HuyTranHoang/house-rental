@@ -20,4 +20,8 @@ public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSp
 
     List<Property> findByRefreshedAtBefore(Date refreshDay);
 
+    List<Property> findByPriorityExpirationBefore(Date priorityDay);
+
+    List<Property> findByIsPriorityTrue();
+
 }
