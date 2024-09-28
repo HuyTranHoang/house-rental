@@ -30,10 +30,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.*;
 
 
 @Service
@@ -107,7 +106,13 @@ public class PropertyServiceImpl implements PropertyService {
         }
 
         property.setPropertyImages(propertyImages);
-        property.setRefreshDay(new Date());
+
+        // Set default refreshDay and priorityExpiration '1970-01-01 00:00:00'
+        LocalDateTime localDateTime = LocalDateTime.of(1970, 1, 1, 0, 0);
+        Date date = Date.from(localDateTime.toInstant(ZoneOffset.UTC));
+        property.setRefreshDay(date);
+        property.setPriorityExpiration(date);
+
         propertyRepository.save(property);
         propertyImageRepository.saveAll(propertyImages);
         return propertyMapper.toDto(property);
