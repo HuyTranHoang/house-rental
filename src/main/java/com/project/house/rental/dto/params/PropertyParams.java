@@ -27,7 +27,7 @@ public class PropertyParams extends PaginationParams {
 
     private String status;
 
-    private String sortBy = "createdAtDesc";
+    private String sortBy = "refreshDayDesc";
 
     private long userId;
 

@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -103,9 +104,9 @@ public class PropertyServiceImpl implements PropertyService {
         }
 
         property.setPropertyImages(propertyImages);
+        property.setRefreshDay(new Date());
         propertyRepository.save(property);
         propertyImageRepository.saveAll(propertyImages);
-
         return propertyMapper.toDto(property);
     }
 
@@ -195,7 +196,9 @@ public class PropertyServiceImpl implements PropertyService {
             case "areaDesc" -> Sort.by(Property_.AREA).descending();
             case "areaAsc" -> Sort.by(Property_.AREA);
             case "createdAtAsc" -> Sort.by(Property_.CREATED_AT);
-            default -> Sort.by(Property_.CREATED_AT).descending();
+            case "createdAtDesc" -> Sort.by(Property_.CREATED_AT).descending();
+            case "refreshDayAsc" -> Sort.by(Property_.REFRESH_DAY);
+            default -> Sort.by(Property_.REFRESH_DAY).descending();
         };
 
         if (propertyParams.getPageNumber() < 0) {
@@ -280,6 +283,22 @@ public class PropertyServiceImpl implements PropertyService {
         return propertyMapper.toDto(property);
     }
 
+    @Override
+    public PropertyDto refreshProperty(long id, HttpServletRequest request) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
+
+        String username = jwtTokenProvider.getUsernameFromToken(request);
+
+        if (!property.getUser().getUsername().equals(username)) {
+            throw new IllegalArgumentException("Bạn không có quyền thực hiện hành động này !");
+        }
+
+        property.setRefreshDay(new Date());
+        propertyRepository.save(property);
+        return propertyMapper.toDto(property);
+    }
+
 
     public static boolean isValidPropertyStatus(String status) {
         try {
@@ -290,7 +309,7 @@ public class PropertyServiceImpl implements PropertyService {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")  // Chạy vào lúc 0 giờ mỗi ngày
     public void updateExpiredPriorities() {
         List<Property> expiredProperties = propertyRepository.findByPriorityExpirationBeforeAndIsPriorityTrue(new Timestamp(System.currentTimeMillis()));
         expiredProperties.forEach(property -> {
@@ -298,6 +317,17 @@ public class PropertyServiceImpl implements PropertyService {
             propertyRepository.save(property);
         });
     }
+
+    @Scheduled(cron = "0 0 0 * * ?") // Tự cập nhật lại refreshDay sau 2 ngày
+    public void resetRefreshDayAfterTwoDays() {
+        Timestamp twoDaysAgo = new Timestamp(System.currentTimeMillis() - 2 * 24 * 60 * 60 * 1000L); // 2 ngày
+
+        List<Property> propertiesToUpdate = propertyRepository.findByRefreshDayBefore(twoDaysAgo);
+        propertiesToUpdate.forEach(property -> property.setRefreshDay(property.getCreatedAt()));
+
+        propertyRepository.saveAll(propertiesToUpdate);
+    }
+
 
 
 }
