@@ -5,14 +5,14 @@ meta {
 }
 
 get {
-  url: {{host}}/api/properties?userId=1&isHidden=true
+  url: {{host}}/api/properties
   body: none
   auth: none
 }
 
 params:query {
-  userId: 1
-  isHidden: true
+  ~userId: 1
+  ~isHidden: true
   ~isBlocked: true
   ~status: PENDING
   ~minPrice: 0

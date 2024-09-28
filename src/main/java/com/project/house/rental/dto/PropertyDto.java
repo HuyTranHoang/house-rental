@@ -44,10 +44,6 @@ public class PropertyDto {
 
     boolean isBlocked;
 
-    boolean isPriority;
-
-    Date priorityExpiration;
-
     long userId;
 
     String userName;
@@ -73,6 +69,12 @@ public class PropertyDto {
     String thumbnailBlurhash;
 
     String thumbnailOriginalName;
+
+    boolean isPriority;
+
+    Date priorityExpiration;
+
+    Date refreshDay;
 
     boolean isHidden;
 

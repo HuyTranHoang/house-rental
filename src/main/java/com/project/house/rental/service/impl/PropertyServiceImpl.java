@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -332,7 +331,8 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Scheduled(cron = "0 0 0 * * ?")  // Chạy vào lúc 0 giờ mỗi ngày
     public void updateExpiredPriorities() {
-        List<Property> expiredProperties = propertyRepository.findByPriorityExpirationBeforeAndIsPriorityTrue(new Timestamp(System.currentTimeMillis()));
+        Date now = new Date(System.currentTimeMillis());
+        List<Property> expiredProperties = propertyRepository.findByPriorityExpirationBeforeAndPriorityTrue(now);
         expiredProperties.forEach(property -> {
             property.setPriority(false);
             propertyRepository.save(property);
@@ -341,7 +341,7 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Scheduled(cron = "0 0 0 * * ?") // Tự cập nhật lại refreshDay sau 2 ngày
     public void resetRefreshDayAfterTwoDays() {
-        Timestamp twoDaysAgo = new Timestamp(System.currentTimeMillis() - 2 * 24 * 60 * 60 * 1000L); // 2 ngày
+        Date twoDaysAgo = new Date(System.currentTimeMillis() - 2 * 24 * 60 * 60 * 1000);
 
         List<Property> propertiesToUpdate = propertyRepository.findByRefreshDayBefore(twoDaysAgo);
         propertiesToUpdate.forEach(property -> property.setRefreshDay(property.getCreatedAt()));

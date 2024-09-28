@@ -10,7 +10,6 @@ import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -102,7 +101,7 @@ public class Property extends BaseEntity {
     boolean isPriority;
 
     @Column(name = "priority_expiration")
-    Timestamp priorityExpiration;
+    Date priorityExpiration;
 
     @Column(name = "refresh_day")
     Date refreshDay;
