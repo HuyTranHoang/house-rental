@@ -73,4 +73,10 @@ public class PropertyController {
         return ResponseEntity.ok(propertyDto);
     }
 
+    @PutMapping("/refresh/{id}")
+    public ResponseEntity<PropertyDto> refreshProperty(@PathVariable Long id, HttpServletRequest request) {
+        PropertyDto propertyDto = propertyService.refreshProperty(id, request);
+        return ResponseEntity.ok(propertyDto);
+    }
+
 }

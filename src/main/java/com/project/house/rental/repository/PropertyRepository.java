@@ -16,4 +16,7 @@ public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSp
     Property findByIdWithFilter(long id);
 
     List<Property> findByPriorityExpirationBeforeAndIsPriorityTrue(Timestamp timestamp);
+
+    List<Property> findByRefreshDayBefore(Timestamp timestamp);
+
 }

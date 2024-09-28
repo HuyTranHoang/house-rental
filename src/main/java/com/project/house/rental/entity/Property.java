@@ -11,6 +11,7 @@ import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -104,7 +105,7 @@ public class Property extends BaseEntity {
     Timestamp priorityExpiration;
 
     @Column(name = "refresh_day")
-    Timestamp refreshDay;
+    Date refreshDay;
 
     @Column(name = "is_hidden")
     boolean isHidden;

@@ -25,4 +25,6 @@ public interface PropertyService {
     PropertyDto updatePropertyStatus(long id, String status);
 
     PropertyDto hideProperty(long id, HttpServletRequest request);
+
+    PropertyDto refreshProperty(long id, HttpServletRequest request);
 }
