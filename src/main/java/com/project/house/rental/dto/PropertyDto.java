@@ -74,7 +74,7 @@ public class PropertyDto {
 
     Date priorityExpiration;
 
-    Date refreshDay;
+    Date refreshedAt;
 
     boolean isHidden;
 

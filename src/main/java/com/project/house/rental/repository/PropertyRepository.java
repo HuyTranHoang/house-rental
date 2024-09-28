@@ -18,6 +18,6 @@ public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSp
     @Query("SELECT p FROM Property p WHERE p.isDeleted = false AND p.isBlocked = false AND p.isPriority = true AND p.priorityExpiration < :priorityExpiration")
     List<Property> findByPriorityExpirationBeforeAndPriorityTrue(Date priorityExpiration);
 
-    List<Property> findByRefreshDayBefore(Date refreshDay);
+    List<Property> findByRefreshedAtBefore(Date refreshDay);
 
 }

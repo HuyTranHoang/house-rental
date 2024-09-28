@@ -110,8 +110,9 @@ public class PropertyServiceImpl implements PropertyService {
         // Set default refreshDay and priorityExpiration '1970-01-01 00:00:00'
         LocalDateTime localDateTime = LocalDateTime.of(1970, 1, 1, 0, 0);
         Date date = Date.from(localDateTime.toInstant(ZoneOffset.UTC));
-        property.setRefreshDay(date);
         property.setPriorityExpiration(date);
+
+        property.setRefreshedAt(new Date());
 
         propertyRepository.save(property);
         propertyImageRepository.saveAll(propertyImages);
@@ -205,8 +206,8 @@ public class PropertyServiceImpl implements PropertyService {
             case "areaAsc" -> Sort.by(Property_.AREA);
             case "createdAtAsc" -> Sort.by(Property_.CREATED_AT);
             case "createdAtDesc" -> Sort.by(Property_.CREATED_AT).descending();
-            case "refreshDayAsc" -> Sort.by(Property_.REFRESH_DAY);
-            default -> Sort.by(Property_.REFRESH_DAY).descending();
+            case "refreshDayAsc" -> Sort.by(Property_.REFRESHED_AT);
+            default -> Sort.by(Property_.REFRESHED_AT).descending();
         };
 
         if (propertyParams.getPageNumber() < 0) {
@@ -301,7 +302,7 @@ public class PropertyServiceImpl implements PropertyService {
         UserMembership userMembership = getValidationUserMembership(property, username);
         userMembershipRepository.save(userMembership);
 
-        property.setRefreshDay(new Date());
+        property.setRefreshedAt(new Date());
         propertyRepository.save(property);
         return propertyMapper.toDto(property);
     }
@@ -348,8 +349,8 @@ public class PropertyServiceImpl implements PropertyService {
     public void resetRefreshDayAfterTwoDays() {
         Date twoDaysAgo = new Date(System.currentTimeMillis() - 2 * 24 * 60 * 60 * 1000);
 
-        List<Property> propertiesToUpdate = propertyRepository.findByRefreshDayBefore(twoDaysAgo);
-        propertiesToUpdate.forEach(property -> property.setRefreshDay(property.getCreatedAt()));
+        List<Property> propertiesToUpdate = propertyRepository.findByRefreshedAtBefore(twoDaysAgo);
+        propertiesToUpdate.forEach(property -> property.setRefreshedAt(property.getCreatedAt()));
 
         propertyRepository.saveAll(propertiesToUpdate);
     }

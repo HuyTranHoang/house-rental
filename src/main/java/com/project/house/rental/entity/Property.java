@@ -103,8 +103,8 @@ public class Property extends BaseEntity {
     @Column(name = "priority_expiration")
     Date priorityExpiration;
 
-    @Column(name = "refresh_day")
-    Date refreshDay;
+    @Column(name = "refreshed_at")
+    Date refreshedAt;
 
     @Column(name = "is_hidden")
     boolean isHidden;
