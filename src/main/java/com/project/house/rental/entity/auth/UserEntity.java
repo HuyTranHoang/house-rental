@@ -71,19 +71,19 @@ public class UserEntity extends BaseEntity {
 
     List<Authority> authorities;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Property> properties;
 
     @OneToOne(mappedBy = "user")
     PasswordReset passwordReset;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Comment> comments;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Favorite> favorites;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Transaction> transactions;
 
     @OneToOne(mappedBy = "user")

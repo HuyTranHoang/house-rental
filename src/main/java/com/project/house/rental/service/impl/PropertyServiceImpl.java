@@ -7,9 +7,11 @@ import com.project.house.rental.dto.params.PropertyParams;
 import com.project.house.rental.entity.Property;
 import com.project.house.rental.entity.PropertyImage;
 import com.project.house.rental.entity.Property_;
+import com.project.house.rental.entity.UserMembership;
 import com.project.house.rental.mapper.PropertyMapper;
 import com.project.house.rental.repository.PropertyImageRepository;
 import com.project.house.rental.repository.PropertyRepository;
+import com.project.house.rental.repository.UserMembershipRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.service.PropertyService;
@@ -45,8 +47,9 @@ public class PropertyServiceImpl implements PropertyService {
     private final PropertyImageRepository propertyImageRepository;
     private final JWTTokenProvider jwtTokenProvider;
     private final EmailSenderService emailSenderService;
+    private final UserMembershipRepository userMembershipRepository;
 
-    public PropertyServiceImpl(PropertyRepository propertyRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper, PropertyMapper propertyMapper, PropertyImageRepository propertyImageRepository, JWTTokenProvider jwtTokenProvider, EmailSenderService emailSenderService) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper, PropertyMapper propertyMapper, PropertyImageRepository propertyImageRepository, JWTTokenProvider jwtTokenProvider, EmailSenderService emailSenderService, UserMembershipRepository userMembershipRepository) {
         this.propertyRepository = propertyRepository;
         this.cloudinaryService = cloudinaryService;
         this.hibernateFilterHelper = hibernateFilterHelper;
@@ -54,6 +57,7 @@ public class PropertyServiceImpl implements PropertyService {
         this.propertyImageRepository = propertyImageRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.emailSenderService = emailSenderService;
+        this.userMembershipRepository = userMembershipRepository;
     }
 
 
@@ -290,13 +294,30 @@ public class PropertyServiceImpl implements PropertyService {
 
         String username = jwtTokenProvider.getUsernameFromToken(request);
 
-        if (!property.getUser().getUsername().equals(username)) {
-            throw new IllegalArgumentException("Bạn không có quyền thực hiện hành động này !");
-        }
+        UserMembership userMembership = getValidationUserMembership(property, username);
+        userMembershipRepository.save(userMembership);
 
         property.setRefreshDay(new Date());
         propertyRepository.save(property);
         return propertyMapper.toDto(property);
+    }
+
+    private static UserMembership getValidationUserMembership(Property property, String username) {
+        if (!property.getUser().getUsername().equals(username)) {
+            throw new IllegalArgumentException("Bạn không có quyền thực hiện hành động này !");
+        }
+
+        int refreshLimit = property.getUser().getUserMembership().getTotalPriorityLimit();
+        int refreshUsed = property.getUser().getUserMembership().getRefreshesPostsUsed();
+
+        if (refreshUsed >= refreshLimit) {
+            throw new IllegalArgumentException("Bạn đã sử dụng hết số lần refresh tin đăng !");
+        }
+
+
+        UserMembership userMembership = property.getUser().getUserMembership();
+        userMembership.setRefreshesPostsUsed(refreshUsed + 1);
+        return userMembership;
     }
 
 
@@ -327,7 +348,6 @@ public class PropertyServiceImpl implements PropertyService {
 
         propertyRepository.saveAll(propertiesToUpdate);
     }
-
 
 
 }
