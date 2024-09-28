@@ -104,10 +104,9 @@ public class PropertyServiceImpl implements PropertyService {
         }
 
         property.setPropertyImages(propertyImages);
-        property.setRefreshDay(property.getCreatedAt());
+        property.setRefreshDay(new Date());
         propertyRepository.save(property);
         propertyImageRepository.saveAll(propertyImages);
-
         return propertyMapper.toDto(property);
     }
 
@@ -198,6 +197,7 @@ public class PropertyServiceImpl implements PropertyService {
             case "areaAsc" -> Sort.by(Property_.AREA);
             case "createdAtAsc" -> Sort.by(Property_.CREATED_AT);
             case "createdAtDesc" -> Sort.by(Property_.CREATED_AT).descending();
+            case "refreshDayAsc" -> Sort.by(Property_.REFRESH_DAY);
             default -> Sort.by(Property_.REFRESH_DAY).descending();
         };
 
