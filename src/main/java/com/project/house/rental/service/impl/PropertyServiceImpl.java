@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -307,6 +308,32 @@ public class PropertyServiceImpl implements PropertyService {
         return propertyMapper.toDto(property);
     }
 
+    @Override
+    public PropertyDto prioritizeProperty(long id, HttpServletRequest request) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
+
+        String username = jwtTokenProvider.getUsernameFromToken(request);
+
+        UserMembership userMembership = getValidationUserMembership(property, username);
+        userMembershipRepository.save(userMembership);
+
+        property.setPriority(true);
+        property.setPriorityExpiration(new Date());
+        propertyRepository.save(property);
+        return propertyMapper.toDto(property);
+    }
+
+    @Override
+    public List<PropertyDto> getPriorityProperties() {
+        List<Property> priorityProperties = propertyRepository.findByIsPriorityTrue();
+
+        return priorityProperties.stream()
+                .sorted(Comparator.comparing(Property::getRefreshedAt).reversed())
+                .map(propertyMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     private static UserMembership getValidationUserMembership(Property property, String username) {
         if (!property.getUser().getUsername().equals(username)) {
             throw new IllegalArgumentException("Bạn không có quyền thực hiện hành động này !");
@@ -351,6 +378,16 @@ public class PropertyServiceImpl implements PropertyService {
 
         List<Property> propertiesToUpdate = propertyRepository.findByRefreshedAtBefore(twoDaysAgo);
         propertiesToUpdate.forEach(property -> property.setRefreshedAt(property.getCreatedAt()));
+
+        propertyRepository.saveAll(propertiesToUpdate);
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?") // Tự cập nhật lại refreshDay sau 2 ngày
+    public void resetPriorityDayAfterTwoDays() {
+        Date twoDaysAgo = new Date(System.currentTimeMillis() - 2 * 24 * 60 * 60 * 1000);
+
+        List<Property> propertiesToUpdate = propertyRepository.findByPriorityExpirationBefore(twoDaysAgo);
+        propertiesToUpdate.forEach(property -> property.setPriority(false));
 
         propertyRepository.saveAll(propertiesToUpdate);
     }

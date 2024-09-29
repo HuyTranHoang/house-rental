@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -77,6 +78,18 @@ public class PropertyController {
     public ResponseEntity<PropertyDto> refreshProperty(@PathVariable Long id, HttpServletRequest request) {
         PropertyDto propertyDto = propertyService.refreshProperty(id, request);
         return ResponseEntity.ok(propertyDto);
+    }
+
+    @PutMapping("/priority/{id}")
+    public ResponseEntity<PropertyDto> prioritizeProperty(@PathVariable Long id, HttpServletRequest request) {
+        PropertyDto propertyDto = propertyService.prioritizeProperty(id, request);
+        return ResponseEntity.ok(propertyDto);
+    }
+
+    @GetMapping("/priority")
+    public ResponseEntity<List<PropertyDto>> getPriorityProperties() {
+        List<PropertyDto> properties = propertyService.getPriorityProperties();
+        return ResponseEntity.ok(properties);
     }
 
 }

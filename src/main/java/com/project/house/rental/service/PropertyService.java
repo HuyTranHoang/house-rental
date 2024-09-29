@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public interface PropertyService {
@@ -27,4 +28,8 @@ public interface PropertyService {
     PropertyDto hideProperty(long id, HttpServletRequest request);
 
     PropertyDto refreshProperty(long id, HttpServletRequest request);
+
+    PropertyDto prioritizeProperty(long id, HttpServletRequest request);
+
+    List<PropertyDto> getPriorityProperties();
 }

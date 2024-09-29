@@ -1,0 +1,19 @@
+meta {
+  name: Update Priority
+  type: http
+  seq: 12
+}
+
+put {
+  url: {{host}}/api/properties/priority/:id
+  body: json
+  auth: bearer
+}
+
+params:path {
+  id: 46
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
