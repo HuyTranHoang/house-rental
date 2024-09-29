@@ -300,7 +300,7 @@ public class PropertyServiceImpl implements PropertyService {
 
         String username = jwtTokenProvider.getUsernameFromToken(request);
 
-        UserMembership userMembership = getValidationUserMembership(property, username);
+        UserMembership userMembership = getValidationUserMembership(property, username, true);
         userMembershipRepository.save(userMembership);
 
         property.setRefreshedAt(new Date());
@@ -315,7 +315,7 @@ public class PropertyServiceImpl implements PropertyService {
 
         String username = jwtTokenProvider.getUsernameFromToken(request);
 
-        UserMembership userMembership = getValidationUserMembership(property, username);
+        UserMembership userMembership = getValidationUserMembership(property, username, false);
         userMembershipRepository.save(userMembership);
 
         property.setPriority(true);
@@ -334,21 +334,33 @@ public class PropertyServiceImpl implements PropertyService {
                 .collect(Collectors.toList());
     }
 
-    private static UserMembership getValidationUserMembership(Property property, String username) {
+    private static UserMembership getValidationUserMembership(Property property, String username, boolean isRefresh) {
         if (!property.getUser().getUsername().equals(username)) {
             throw new IllegalArgumentException("Bạn không có quyền thực hiện hành động này !");
         }
 
-        int refreshLimit = property.getUser().getUserMembership().getTotalPriorityLimit();
-        int refreshUsed = property.getUser().getUserMembership().getRefreshesPostsUsed();
+        UserMembership userMembership = property.getUser().getUserMembership();
 
-        if (refreshUsed >= refreshLimit) {
-            throw new IllegalArgumentException("Bạn đã sử dụng hết số lần refresh tin đăng !");
+        if (isRefresh) {
+            int refreshLimit = property.getUser().getUserMembership().getTotalPriorityLimit();
+            int refreshUsed = property.getUser().getUserMembership().getRefreshesPostsUsed();
+
+            if (refreshUsed >= refreshLimit) {
+                throw new IllegalArgumentException("Bạn đã sử dụng hết số lần làm mới tin đăng !");
+            }
+
+            userMembership.setRefreshesPostsUsed(refreshUsed + 1);
+        } else {
+            int priorityLimit = property.getUser().getUserMembership().getTotalPriorityLimit();
+            int priorityUsed = property.getUser().getUserMembership().getPriorityPostsUsed();
+
+            if (priorityUsed >= priorityLimit) {
+                throw new IllegalArgumentException("Bạn đã sử dụng hết số lần ưu tiên tin đăng !");
+            }
+
+            userMembership.setPriorityPostsUsed(priorityUsed + 1);
         }
 
-
-        UserMembership userMembership = property.getUser().getUserMembership();
-        userMembership.setRefreshesPostsUsed(refreshUsed + 1);
         return userMembership;
     }
 
