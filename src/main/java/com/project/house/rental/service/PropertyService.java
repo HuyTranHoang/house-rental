@@ -32,4 +32,6 @@ public interface PropertyService {
     PropertyDto prioritizeProperty(long id, HttpServletRequest request);
 
     List<PropertyDto> getPriorityProperties();
+
+    List<PropertyDto> getRelatedProperties(long propertyId);
 }

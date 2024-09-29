@@ -334,6 +334,55 @@ public class PropertyServiceImpl implements PropertyService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<PropertyDto> getRelatedProperties(long propertyId) {
+        Property property = propertyRepository.findByIdWithFilter(propertyId);
+        if (property == null) {
+            throw new NoResultException("Không tìm thấy tin đăng với id: " + propertyId);
+        }
+
+        long cityId = property.getCity().getId();
+        long districtId = property.getDistrict().getId();
+        long roomTypeId = property.getRoomType().getId();
+
+        List<Property> relatedProperties = propertyRepository.findRelatedProperties(
+                cityId,
+                districtId,
+                roomTypeId,
+                propertyId
+        );
+
+        if (relatedProperties.size() < 4) {
+            relatedProperties.addAll(propertyRepository.findRelatedPropertiesByCityAndRoomType(
+                    cityId,
+                    roomTypeId,
+                    propertyId
+            ));
+        }
+
+        if (relatedProperties.size() < 4) {
+            relatedProperties.addAll(propertyRepository.findRelatedPropertiesByCity(
+                    cityId,
+                    propertyId
+            ));
+        }
+
+        if (relatedProperties.size() < 4) {
+            relatedProperties.addAll(propertyRepository.findAllPropertiesExcept(propertyId));
+        }
+
+        // Remove duplicates
+        relatedProperties = relatedProperties.stream().distinct().collect(Collectors.toList());
+
+        // Shuffle and limit to 4
+        Collections.shuffle(relatedProperties);
+        relatedProperties = relatedProperties.stream().limit(4).collect(Collectors.toList());
+
+        return relatedProperties.stream()
+                .map(propertyMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     private static UserMembership getValidationUserMembership(Property property, String username, boolean isRefresh) {
         if (!property.getUser().getUsername().equals(username)) {
             throw new IllegalArgumentException("Bạn không có quyền thực hiện hành động này !");

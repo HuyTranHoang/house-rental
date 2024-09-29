@@ -92,4 +92,10 @@ public class PropertyController {
         return ResponseEntity.ok(properties);
     }
 
+    @GetMapping("/related/{propertyId}")
+    public ResponseEntity<List<PropertyDto>> getRelatedProperties(@PathVariable Long propertyId) {
+        List<PropertyDto> properties = propertyService.getRelatedProperties(propertyId);
+        return ResponseEntity.ok(properties);
+    }
+
 }
