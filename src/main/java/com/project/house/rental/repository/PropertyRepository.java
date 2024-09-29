@@ -26,16 +26,16 @@ public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSp
     List<Property> findByIsPriorityTrue();
 
     // Tìm kiếm những bất động sản tương tự, từ nhiều điều kiện đến ít ( để đảm bảo đủ số lượng )
-    @Query("SELECT p FROM Property p WHERE p.city.id = :cityId AND p.district.id = :districtId AND p.roomType.id = :roomTypeId AND p.id != :propertyId AND p.isDeleted = false AND p.isBlocked = false")
+    @Query("SELECT p FROM Property p WHERE p.city.id = :cityId AND p.district.id = :districtId AND p.roomType.id = :roomTypeId AND p.id != :propertyId AND p.isDeleted = false AND p.isBlocked = false AND p.PropertyStatus = 'APPROVED'")
     List<Property> findRelatedProperties(long cityId, long districtId, long roomTypeId, long propertyId);
 
-    @Query("SELECT p FROM Property p WHERE p.city.id = :cityId AND p.roomType.id = :roomTypeId AND p.id != :propertyId AND p.isDeleted = false AND p.isBlocked = false")
+    @Query("SELECT p FROM Property p WHERE p.city.id = :cityId AND p.roomType.id = :roomTypeId AND p.id != :propertyId AND p.isDeleted = false AND p.isBlocked = false AND p.PropertyStatus = 'APPROVED'")
     List<Property> findRelatedPropertiesByCityAndRoomType(long cityId, long roomTypeId, long propertyId);
 
-    @Query("SELECT p FROM Property p WHERE p.city.id = :cityId AND p.id != :propertyId AND p.isDeleted = false AND p.isBlocked = false")
+    @Query("SELECT p FROM Property p WHERE p.city.id = :cityId AND p.id != :propertyId AND p.isDeleted = false AND p.isBlocked = false AND p.PropertyStatus = 'APPROVED'")
     List<Property> findRelatedPropertiesByCity(long cityId, long propertyId);
 
-    @Query("SELECT p FROM Property p WHERE p.id != :propertyId AND p.isDeleted = false AND p.isBlocked = false")
+    @Query("SELECT p FROM Property p WHERE p.id != :propertyId AND p.isDeleted = false AND p.isBlocked = false AND p.PropertyStatus = 'APPROVED'")
     List<Property> findAllPropertiesExcept(long propertyId);
 
 }
