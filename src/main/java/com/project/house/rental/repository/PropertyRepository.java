@@ -38,4 +38,10 @@ public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSp
     @Query("SELECT p FROM Property p WHERE p.id != :propertyId AND p.isDeleted = false AND p.isBlocked = false AND p.status = 'APPROVED'")
     List<Property> findAllPropertiesExcept(long propertyId);
 
+    //Dashboard
+    @Query("SELECT COUNT(p) FROM Property p WHERE p.createdAt BETWEEN :startDate AND :endDate")
+    long countByCreatedAtBetween(Date startDate, Date endDate);
+    @Query("SELECT COUNT(p) FROM Property p")
+    long countTotalProperties();
+
 }

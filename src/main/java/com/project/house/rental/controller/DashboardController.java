@@ -70,4 +70,22 @@ public class DashboardController {
         BigDecimal totalAmount = dashboardService.getTotalWithdrawalAmount();
         return ResponseEntity.ok(totalAmount);
     }
+
+    @GetMapping("/property/this-week")
+    public ResponseEntity<Long> countPropertiesCreatedThisWeek() {
+        long count = dashboardService.countPropertiesCreatedThisWeek();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/property/this-month")
+    public ResponseEntity<Long> countPropertiesCreatedThisMonth() {
+        long count = dashboardService.countPropertiesCreatedThisMonth();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/property/total")
+    public ResponseEntity<Long> countTotalProperties() {
+        long totalCount = dashboardService.countTotalProperties();
+        return ResponseEntity.ok(totalCount);
+    }
 }

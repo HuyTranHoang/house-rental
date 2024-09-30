@@ -15,4 +15,8 @@ public interface DashboardService {
     BigDecimal getTotalWithdrawalAmountThisWeek();
     BigDecimal getTotalWithdrawalAmountForCurrentMonth();
     BigDecimal getTotalWithdrawalAmount();
+
+    long countPropertiesCreatedThisWeek();
+    long countPropertiesCreatedThisMonth();
+    long countTotalProperties();
 }
