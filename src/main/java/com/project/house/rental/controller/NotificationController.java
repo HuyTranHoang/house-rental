@@ -1,11 +1,12 @@
 package com.project.house.rental.controller;
 
 import com.project.house.rental.dto.NotificationDto;
+import com.project.house.rental.dto.params.NotificationParams;
 import com.project.house.rental.service.NotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notification")
@@ -17,10 +18,10 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<NotificationDto>> getNotificationsByUserId(@PathVariable long userId) {
-        List<NotificationDto> notifications = notificationService.getNotificationsByUserId(userId);
-        return ResponseEntity.ok(notifications);
+    @GetMapping({"/", ""})
+    public ResponseEntity<Map<String, Object>> getNotificationsByUserId(@ModelAttribute NotificationParams notificationParams) {
+        Map<String, Object> notificationsByUserId = notificationService.getNotificationsByUserId(notificationParams);
+        return ResponseEntity.ok(notificationsByUserId);
     }
 
     @PostMapping({"/", ""})
