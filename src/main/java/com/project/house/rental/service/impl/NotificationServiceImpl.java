@@ -8,10 +8,12 @@ import com.project.house.rental.entity.Notification_;
 import com.project.house.rental.mapper.NotificationMapper;
 import com.project.house.rental.repository.NotificationRespository;
 import com.project.house.rental.service.NotificationService;
+import com.project.house.rental.specification.NotificationSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,6 +43,8 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Map<String, Object> getNotificationsByUserId(NotificationParams notificationParams) {
 
+        Specification<Notification> spec = NotificationSpecification.filterByUserId(notificationParams.getUserId());
+
         if (notificationParams.getPageNumber() < 0) {
             notificationParams.setPageNumber(0);
         }
@@ -55,7 +59,7 @@ public class NotificationServiceImpl implements NotificationService {
                 Sort.by(Sort.Order.desc(Notification_.CREATED_AT))
         );
 
-        Page<Notification> notificationPage = notificationRespository.findAll(pageable);
+        Page<Notification> notificationPage = notificationRespository.findAll(spec, pageable);
 
         PageInfo pageInfo = new PageInfo(notificationPage);
 

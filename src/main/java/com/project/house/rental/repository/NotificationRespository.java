@@ -10,7 +10,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NotificationRespository extends JpaRepository<Notification, Long>, JpaSpecificationExecutor<Notification> {
-
-    @Query("SELECT n FROM Notification n WHERE n.user.id = :userId ORDER BY n.createdAt DESC")
-    Page<Notification> getNotificationsByUserId(long userId, Pageable pageable);
 }
