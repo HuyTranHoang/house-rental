@@ -40,4 +40,7 @@ public class Comment extends BaseEntity {
 
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
     List<CommentReport> commentReports;
+
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    private List<Notification> notifications;
 }

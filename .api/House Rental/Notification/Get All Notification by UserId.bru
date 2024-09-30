@@ -1,0 +1,15 @@
+meta {
+  name: Get All Notification by UserId
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}/api/notification/:userId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  userId: 1
+}

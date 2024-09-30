@@ -112,6 +112,9 @@ public class Property extends BaseEntity {
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
     List<Report> reports;
 
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
+    List<Notification> notifications;
+
     public enum PropertyStatus {
         PENDING,
         APPROVED,
