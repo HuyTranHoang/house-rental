@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 @DecoratedWith(NotificationMapperDecorator.class)
 public interface NotificationMapper {
 
+    @Mapping(source = "seen", target = "isSeen")
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.username", target = "username")
     @Mapping(source = "property.id", target = "propertyId")

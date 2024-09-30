@@ -1,0 +1,23 @@
+meta {
+  name: Update Notification Seen Status
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{host}}/api/notification/:notificationId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  notificationId: 1
+}
+
+body:json {
+  {
+    "userId": 1,
+    "propertyId": 1,
+    "commentId": 1
+  }
+}

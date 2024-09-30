@@ -23,6 +23,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public NotificationDto createNotification(NotificationDto notificationDto) {
         Notification notification = notificationMapper.toEntity(notificationDto);
+
+        notification.setSeen(false);
+
         notification = notificationRespository.save(notification);
         return notificationMapper.toDto(notification);
     }
@@ -33,5 +36,14 @@ public class NotificationServiceImpl implements NotificationService {
                 .stream()
                 .map(notificationMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public void updateSeenStatus(long notificationId) {
+        Notification notification = notificationRespository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("Notification not found"));
+
+        notification.setSeen(true);
+        notificationRespository.save(notification);
     }
 }

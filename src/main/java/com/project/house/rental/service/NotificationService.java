@@ -9,4 +9,6 @@ public interface NotificationService {
     NotificationDto createNotification(NotificationDto notificationDto);
 
     List<NotificationDto> getNotificationsByUserId(long userId);
+
+    void updateSeenStatus(long notificationId);
 }
