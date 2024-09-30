@@ -7,6 +7,8 @@ import com.project.house.rental.repository.NotificationRespository;
 import com.project.house.rental.service.NotificationService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
@@ -23,5 +25,13 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notification = notificationMapper.toEntity(notificationDto);
         notification = notificationRespository.save(notification);
         return notificationMapper.toDto(notification);
+    }
+
+    @Override
+    public List<NotificationDto> getNotificationsByUserId(long userId) {
+        return notificationRespository.getNotificationsByUserId(userId)
+                .stream()
+                .map(notificationMapper::toDto)
+                .toList();
     }
 }
