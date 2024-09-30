@@ -82,4 +82,36 @@ public class DashboardServiceImpl implements DashboardService {
         BigDecimal totalAmount = transactionRepository.getTotalAmountByTransactionType(Transaction.TransactionType.DEPOSIT);
         return totalAmount != null ? totalAmount : BigDecimal.ZERO;
     }
+
+    @Override
+    public BigDecimal getTotalWithdrawalAmountThisWeek() {
+        LocalDate now = LocalDate.now();
+        LocalDate startOfWeek = now.with(java.time.DayOfWeek.MONDAY);
+
+        Date startDate = Date.from(startOfWeek.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(now.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant());
+
+        BigDecimal totalAmount = transactionRepository.findTotalAmountByTransactionTypeAndDateBetween(Transaction.TransactionType.WITHDRAWAL, startDate, endDate);
+
+        return totalAmount != null ? totalAmount : BigDecimal.ZERO;
+    }
+
+    @Override
+    public BigDecimal getTotalWithdrawalAmountForCurrentMonth() {
+        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
+        LocalDate now = LocalDate.now();
+
+        Date startDate = Date.from(startOfMonth.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(now.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant());
+
+        BigDecimal totalAmount = transactionRepository.sumAmountByTransactionTypeAndCreatedAtBetween(Transaction.TransactionType.WITHDRAWAL, startDate, endDate);
+
+        return totalAmount != null ? totalAmount : BigDecimal.ZERO;
+    }
+
+    @Override
+    public BigDecimal getTotalWithdrawalAmount() {
+        BigDecimal totalAmount = transactionRepository.getTotalAmountByTransactionType(Transaction.TransactionType.WITHDRAWAL);
+        return totalAmount != null ? totalAmount : BigDecimal.ZERO;
+    }
 }

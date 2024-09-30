@@ -11,4 +11,8 @@ public interface DashboardService {
     BigDecimal getTotalDepositAmountThisWeek();
     BigDecimal getTotalDepositAmountForCurrentMonth();
     BigDecimal getTotalDepositAmount();
+
+    BigDecimal getTotalWithdrawalAmountThisWeek();
+    BigDecimal getTotalWithdrawalAmountForCurrentMonth();
+    BigDecimal getTotalWithdrawalAmount();
 }

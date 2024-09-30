@@ -53,4 +53,21 @@ public class DashboardController {
         BigDecimal totalAmount = dashboardService.getTotalDepositAmount();
         return ResponseEntity.ok(totalAmount);
     }
+    @GetMapping("/withdrawal/this-week")
+    public ResponseEntity<BigDecimal> getTotalWithdrawalAmountThisWeek() {
+        BigDecimal totalDepositAmount = dashboardService.getTotalWithdrawalAmountThisWeek();
+        return ResponseEntity.ok(totalDepositAmount);
+    }
+
+    @GetMapping("/withdrawal/this-month")
+    public ResponseEntity<BigDecimal> getTotalWithdrawalAmountForCurrentMonth() {
+        BigDecimal totalDepositAmount = dashboardService.getTotalWithdrawalAmountForCurrentMonth();
+        return ResponseEntity.ok(totalDepositAmount);
+    }
+
+    @GetMapping("/withdrawal/total")
+    public ResponseEntity<BigDecimal> getTotalWithdrawalAmount() {
+        BigDecimal totalAmount = dashboardService.getTotalWithdrawalAmount();
+        return ResponseEntity.ok(totalAmount);
+    }
 }
