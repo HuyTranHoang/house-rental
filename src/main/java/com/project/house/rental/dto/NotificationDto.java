@@ -18,6 +18,11 @@ public class NotificationDto {
 
     String username;
 
+    @NotEmpty(message = "Sender id is required")
+    long senderId;
+
+    String senderUsername;
+
     @NotEmpty(message = "Property id is required")
     long propertyId;
 

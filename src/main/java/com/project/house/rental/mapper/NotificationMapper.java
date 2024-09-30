@@ -13,6 +13,8 @@ public interface NotificationMapper {
     @Mapping(source = "seen", target = "isSeen")
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.username", target = "username")
+    @Mapping(source = "sender.id", target = "senderId")
+    @Mapping(source = "sender.username", target = "senderUsername")
     @Mapping(source = "property.id", target = "propertyId")
     @Mapping(source = "property.title", target = "propertyTitle")
     @Mapping(source = "comment.id", target = "commentId")

@@ -1,0 +1,3 @@
+ALTER TABLE notifications
+    ADD COLUMN sender_id INT,
+    ADD FOREIGN KEY (sender_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE;
