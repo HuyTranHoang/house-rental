@@ -26,6 +26,10 @@ public class Notification {
     UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
+    UserEntity sender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "property_id")
     Property property;
 

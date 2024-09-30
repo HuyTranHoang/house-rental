@@ -28,6 +28,7 @@ public abstract class NotificationMapperDecorator implements NotificationMapper 
         Notification notification = delegate.toEntity(notificationDto);
 
         notification.setUser(userRepository.findById(notificationDto.getUserId()).orElse(null));
+        notification.setSender(userRepository.findById(notificationDto.getSenderId()).orElse(null));
         notification.setProperty(propertyRepository.findById(notificationDto.getPropertyId()).orElse(null));
         notification.setComment(commentRepository.findById(notificationDto.getCommentId()).orElse(null));
 
