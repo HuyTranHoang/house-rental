@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: {{host}}/api/notification?userId=1
+  url: {{host}}/api/notification?userId=1&pageNumber=4&pageSize=2
   body: none
   auth: inherit
 }
 
 params:query {
   userId: 1
-  ~pageNumber: 5
-  ~pageSize: 2
+  pageNumber: 4
+  pageSize: 2
 }

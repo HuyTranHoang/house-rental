@@ -11,6 +11,7 @@ public class PageInfo {
     private long totalElements;
     private int totalPages;
     private int size;
+    private boolean hasNextPage;
 
     @Value("${app.pagination.max-page-size}")
     @JsonIgnore
@@ -26,6 +27,8 @@ public class PageInfo {
         } else {
             this.size = size;
         }
+
+        this.hasNextPage = number < totalPages - 1;
     }
 
     public PageInfo(Page page) {
@@ -38,5 +41,7 @@ public class PageInfo {
         } else {
             this.size = page.getSize();
         }
+
+        this.hasNextPage = page.getNumber() < page.getTotalPages() - 1;
     }
 }
