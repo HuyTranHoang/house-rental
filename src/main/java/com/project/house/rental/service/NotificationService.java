@@ -12,4 +12,6 @@ public interface NotificationService {
     Map<String, Object> getNotificationsByUserId(NotificationParams notificationParams);
 
     void updateSeenStatus(long notificationId);
+
+    void markAllAsRead(long userId);
 }

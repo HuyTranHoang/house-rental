@@ -1,0 +1,24 @@
+meta {
+  name: Mark All Seen
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{host}}/api/notification/mark-all-as-read/:userId
+  body: json
+  auth: inherit
+}
+
+params:path {
+  userId: 1
+}
+
+body:json {
+  {
+    "userId": 1,
+    "senderId": 4,
+    "propertyId": 2,
+    "commentId": 2
+  }
+}

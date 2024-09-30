@@ -30,6 +30,12 @@ public class NotificationController {
         return ResponseEntity.ok(notification);
     }
 
+    @PostMapping("/mark-all-as-read/{userId}")
+    public ResponseEntity<Void> markAllAsRead(@PathVariable long userId) {
+        notificationService.markAllAsRead(userId);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{notificationId}")
     public ResponseEntity<Void> updateSeenStatus(@PathVariable long notificationId) {
         notificationService.updateSeenStatus(notificationId);

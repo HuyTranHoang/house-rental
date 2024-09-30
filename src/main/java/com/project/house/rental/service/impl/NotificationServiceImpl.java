@@ -82,4 +82,11 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setSeen(true);
         notificationRespository.save(notification);
     }
+
+    @Override
+    public void markAllAsRead(long userId) {
+        List<Notification> notifications = notificationRespository.findAllByUserIdAndSeenFalse(userId);
+        notifications.forEach(notification -> notification.setSeen(true));
+        notificationRespository.saveAll(notifications);
+    }
 }
