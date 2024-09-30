@@ -1,0 +1,11 @@
+meta {
+  name: Total Users
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{host}}/api/dashboard/users/total
+  body: none
+  auth: inherit
+}

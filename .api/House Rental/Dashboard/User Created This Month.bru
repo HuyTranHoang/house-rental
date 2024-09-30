@@ -1,0 +1,11 @@
+meta {
+  name: User Created This Month
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{host}}/api/dashboard/users/this-month
+  body: none
+  auth: inherit
+}
