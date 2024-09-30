@@ -6,10 +6,12 @@ import com.project.house.rental.dto.CommentDto;
 import com.project.house.rental.dto.params.CommentParams;
 import com.project.house.rental.entity.Comment;
 import com.project.house.rental.entity.Comment_;
+import com.project.house.rental.entity.Notification;
 import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.mapper.CommentMapper;
 import com.project.house.rental.repository.CommentRepository;
+import com.project.house.rental.repository.NotificationRespository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.CommentService;
@@ -34,13 +36,15 @@ public class CommentServiceImpl implements CommentService {
     private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
     private final HibernateFilterHelper hibernateFilterHelper;
+    private final NotificationRespository notificationRespository;
     private final CommentMapper commentMapper;
 
-    public CommentServiceImpl(CommentRepository commentRepository, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, HibernateFilterHelper hibernateFilterHelper, CommentMapper commentMapper) {
+    public CommentServiceImpl(CommentRepository commentRepository, UserRepository userRepository, JWTTokenProvider jwtTokenProvider, HibernateFilterHelper hibernateFilterHelper, NotificationRespository notificationRespository, CommentMapper commentMapper) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.hibernateFilterHelper = hibernateFilterHelper;
+        this.notificationRespository = notificationRespository;
         this.commentMapper = commentMapper;
     }
 
@@ -87,6 +91,16 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = commentMapper.toEntity(commentDto);
         comment = commentRepository.save(comment);
+
+        Notification notification = Notification.builder()
+                .sender(user)
+                .user(comment.getProperty().getUser())
+                .property(comment.getProperty())
+                .comment(comment)
+                .build();
+
+        notificationRespository.save(notification);
+
         return commentMapper.toDto(comment);
     }
 
