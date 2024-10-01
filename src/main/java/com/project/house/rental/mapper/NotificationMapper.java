@@ -18,6 +18,7 @@ public interface NotificationMapper {
     @Mapping(source = "property.id", target = "propertyId")
     @Mapping(source = "property.title", target = "propertyTitle")
     @Mapping(source = "comment.id", target = "commentId")
+    @Mapping(source = "type", target = "type")
     NotificationDto toDto(Notification notification);
 
     @Mapping(target = "id", ignore = true)

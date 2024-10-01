@@ -35,5 +35,8 @@ public class NotificationDto {
 
     boolean isSeen;
 
+    @NotEmpty(message = "Notification type is required")
+    String type;
+
     Date createdAt;
 }

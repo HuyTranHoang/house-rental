@@ -40,7 +40,17 @@ public class Notification {
     @Column(name = "is_seen")
     boolean isSeen;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    NotificationType type;
+
     @Column(name = "created_at")
     @CreationTimestamp
     Date createdAt;
+
+    public enum NotificationType {
+        COMMENT,
+        APPROVED,
+        REJECTED
+    }
 }

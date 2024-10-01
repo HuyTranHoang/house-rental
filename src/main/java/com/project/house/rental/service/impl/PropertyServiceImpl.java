@@ -4,11 +4,9 @@ import com.project.house.rental.common.PageInfo;
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.PropertyDto;
 import com.project.house.rental.dto.params.PropertyParams;
-import com.project.house.rental.entity.Property;
-import com.project.house.rental.entity.PropertyImage;
-import com.project.house.rental.entity.Property_;
-import com.project.house.rental.entity.UserMembership;
+import com.project.house.rental.entity.*;
 import com.project.house.rental.mapper.PropertyMapper;
+import com.project.house.rental.repository.NotificationRespository;
 import com.project.house.rental.repository.PropertyImageRepository;
 import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.repository.UserMembershipRepository;
@@ -47,8 +45,9 @@ public class PropertyServiceImpl implements PropertyService {
     private final JWTTokenProvider jwtTokenProvider;
     private final EmailSenderService emailSenderService;
     private final UserMembershipRepository userMembershipRepository;
+    private final NotificationRespository notificationRespository;
 
-    public PropertyServiceImpl(PropertyRepository propertyRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper, PropertyMapper propertyMapper, PropertyImageRepository propertyImageRepository, JWTTokenProvider jwtTokenProvider, EmailSenderService emailSenderService, UserMembershipRepository userMembershipRepository) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, CloudinaryService cloudinaryService, HibernateFilterHelper hibernateFilterHelper, PropertyMapper propertyMapper, PropertyImageRepository propertyImageRepository, JWTTokenProvider jwtTokenProvider, EmailSenderService emailSenderService, UserMembershipRepository userMembershipRepository, NotificationRespository notificationRespository) {
         this.propertyRepository = propertyRepository;
         this.cloudinaryService = cloudinaryService;
         this.hibernateFilterHelper = hibernateFilterHelper;
@@ -57,6 +56,7 @@ public class PropertyServiceImpl implements PropertyService {
         this.jwtTokenProvider = jwtTokenProvider;
         this.emailSenderService = emailSenderService;
         this.userMembershipRepository = userMembershipRepository;
+        this.notificationRespository = notificationRespository;
     }
 
 
@@ -274,6 +274,21 @@ public class PropertyServiceImpl implements PropertyService {
 
         property.setStatus(Property.PropertyStatus.valueOf(status));
         propertyRepository.save(property);
+
+        Notification notification = Notification.builder()
+                .user(property.getUser())
+                .sender(null)
+                .property(property)
+                .comment(null)
+                .isSeen(false)
+                .build();
+
+        if (status.equals("APPROVED")) {
+            notification.setType(Notification.NotificationType.APPROVED);
+        } else if (status.equals("REJECTED")) {
+            notification.setType(Notification.NotificationType.REJECTED);
+        }
+        notificationRespository.save(notification);
         return propertyMapper.toDto(property);
     }
 

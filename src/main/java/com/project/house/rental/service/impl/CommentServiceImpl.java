@@ -97,6 +97,7 @@ public class CommentServiceImpl implements CommentService {
                 .user(comment.getProperty().getUser())
                 .property(comment.getProperty())
                 .comment(comment)
+                .type(Notification.NotificationType.COMMENT)
                 .build();
 
         notificationRespository.save(notification);
