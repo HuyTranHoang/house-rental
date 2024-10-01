@@ -6,9 +6,15 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long>, JpaSpecificationExecutor<Comment> {
 
     @Query("SELECT r FROM Comment r WHERE r.id = :id AND r.isDeleted = false")
     Comment findByIdWithFilter(long id);
+
+    @Query("SELECT COUNT(c) FROM Comment c WHERE c.createdAt BETWEEN :startDate AND :endDate")
+    long countCommentsCreatedBetween(Date startDate, Date endDate);
+    long count();
 }

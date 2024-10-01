@@ -1,0 +1,11 @@
+meta {
+  name: User Created This Week
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}/api/dashboard/users/week
+  body: none
+  auth: inherit
+}
