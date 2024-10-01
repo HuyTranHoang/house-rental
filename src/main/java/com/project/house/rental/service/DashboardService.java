@@ -19,4 +19,8 @@ public interface DashboardService {
     long countPropertiesCreatedThisWeek();
     long countPropertiesCreatedThisMonth();
     long countTotalProperties();
+
+    long countCommentsCreatedThisWeek();
+    long countCommentsCreatedThisMonth();
+    long countTotalComments();
 }

@@ -18,13 +18,13 @@ public class DashboardController {
         this.dashboardService = dashboardService;
     }
 
-    @GetMapping("/users/this-week")
+    @GetMapping("/users/week")
     public ResponseEntity<Long> getUsersCreatedThisWeek() {
         long userCount = dashboardService.countUsersCreatedThisWeek();
         return ResponseEntity.ok(userCount);
     }
 
-    @GetMapping("/users/this-month")
+    @GetMapping("/users/month")
     public ResponseEntity<Long> getUsersCreatedThisMonth() {
         long count = dashboardService.countUsersCreatedThisMonth();
         return ResponseEntity.ok(count);
@@ -36,13 +36,13 @@ public class DashboardController {
         return ResponseEntity.ok(totalUsers);
     }
 
-    @GetMapping("/deposit/this-week")
+    @GetMapping("/deposit/week")
     public ResponseEntity<BigDecimal> getTotalDepositAmountThisWeek() {
         BigDecimal totalDepositAmount = dashboardService.getTotalDepositAmountThisWeek();
         return ResponseEntity.ok(totalDepositAmount);
     }
 
-    @GetMapping("/deposit/this-month")
+    @GetMapping("/deposit/month")
     public ResponseEntity<BigDecimal> getTotalDepositAmountForCurrentMonth() {
         BigDecimal totalDepositAmount = dashboardService.getTotalDepositAmountForCurrentMonth();
         return ResponseEntity.ok(totalDepositAmount);
@@ -53,13 +53,13 @@ public class DashboardController {
         BigDecimal totalAmount = dashboardService.getTotalDepositAmount();
         return ResponseEntity.ok(totalAmount);
     }
-    @GetMapping("/withdrawal/this-week")
+    @GetMapping("/withdrawal/week")
     public ResponseEntity<BigDecimal> getTotalWithdrawalAmountThisWeek() {
         BigDecimal totalDepositAmount = dashboardService.getTotalWithdrawalAmountThisWeek();
         return ResponseEntity.ok(totalDepositAmount);
     }
 
-    @GetMapping("/withdrawal/this-month")
+    @GetMapping("/withdrawal/month")
     public ResponseEntity<BigDecimal> getTotalWithdrawalAmountForCurrentMonth() {
         BigDecimal totalDepositAmount = dashboardService.getTotalWithdrawalAmountForCurrentMonth();
         return ResponseEntity.ok(totalDepositAmount);
@@ -71,21 +71,38 @@ public class DashboardController {
         return ResponseEntity.ok(totalAmount);
     }
 
-    @GetMapping("/property/this-week")
+    @GetMapping("/properties/week")
     public ResponseEntity<Long> countPropertiesCreatedThisWeek() {
         long count = dashboardService.countPropertiesCreatedThisWeek();
         return ResponseEntity.ok(count);
     }
 
-    @GetMapping("/property/this-month")
+    @GetMapping("/properties/month")
     public ResponseEntity<Long> countPropertiesCreatedThisMonth() {
         long count = dashboardService.countPropertiesCreatedThisMonth();
         return ResponseEntity.ok(count);
     }
 
-    @GetMapping("/property/total")
+    @GetMapping("/properties/total")
     public ResponseEntity<Long> countTotalProperties() {
         long totalCount = dashboardService.countTotalProperties();
+        return ResponseEntity.ok(totalCount);
+    }
+
+    @GetMapping("/comments/week")
+    public ResponseEntity<Long> countCommentsCreatedThisWeek() {
+        long totalCount = dashboardService.countCommentsCreatedThisWeek();
+        return ResponseEntity.ok(totalCount);
+    }
+    @GetMapping("/comments/month")
+    public ResponseEntity<Long> countCommentsCreatedThisMonth() {
+        long totalCount = dashboardService.countCommentsCreatedThisMonth();
+        return ResponseEntity.ok(totalCount);
+    }
+
+    @GetMapping("/comments/total")
+    public ResponseEntity<Long> countTotalComments() {
+        long totalCount = dashboardService.countTotalComments();
         return ResponseEntity.ok(totalCount);
     }
 }

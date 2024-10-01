@@ -1,6 +1,7 @@
 package com.project.house.rental.service.impl;
 
 import com.project.house.rental.entity.Transaction;
+import com.project.house.rental.repository.CommentRepository;
 import com.project.house.rental.repository.PropertyRepository;
 import com.project.house.rental.repository.TransactionRepository;
 import com.project.house.rental.repository.auth.UserRepository;
@@ -19,11 +20,13 @@ public class DashboardServiceImpl implements DashboardService {
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
     private final PropertyRepository propertyRepository;
+    private final CommentRepository commentRepository;
 
-    public DashboardServiceImpl(UserRepository userRepository, TransactionRepository transactionRepository, PropertyRepository propertyRepository) {
+    public DashboardServiceImpl(UserRepository userRepository, TransactionRepository transactionRepository, PropertyRepository propertyRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.transactionRepository = transactionRepository;
         this.propertyRepository = propertyRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -143,5 +146,32 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public long countTotalProperties() {
         return propertyRepository.countTotalProperties();
+    }
+
+    @Override
+    public long countCommentsCreatedThisWeek() {
+        LocalDate now = LocalDate.now();
+        LocalDate startOfWeek = now.with(java.time.DayOfWeek.MONDAY);
+
+        Date startDate = Date.from(startOfWeek.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(now.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant());
+
+        return commentRepository.countCommentsCreatedBetween(startDate, endDate);
+    }
+
+    @Override
+    public long countCommentsCreatedThisMonth() {
+        LocalDate now = LocalDate.now();
+        LocalDate startOfMonth = now.withDayOfMonth(1);
+
+        Date startDate = Date.from(startOfMonth.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(now.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant());
+
+        return commentRepository.countCommentsCreatedBetween(startDate, endDate);
+    }
+
+    @Override
+    public long countTotalComments() {
+        return commentRepository.count();
     }
 }

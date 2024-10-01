@@ -16,4 +16,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>, JpaSpec
     UserEntity findUserByEmail(String email);
 
     long countByCreatedAtBetween(Date startDate, Date endDate);
+
 }
