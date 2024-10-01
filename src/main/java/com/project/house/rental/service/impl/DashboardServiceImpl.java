@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {
@@ -55,6 +57,22 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public long countTotalUsers() {
         return userRepository.count();
+    }
+
+    @Override
+    public Map<String, Long> countUsersCreatedLastSevenMonths() {
+        LocalDate now = LocalDate.now();
+        Map<String, Long> result = new HashMap<>();
+
+        for (int i = 0; i < 8; i++) {
+            LocalDate date = now.minusMonths(i);
+            int month = date.getMonthValue();
+            int year = date.getYear();
+            long count = userRepository.countByCreatedAtMonthAndYear(month, year);
+            result.put(date.getMonth().name(), count);
+        }
+
+        return result;
     }
 
     @Override
@@ -149,6 +167,22 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
+    public Map<String, Long> countPropertiesCreatedLastSevenMonths() {
+        LocalDate now = LocalDate.now();
+        Map<String, Long> result = new HashMap<>();
+
+        for (int i = 0; i < 8; i++) {
+            LocalDate date = now.minusMonths(i);
+            int month = date.getMonthValue();
+            int year = date.getYear();
+            long count = propertyRepository.countByCreatedAtMonthAndYear(month, year);
+            result.put(date.getMonth().name(), count);
+        }
+
+        return result;
+    }
+
+    @Override
     public long countCommentsCreatedThisWeek() {
         LocalDate now = LocalDate.now();
         LocalDate startOfWeek = now.with(java.time.DayOfWeek.MONDAY);
@@ -173,5 +207,21 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public long countTotalComments() {
         return commentRepository.count();
+    }
+
+    @Override
+    public Map<String, Long> countCommentsCreatedLastSevenMonths() {
+        LocalDate now = LocalDate.now();
+        Map<String, Long> result = new HashMap<>();
+
+        for (int i = 0; i < 8; i++) {
+            LocalDate date = now.minusMonths(i);
+            int month = date.getMonthValue();
+            int year = date.getYear();
+            long count = commentRepository.countByCreatedAtMonthAndYear(month, year);
+            result.put(date.getMonth().name(), count);
+        }
+
+        return result;
     }
 }

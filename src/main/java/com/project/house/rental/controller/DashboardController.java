@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/dashboard")
@@ -104,5 +105,23 @@ public class DashboardController {
     public ResponseEntity<Long> countTotalComments() {
         long totalCount = dashboardService.countTotalComments();
         return ResponseEntity.ok(totalCount);
+    }
+
+    @GetMapping("/users/last-seven-months")
+    public ResponseEntity<Map<String, Long>> getTotalUsersCreatedLastFiveMonths() {
+        Map<String, Long> counts = dashboardService.countUsersCreatedLastSevenMonths();
+        return ResponseEntity.ok(counts);
+    }
+
+    @GetMapping("/properties/last-seven-months")
+    public ResponseEntity<Map<String, Long>> getCountOfPropertiesCreatedLastFiveMonths() {
+        Map<String, Long> counts = dashboardService.countPropertiesCreatedLastSevenMonths();
+        return ResponseEntity.ok(counts);
+    }
+
+    @GetMapping("/comments/last-seven-months")
+    public ResponseEntity<Map<String, Long>> getCountOfCommentsCreatedLastFiveMonths() {
+        Map<String, Long> counts = dashboardService.countCommentsCreatedLastSevenMonths();
+        return ResponseEntity.ok(counts);
     }
 }

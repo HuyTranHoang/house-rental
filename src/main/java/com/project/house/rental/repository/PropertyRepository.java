@@ -4,6 +4,7 @@ import com.project.house.rental.entity.Property;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -43,5 +44,8 @@ public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSp
     long countByCreatedAtBetween(Date startDate, Date endDate);
     @Query("SELECT COUNT(p) FROM Property p")
     long countTotalProperties();
+
+    @Query("SELECT COUNT(p) FROM Property p WHERE EXTRACT(MONTH FROM p.createdAt) = :month AND EXTRACT(YEAR FROM p.createdAt) = :year")
+    long countByCreatedAtMonthAndYear(@Param("month") int month, @Param("year") int year);
 
 }
