@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class PropertyDto {
     @NotNull(message = "Vui lòng nhập giá")
     @DecimalMin(value = "0.0", inclusive = false, message = "Giá phải lớn hơn 0")
     @Digits(integer = 10, fraction = 2, message = "Định dạng giá không hợp lệ !")
-    Double price;
+    double price;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Diện tích phải lớn hơn 0")
     @Digits(integer = 10, fraction = 2, message = "Định dạng diện tích không hợp lệ !")

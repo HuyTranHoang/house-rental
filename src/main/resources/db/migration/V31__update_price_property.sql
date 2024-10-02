@@ -1,0 +1,2 @@
+ALTER TABLE properties
+ALTER COLUMN price TYPE DECIMAL(15, 2);
