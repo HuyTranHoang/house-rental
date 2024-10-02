@@ -163,4 +163,8 @@ public class PropertySpecification {
         };
     }
 
+    public static Specification<Property> filterByPriority(boolean priority) {
+        return (root, query, cb) -> cb.equal(root.get(Property_.IS_PRIORITY), priority);
+    }
+
 }
