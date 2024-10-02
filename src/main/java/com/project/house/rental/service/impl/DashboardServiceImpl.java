@@ -1,5 +1,6 @@
 package com.project.house.rental.service.impl;
 
+import com.project.house.rental.entity.Property;
 import com.project.house.rental.entity.Transaction;
 import com.project.house.rental.repository.CommentRepository;
 import com.project.house.rental.repository.PropertyRepository;
@@ -223,5 +224,10 @@ public class DashboardServiceImpl implements DashboardService {
         }
 
         return result;
+    }
+
+    @Override
+    public long countPropertiesWithPendingStatus() {
+        return propertyRepository.countPropertiesWithStatus(Property.PropertyStatus.PENDING);
     }
 }

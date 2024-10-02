@@ -27,4 +27,6 @@ public interface DashboardService {
     long countCommentsCreatedThisMonth();
     long countTotalComments();
     Map<String, Long> countCommentsCreatedLastSevenMonths();
+
+    long countPropertiesWithPendingStatus();
 }

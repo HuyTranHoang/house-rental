@@ -48,4 +48,7 @@ public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSp
     @Query("SELECT COUNT(p) FROM Property p WHERE EXTRACT(MONTH FROM p.createdAt) = :month AND EXTRACT(YEAR FROM p.createdAt) = :year")
     long countByCreatedAtMonthAndYear(@Param("month") int month, @Param("year") int year);
 
+    @Query("SELECT COUNT(p) FROM Property p WHERE p.status = :status")
+    long countPropertiesWithStatus(Property.PropertyStatus status);
+
 }
