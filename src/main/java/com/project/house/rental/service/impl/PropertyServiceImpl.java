@@ -230,8 +230,12 @@ public class PropertyServiceImpl implements PropertyService {
         int priorityPageSize = 3; // Number of priority properties per page
         int priorityPageNumber = propertyParams.getPageNumber(); // Current page number
 
-        Pageable priorityPageable = PageRequest.of(priorityPageNumber, priorityPageSize, Sort.by(Property_.REFRESHED_AT).descending());
-        Page<Property> priorityPropertiesPage = propertyRepository.findAll(PropertySpecification.filterByPriority(true), priorityPageable);
+        Pageable priorityPageable = PageRequest.of(
+                priorityPageNumber,
+                priorityPageSize,
+                Sort.by(Property_.REFRESHED_AT).descending()
+        );
+        Page<Property> priorityPropertiesPage = propertyRepository.findAll(spec.and(PropertySpecification.filterByPriority(true)), priorityPageable);
         List<Property> priorityProperties = priorityPropertiesPage.getContent();
 
         // Fetch normal properties with pagination
