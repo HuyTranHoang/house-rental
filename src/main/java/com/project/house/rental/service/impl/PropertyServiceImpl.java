@@ -226,33 +226,41 @@ public class PropertyServiceImpl implements PropertyService {
 
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
 
-        // Fetch priority properties with the calculated offset
-        int priorityPageSize = 3; // Number of priority properties per page
-        int priorityPageNumber = propertyParams.getPageNumber(); // Current page number
-
-        Pageable priorityPageable = PageRequest.of(
-                priorityPageNumber,
-                priorityPageSize,
-                Sort.by(Property_.REFRESHED_AT).descending()
-        );
-        Page<Property> priorityPropertiesPage = propertyRepository.findAll(spec.and(PropertySpecification.filterByPriority(true)), priorityPageable);
-        List<Property> priorityProperties = priorityPropertiesPage.getContent();
-
-        // Fetch normal properties with pagination
-        Page<Property> normalPropertiesPage = propertyRepository.findAll(spec.and(PropertySpecification.filterByPriority(false)), pageable);
-
+//        Page<Property> normalPropertiesPage = propertyRepository.findAll(spec.and(PropertySpecification.filterByPriority(false)), pageable);
+//
+//        int priorityPageSize = 3; // Number of priority properties per page
+//        if (normalPropertiesPage.getTotalElements() < propertyParams.getPageSize()) {
+//            priorityPageSize = propertyParams.getPageSize();
+//        }
+//        // Fetch priority properties with the calculated offset
+//
+//        int priorityPageNumber = propertyParams.getPageNumber(); // Current page number
+//
+//        Pageable priorityPageable = PageRequest.of(
+//                priorityPageNumber,
+//                priorityPageSize,
+//                Sort.by(Property_.REFRESHED_AT).descending()
+//        );
+//        Page<Property> priorityPropertiesPage = propertyRepository.findAll(PropertySpecification.filterByPriority(true), priorityPageable);
+//        List<Property> priorityProperties = priorityPropertiesPage.getContent();
+//
+//        // Fetch normal properties with pagination
+//
+//
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
 
-        PageInfo pageInfo = new PageInfo(normalPropertiesPage);
+        Page<Property> propertyPage = propertyRepository.findAll(spec, pageable);
+        List<PropertyDto> propertyDtoList = propertyPage.stream()
+                .map(propertyMapper::toDto)
+                .toList();
 
-        List<PropertyDto> propertyDtoList = new ArrayList<>();
-        propertyDtoList.addAll(priorityProperties.stream().map(propertyMapper::toDto).toList());
-        propertyDtoList.addAll(normalPropertiesPage.stream().map(propertyMapper::toDto).toList());
+        PageInfo pageInfo = new PageInfo(propertyPage);
+//
+//        List<PropertyDto> propertyDtoList = new ArrayList<>();
+//        propertyDtoList.addAll(priorityProperties.stream().map(propertyMapper::toDto).toList());
+//        propertyDtoList.addAll(normalPropertiesPage.stream().map(propertyMapper::toDto).toList());
 
-//        Page<Property> propertyPage = propertyRepository.findAll(spec, pageable);
-//        List<PropertyDto> propertyDtoList = propertyPage.stream()
-//                .map(propertyMapper::toDto)
-//                .toList();
+
 
         return Map.of(
                 "pageInfo", pageInfo,
