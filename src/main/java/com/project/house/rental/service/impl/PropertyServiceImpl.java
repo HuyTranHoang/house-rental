@@ -247,9 +247,10 @@ public class PropertyServiceImpl implements PropertyService {
 //        // Fetch normal properties with pagination
 //
 //
+        Page<Property> propertyPage = propertyRepository.findAll(spec, pageable);
+
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_PROPERTY_FILTER);
 
-        Page<Property> propertyPage = propertyRepository.findAll(spec, pageable);
         List<PropertyDto> propertyDtoList = propertyPage.stream()
                 .map(propertyMapper::toDto)
                 .toList();
