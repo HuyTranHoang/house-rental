@@ -17,7 +17,7 @@ public interface CommentReportRepository extends JpaRepository<CommentReport, Lo
 
     List<CommentReport> findAllByCommentIdAndStatus(long commentId, CommentReport.ReportStatus status);
 
-    @Query("SELECT COUNT(r) FROM CommentReport r WHERE r.status = :status")
+    @Query("SELECT COUNT(r) FROM CommentReport r WHERE r.status = :status AND r.isDeleted = false")
     long countReportsWithStatus(CommentReport.ReportStatus status);
 
 }

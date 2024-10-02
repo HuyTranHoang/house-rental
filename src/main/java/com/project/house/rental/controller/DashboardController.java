@@ -124,4 +124,20 @@ public class DashboardController {
         Map<String, Long> counts = dashboardService.countCommentsCreatedLastSevenMonths();
         return ResponseEntity.ok(counts);
     }
+
+    @GetMapping("/properties/pending")
+    public ResponseEntity<Long> countPropertiesWithPendingStatus() {
+        long totalCount = dashboardService.countPropertiesWithPendingStatus();
+        return ResponseEntity.ok(totalCount);
+    }
+    @GetMapping("/comment-reports/pending")
+    public ResponseEntity<Long> countCommentReportsWithPendingStatus() {
+        long totalCount = dashboardService.countCommentReportsWithPendingStatus();
+        return ResponseEntity.ok(totalCount);
+    }
+    @GetMapping("/reports/pending")
+    public ResponseEntity<Long> countReportsWithPendingStatus() {
+        long totalCount = dashboardService.countReportsWithPendingStatus();
+        return ResponseEntity.ok(totalCount);
+    }
 }

@@ -16,7 +16,7 @@ public interface ReportRepository extends JpaRepository<Report, Long>, JpaSpecif
 
     List<Report> findAllByPropertyIdAndStatus(Long propertyId, Report.ReportStatus status);
 
-    @Query("SELECT COUNT(r) FROM Report r WHERE r.status = :status")
+    @Query("SELECT COUNT(r) FROM Report r WHERE r.status = :status  AND r.isDeleted = false")
     long countReportsWithStatus(Report.ReportStatus status);
 
 }

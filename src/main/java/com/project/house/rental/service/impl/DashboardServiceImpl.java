@@ -1,10 +1,10 @@
 package com.project.house.rental.service.impl;
 
+import com.project.house.rental.entity.CommentReport;
 import com.project.house.rental.entity.Property;
+import com.project.house.rental.entity.Report;
 import com.project.house.rental.entity.Transaction;
-import com.project.house.rental.repository.CommentRepository;
-import com.project.house.rental.repository.PropertyRepository;
-import com.project.house.rental.repository.TransactionRepository;
+import com.project.house.rental.repository.*;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.service.DashboardService;
 import org.springframework.stereotype.Service;
@@ -24,12 +24,16 @@ public class DashboardServiceImpl implements DashboardService {
     private final TransactionRepository transactionRepository;
     private final PropertyRepository propertyRepository;
     private final CommentRepository commentRepository;
+    private final ReportRepository reportRepository;
+    private final CommentReportRepository commentReportRepository;
 
-    public DashboardServiceImpl(UserRepository userRepository, TransactionRepository transactionRepository, PropertyRepository propertyRepository, CommentRepository commentRepository) {
+    public DashboardServiceImpl(UserRepository userRepository, TransactionRepository transactionRepository, PropertyRepository propertyRepository, CommentRepository commentRepository, ReportRepository reportRepository, CommentReportRepository commentReportRepository) {
         this.userRepository = userRepository;
         this.transactionRepository = transactionRepository;
         this.propertyRepository = propertyRepository;
         this.commentRepository = commentRepository;
+        this.reportRepository = reportRepository;
+        this.commentReportRepository = commentReportRepository;
     }
 
     @Override
@@ -229,5 +233,15 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public long countPropertiesWithPendingStatus() {
         return propertyRepository.countPropertiesWithStatus(Property.PropertyStatus.PENDING);
+    }
+
+    @Override
+    public long countCommentReportsWithPendingStatus() {
+        return commentReportRepository.countReportsWithStatus(CommentReport.ReportStatus.PENDING);
+    }
+
+    @Override
+    public long countReportsWithPendingStatus() {
+        return reportRepository.countReportsWithStatus(Report.ReportStatus.PENDING);
     }
 }
