@@ -3,7 +3,6 @@ package com.project.house.rental.service.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.project.house.rental.service.CloudinaryService;
-import io.trbl.blurhash.BlurHash;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,9 +50,8 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     }
 
     @Override
-    public CompletableFuture<Map<String, Object>> uploadImages(MultipartFile[] files) throws IOException {
-        Map<String, Object> result = new HashMap<>();
-
+    public CompletableFuture<Map<String, String>> uploadImages(MultipartFile[] files) throws IOException {
+        Map<String, String> result = new HashMap<>();
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         for (MultipartFile file : files) {
@@ -67,12 +65,10 @@ public class CloudinaryServiceImpl implements CloudinaryService {
                     }
 
                     String publicId = (String) uploadResult.get("public_id");
-                    BufferedImage image = ImageIO.read(file.getInputStream());
-                    String blurHash = BlurHash.encode(image);
                     String imageName = file.getOriginalFilename();
 
                     synchronized (result) {
-                        result.put(publicId, Map.of("blurhash", blurHash, "imageName", imageName));
+                        result.put(publicId, imageName);
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);

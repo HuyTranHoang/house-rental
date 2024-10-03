@@ -32,7 +32,7 @@ public class Property extends BaseEntity {
     @Column(name = "title")
     String title;
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description")
     String description;
 
     @Column(name = "price")
@@ -90,10 +90,7 @@ public class Property extends BaseEntity {
     @Column(name = "thumbnail_url")
     String thumbnailUrl;
 
-    @Column(name = "thumbnail_blurhash")
-    String thumbnailBlurhash;
-
-    @OneToMany(mappedBy = "property")
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
     List<Favorite> favorites;
 
     @Column(name = "is_priority")

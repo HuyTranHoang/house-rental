@@ -1,0 +1,1 @@
+ALTER TABLE property_images DROP COLUMN blurhash;

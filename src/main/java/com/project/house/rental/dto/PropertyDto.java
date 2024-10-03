@@ -4,7 +4,6 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -63,11 +62,9 @@ public class PropertyDto {
 
     List<String> amenities;
 
-    List<PropertyImageBlurhashDto> propertyImages;
+    List<String> propertyImages;
 
     String thumbnailUrl;
-
-    String thumbnailBlurhash;
 
     String thumbnailOriginalName;
 

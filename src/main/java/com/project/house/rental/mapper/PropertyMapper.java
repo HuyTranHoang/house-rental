@@ -1,7 +1,6 @@
 package com.project.house.rental.mapper;
 
 import com.project.house.rental.dto.PropertyDto;
-import com.project.house.rental.dto.PropertyImageBlurhashDto;
 import com.project.house.rental.entity.Amenity;
 import com.project.house.rental.entity.Property;
 import com.project.house.rental.entity.PropertyImage;
@@ -27,7 +26,6 @@ public interface PropertyMapper {
     @Mapping(source = "propertyImages", target = "propertyImages", qualifiedByName = "imageUrl")
     @Mapping(source = "priority", target = "isPriority")
     @Mapping(source = "priorityExpiration", target = "priorityExpiration")
-    @Mapping(source = "thumbnailBlurhash", target = "thumbnailBlurhash")
     PropertyDto toDto(Property property);
 
     @Mapping(target = "amenities", ignore = true)
@@ -48,13 +46,10 @@ public interface PropertyMapper {
     }
 
     @Named("imageUrl")
-    static List<PropertyImageBlurhashDto> imageUrl(List<PropertyImage> propertyImages) {
+    static List<String> imageUrl(List<PropertyImage> propertyImages) {
         return propertyImages.stream()
                 .filter(image -> !image.isDeleted())
-                .map(image -> PropertyImageBlurhashDto.builder()
-                        .imageUrl(image.getImageUrl())
-                        .blurhash(image.getBlurhash())
-                        .build())
+                .map(PropertyImage::getImageUrl)
                 .toList();
     }
 }

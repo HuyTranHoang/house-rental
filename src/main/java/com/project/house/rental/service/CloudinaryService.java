@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 public interface CloudinaryService {
     Map upload(MultipartFile file, String publicId) throws IOException;
 
-    CompletableFuture<Map<String, Object>> uploadImages(MultipartFile[] files) throws IOException;
+    public CompletableFuture<Map<String, String>> uploadImages(MultipartFile[] files) throws IOException;
 
     Map delete(String publicId) throws IOException;
 

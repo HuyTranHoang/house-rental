@@ -79,45 +79,36 @@ public class PropertyServiceImpl implements PropertyService {
         List<PropertyImage> propertyImages = new ArrayList<>();
 
         if (images != null && images.length > 0) {
-            CompletableFuture<Map<String, Object>> cloudinaryResponseFuture = cloudinaryService.uploadImages(images);
+            CompletableFuture<Map<String, String>> cloudinaryResponseFuture = cloudinaryService.uploadImages(images);
 
-            Map<String, Object> cloudinaryResponse;
+            Map<String, String> cloudinaryResponse;
             try {
                 cloudinaryResponse = cloudinaryResponseFuture.get(); // Wait for the upload to complete
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException("Failed to upload images", e);
             }
 
-            for (Map.Entry<String, Object> entry : cloudinaryResponse.entrySet()) {
+            for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
                 String publicId = entry.getKey();
                 Object value = entry.getValue();
 
-                if (value instanceof Map<?, ?> imageDetails) {
-                    String blurhash = (String) imageDetails.get("blurhash");
-                    String imageName = (String) imageDetails.get("imageName");
+                PropertyImage propertyImage = PropertyImage.builder()
+                        .imageUrl(cloudinaryService.getOptimizedImage(publicId))
+                        .publicId(publicId)
+                        .property(property)
+                        .build();
 
-                    PropertyImage propertyImage = PropertyImage.builder()
-                            .imageUrl(cloudinaryService.getOptimizedImage(publicId))
-                            .publicId(publicId)
-                            .blurhash(blurhash)
-                            .property(property)
-                            .build();
-
-                    if (propertyDto.getThumbnailOriginalName().equals(imageName)) {
-                        property.setThumbnailUrl(propertyImage.getImageUrl());
-                        property.setThumbnailBlurhash(propertyImage.getBlurhash());
-                    }
-
-                    propertyImages.add(propertyImage);
-                } else {
-                    throw new IllegalStateException("Unexpected value type in cloudinary response");
+                if (propertyDto.getThumbnailOriginalName().equals(value)) {
+                    property.setThumbnailUrl(propertyImage.getImageUrl());
                 }
+
+                propertyImages.add(propertyImage);
             }
         }
 
         property.setPropertyImages(propertyImages);
 
-        // Set default refreshDay and priorityExpiration '1970-01-01 00:00:00'
+        // Set default priorityExpiration '1970-01-01 00:00:00'
         LocalDateTime localDateTime = LocalDateTime.of(1970, 1, 1, 0, 0);
         Date date = Date.from(localDateTime.toInstant(ZoneOffset.UTC));
         property.setPriorityExpiration(date);
