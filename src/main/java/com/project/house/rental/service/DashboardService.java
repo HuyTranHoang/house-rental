@@ -5,30 +5,13 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public interface DashboardService {
-    long countUsersCreatedThisWeek();
-    long countUsersCreatedThisMonth();
-    long countTotalUsers();
     Map<String, Long> countUsersCreatedLastSevenMonths();
-
-    BigDecimal getTotalDepositAmountThisWeek();
-    BigDecimal getTotalDepositAmountForCurrentMonth();
-    BigDecimal getTotalDepositAmount();
-
-    BigDecimal getTotalWithdrawalAmountThisWeek();
-    BigDecimal getTotalWithdrawalAmountForCurrentMonth();
-    BigDecimal getTotalWithdrawalAmount();
-
-    long countPropertiesCreatedThisWeek();
-    long countPropertiesCreatedThisMonth();
-    long countTotalProperties();
     Map<String, Long> countPropertiesCreatedLastSevenMonths();
-
-    long countCommentsCreatedThisWeek();
-    long countCommentsCreatedThisMonth();
-    long countTotalComments();
     Map<String, Long> countCommentsCreatedLastSevenMonths();
 
-    long countPropertiesWithPendingStatus();
-    long countCommentReportsWithPendingStatus();
-    long countReportsWithPendingStatus();
+    Map<String, Object> getWeeklyStats();
+    Map<String, Object> getMonthlyStats();
+    Map<String, Object> getTotalStats();
+    Map<String, Long> countPendingStatuses();
+    Map<String, Map<String, Long>> countCreatedEntitiesLastSevenMonths();
 }
