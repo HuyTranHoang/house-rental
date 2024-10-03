@@ -14,9 +14,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class CloudinaryServiceImpl implements CloudinaryService {
@@ -51,26 +51,47 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     }
 
     @Override
-    public Map<String, Object> uploadImages(MultipartFile[] files) throws IOException {
+    public CompletableFuture<Map<String, Object>> uploadImages(MultipartFile[] files) throws IOException {
         Map<String, Object> result = new HashMap<>();
 
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
         for (MultipartFile file : files) {
-            File fileToUpload = convertMultiPartToFile(file);
-            Map<String, String> uploadParams = Map.of("folder", "house-rental");
-            Map uploadResult = cloudinary.uploader().upload(fileToUpload, uploadParams);
-            if (!Files.deleteIfExists(fileToUpload.toPath())) {
-                throw new IOException("Failed to delete file");
-            }
+            CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+                try {
+                    File fileToUpload = convertMultiPartToFile(file);
+                    Map<String, String> uploadParams = Map.of("folder", "house-rental");
+                    Map uploadResult = cloudinary.uploader().upload(fileToUpload, uploadParams);
+                    if (!Files.deleteIfExists(fileToUpload.toPath())) {
+                        throw new IOException("Failed to delete file");
+                    }
 
-            String publicId = (String) uploadResult.get("public_id");
-            BufferedImage image = ImageIO.read(file.getInputStream());
-            String blurHash = BlurHash.encode(image);
-            String imageName = file.getOriginalFilename();
+                    String publicId = (String) uploadResult.get("public_id");
+                    BufferedImage image = ImageIO.read(file.getInputStream());
+                    String blurHash = BlurHash.encode(image);
+                    String imageName = file.getOriginalFilename();
 
-            result.put(publicId, Map.of("blurhash", blurHash, "imageName", imageName));
+                    synchronized (result) {
+                        result.put(publicId, Map.of("blurhash", blurHash, "imageName", imageName));
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return null;
+            });
+
+            futures.add(future);
         }
 
-        return result;
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
+        try {
+            allOf.get(); // Wait for all futures to complete
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        return CompletableFuture.completedFuture(result);
     }
 
     @Override

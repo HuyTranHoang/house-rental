@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 
@@ -77,7 +79,14 @@ public class PropertyServiceImpl implements PropertyService {
         List<PropertyImage> propertyImages = new ArrayList<>();
 
         if (images != null && images.length > 0) {
-            Map<String, Object> cloudinaryResponse = cloudinaryService.uploadImages(images);
+            CompletableFuture<Map<String, Object>> cloudinaryResponseFuture = cloudinaryService.uploadImages(images);
+
+            Map<String, Object> cloudinaryResponse;
+            try {
+                cloudinaryResponse = cloudinaryResponseFuture.get(); // Wait for the upload to complete
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException("Failed to upload images", e);
+            }
 
             for (Map.Entry<String, Object> entry : cloudinaryResponse.entrySet()) {
                 String publicId = entry.getKey();
@@ -128,29 +137,29 @@ public class PropertyServiceImpl implements PropertyService {
         }
 
         // Update images if provided
-        if (images != null && images.length > 0) {
-            Map<String, Object> cloudinaryResponse = cloudinaryService.uploadImages(images);
-
-            for (Map.Entry<String, Object> entry : cloudinaryResponse.entrySet()) {
-                String publicId = entry.getKey();
-                Object value = entry.getValue();
-
-                if (value instanceof Map<?, ?> imageDetails) {
-                    String blurhash = (String) imageDetails.get("blurhash");
-
-                    PropertyImage propertyImage = PropertyImage.builder()
-                            .imageUrl(cloudinaryService.getOptimizedImage(publicId))
-                            .publicId(publicId)
-                            .blurhash(blurhash)
-                            .property(property)
-                            .build();
-                    propertyImageRepository.save(propertyImage);
-                    property.getPropertyImages().add(propertyImage);
-                } else {
-                    throw new IllegalStateException("Unexpected value type in cloudinary response");
-                }
-            }
-        }
+//        if (images != null && images.length > 0) {
+//            Map<String, Object> cloudinaryResponse = cloudinaryService.uploadImages(images);
+//
+//            for (Map.Entry<String, Object> entry : cloudinaryResponse.entrySet()) {
+//                String publicId = entry.getKey();
+//                Object value = entry.getValue();
+//
+//                if (value instanceof Map<?, ?> imageDetails) {
+//                    String blurhash = (String) imageDetails.get("blurhash");
+//
+//                    PropertyImage propertyImage = PropertyImage.builder()
+//                            .imageUrl(cloudinaryService.getOptimizedImage(publicId))
+//                            .publicId(publicId)
+//                            .blurhash(blurhash)
+//                            .property(property)
+//                            .build();
+//                    propertyImageRepository.save(propertyImage);
+//                    property.getPropertyImages().add(propertyImage);
+//                } else {
+//                    throw new IllegalStateException("Unexpected value type in cloudinary response");
+//                }
+//            }
+//        }
 
         propertyMapper.updateEntityFromDto(propertyDto, property);
 

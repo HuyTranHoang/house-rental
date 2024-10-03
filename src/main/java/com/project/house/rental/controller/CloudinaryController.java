@@ -29,12 +29,12 @@ public class CloudinaryController {
 
     @PostMapping("/uploadImages")
     public ResponseEntity<Map> uploadImages(@RequestParam("files") MultipartFile[] files) {
-        try {
-            Map result = cloudinaryService.uploadImages(files);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+//        try {
+//            Map result = cloudinaryService.uploadImages(files);
+//            return ResponseEntity.ok(result);
+//        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Not implemented"));
+//        }
     }
 
     @DeleteMapping("/delete")

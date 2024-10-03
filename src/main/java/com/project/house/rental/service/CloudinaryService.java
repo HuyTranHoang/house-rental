@@ -5,11 +5,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public interface CloudinaryService {
     Map upload(MultipartFile file, String publicId) throws IOException;
 
-    Map<String, Object> uploadImages(MultipartFile[] files) throws IOException;
+    CompletableFuture<Map<String, Object>> uploadImages(MultipartFile[] files) throws IOException;
 
     Map delete(String publicId) throws IOException;
 
