@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -50,8 +49,20 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     }
 
     @Override
-    public CompletableFuture<Map<String, String>> uploadImages(MultipartFile[] files) throws IOException {
-        Map<String, String> result = new HashMap<>();
+    public String upload(MultipartFile file) throws IOException {
+        File fileToUpload = convertMultiPartToFile(file);
+        Map<String, String> uploadParams = Map.of("folder", "house-rental");
+        Map uploadResult = cloudinary.uploader().upload(fileToUpload, uploadParams);
+        if (!Files.deleteIfExists(fileToUpload.toPath())) {
+            throw new IOException("Failed to delete file");
+        }
+
+        return (String) uploadResult.get("public_id");
+    }
+
+    @Override
+    public CompletableFuture<List<String>> uploadImages(MultipartFile[] files) throws IOException {
+        List<String> result = new ArrayList<>();
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         for (MultipartFile file : files) {
@@ -65,10 +76,9 @@ public class CloudinaryServiceImpl implements CloudinaryService {
                     }
 
                     String publicId = (String) uploadResult.get("public_id");
-                    String imageName = file.getOriginalFilename();
 
                     synchronized (result) {
-                        result.put(publicId, imageName);
+                        result.add(publicId);
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);

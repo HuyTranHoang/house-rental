@@ -66,8 +66,6 @@ public class PropertyDto {
 
     String thumbnailUrl;
 
-    String thumbnailOriginalName;
-
     boolean isPriority;
 
     Date priorityExpiration;

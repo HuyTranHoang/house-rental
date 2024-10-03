@@ -13,7 +13,7 @@ public interface PropertyService {
 
     PropertyDto getPropertyById(long id);
 
-    PropertyDto createProperty(PropertyDto propertyDto, MultipartFile[] images) throws IOException;
+    PropertyDto createProperty(PropertyDto propertyDto, MultipartFile[] images, MultipartFile thumbnailImage) throws IOException;
 
     PropertyDto updateProperty(long id, PropertyDto propertyDto, MultipartFile[] images) throws IOException;
 

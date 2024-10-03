@@ -33,8 +33,8 @@ public class PropertyController {
     }
 
     @PostMapping
-    public ResponseEntity<PropertyDto> createProperty(@Valid @ModelAttribute PropertyDto propertyDto, @RequestParam MultipartFile[] images) throws IOException {
-        PropertyDto createdProperty = propertyService.createProperty(propertyDto, images);
+    public ResponseEntity<PropertyDto> createProperty(@Valid @ModelAttribute PropertyDto propertyDto, @RequestParam MultipartFile[] images, @RequestParam MultipartFile thumbnailImage) throws IOException {
+        PropertyDto createdProperty = propertyService.createProperty(propertyDto, images, thumbnailImage);
         return ResponseEntity.ok(createdProperty);
     }
 

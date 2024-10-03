@@ -74,36 +74,41 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public PropertyDto createProperty(PropertyDto propertyDto, MultipartFile[] images) throws IOException {
+    public PropertyDto createProperty(PropertyDto propertyDto, MultipartFile[] images, MultipartFile thumbnailImage) throws IOException {
         Property property = propertyMapper.toEntity(propertyDto);
         List<PropertyImage> propertyImages = new ArrayList<>();
 
         if (images != null && images.length > 0) {
-            CompletableFuture<Map<String, String>> cloudinaryResponseFuture = cloudinaryService.uploadImages(images);
+            CompletableFuture<List<String>> cloudinaryResponseFuture = cloudinaryService.uploadImages(images);
 
-            Map<String, String> cloudinaryResponse;
+            List<String> cloudinaryResponse;
             try {
                 cloudinaryResponse = cloudinaryResponseFuture.get(); // Wait for the upload to complete
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException("Failed to upload images", e);
             }
 
-            for (Map.Entry<String, String> entry : cloudinaryResponse.entrySet()) {
-                String publicId = entry.getKey();
-                Object value = entry.getValue();
-
+            for (String publicId : cloudinaryResponse) {
                 PropertyImage propertyImage = PropertyImage.builder()
                         .imageUrl(cloudinaryService.getOptimizedImage(publicId))
                         .publicId(publicId)
                         .property(property)
                         .build();
-
-                if (propertyDto.getThumbnailOriginalName().equals(value)) {
-                    property.setThumbnailUrl(propertyImage.getImageUrl());
-                }
-
                 propertyImages.add(propertyImage);
             }
+        }
+
+        if (thumbnailImage != null) {
+            String publicId = cloudinaryService.upload(thumbnailImage);
+
+            PropertyImage thumbnailPropertyImage = PropertyImage.builder()
+                    .imageUrl(cloudinaryService.getOptimizedImage(publicId))
+                    .publicId(publicId)
+                    .property(property)
+                    .build();
+
+            property.setThumbnailUrl(thumbnailPropertyImage.getImageUrl());
+            propertyImages.add(thumbnailPropertyImage);
         }
 
         property.setPropertyImages(propertyImages);
@@ -260,7 +265,6 @@ public class PropertyServiceImpl implements PropertyService {
 //        List<PropertyDto> propertyDtoList = new ArrayList<>();
 //        propertyDtoList.addAll(priorityProperties.stream().map(propertyMapper::toDto).toList());
 //        propertyDtoList.addAll(normalPropertiesPage.stream().map(propertyMapper::toDto).toList());
-
 
 
         return Map.of(
