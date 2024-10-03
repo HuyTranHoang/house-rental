@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>, JpaSpec
     UserEntity findUserByEmail(String email);
 
     long countByCreatedAtBetween(Date startDate, Date endDate);
-    @Query("SELECT COUNT(u) FROM UserEntity u WHERE EXTRACT(MONTH FROM u.createdAt) = :month AND EXTRACT(YEAR FROM u.createdAt) = :year")
+    @Query("SELECT COUNT(u) FROM UserEntity u WHERE EXTRACT(MONTH FROM u.createdAt) = :month AND EXTRACT(YEAR FROM u.createdAt) = :year  AND u.isDeleted = false")
     long countByCreatedAtMonthAndYear(@Param("month") int month, @Param("year") int year);
 
 }

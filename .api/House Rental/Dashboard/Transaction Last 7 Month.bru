@@ -1,0 +1,11 @@
+meta {
+  name: Transaction Last 7 Month
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{host}}/api/dashboard/transaction
+  body: none
+  auth: inherit
+}

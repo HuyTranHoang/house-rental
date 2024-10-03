@@ -18,6 +18,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, JpaSpec
     @Query("SELECT COUNT(c) FROM Comment c WHERE c.createdAt BETWEEN :startDate AND :endDate")
     long countCommentsCreatedBetween(Date startDate, Date endDate);
     long count();
-    @Query("SELECT COUNT(c) FROM Comment c WHERE EXTRACT(MONTH FROM c.createdAt) = :month AND EXTRACT(YEAR FROM c.createdAt) = :year")
+    @Query("SELECT COUNT(c) FROM Comment c WHERE EXTRACT(MONTH FROM c.createdAt) = :month AND EXTRACT(YEAR FROM c.createdAt) = :year  AND c.isDeleted = false")
     long countByCreatedAtMonthAndYear(@Param("month") int month, @Param("year") int year);
 }

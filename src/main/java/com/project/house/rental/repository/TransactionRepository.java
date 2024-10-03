@@ -37,4 +37,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>,
     @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.type = :transactionType")
     BigDecimal getTotalAmountByTransactionType(@Param("transactionType") Transaction.TransactionType transactionType);
 
+    @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.type = :type AND EXTRACT(MONTH FROM t.transactionDate) = :month AND EXTRACT(YEAR FROM t.transactionDate) = :year")
+    BigDecimal sumAmountByTransactionTypeAndCreatedAtMonthAndYear(@Param("type") Transaction.TransactionType type, @Param("month") int month, @Param("year") int year);
 }

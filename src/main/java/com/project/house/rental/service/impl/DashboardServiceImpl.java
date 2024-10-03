@@ -13,9 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {
@@ -168,35 +166,63 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public Map<String, Map<String, Long>> countCreatedEntitiesLastSevenMonths() {
+    public List<Map<String, Object>> countCreatedEntitiesLastSevenMonths() {
         LocalDate now = LocalDate.now();
-        Map<String, Map<String, Long>> result = new HashMap<>();
+        List<Map<String, Object>> result = new ArrayList<>();
 
-        Map<String, Long> userCounts = new HashMap<>();
-        Map<String, Long> propertyCounts = new HashMap<>();
-        Map<String, Long> commentCounts = new HashMap<>();
+        long[] userCounts = new long[7];
+        long[] propertyCounts = new long[7];
+        long[] commentCounts = new long[7];
+        String[] months = new String[7];
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 7; i++) {
             LocalDate date = now.minusMonths(i);
             int month = date.getMonthValue();
             int year = date.getYear();
 
-            long userCount = userRepository.countByCreatedAtMonthAndYear(month, year);
-            userCounts.put(date.getMonth().name(), userCount);
-
-            long propertyCount = propertyRepository.countByCreatedAtMonthAndYear(month, year);
-            propertyCounts.put(date.getMonth().name(), propertyCount);
-
-            long commentCount = commentRepository.countByCreatedAtMonthAndYear(month, year);
-            commentCounts.put(date.getMonth().name(), commentCount);
+            userCounts[i] = userRepository.countByCreatedAtMonthAndYear(month, year);
+            propertyCounts[i] = propertyRepository.countByCreatedAtMonthAndYear(month, year);
+            commentCounts[i] = commentRepository.countByCreatedAtMonthAndYear(month, year);
+            months[i] = date.getMonth().name();
         }
 
-        result.put("users", userCounts);
-        result.put("properties", propertyCounts);
-        result.put("comments", commentCounts);
+        for (int i = 6; i >= 0; i--) {
+            Map<String, Object> dataPoint = new HashMap<>();
+            dataPoint.put("months", months[i]);
+            dataPoint.put("users", userCounts[i]);
+            dataPoint.put("properties", propertyCounts[i]);
+            dataPoint.put("comments", commentCounts[i]);
+            result.add(dataPoint);
+        }
 
         return result;
     }
+
+    @Override
+    public List<Map<String, Object>> getTotalTransactionAmountsLastSevenMonths() {
+        LocalDate now = LocalDate.now();
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (int i = 0; i <= 6; i++) {
+            LocalDate date = now.minusMonths(i);
+            int month = date.getMonthValue();
+            int year = date.getYear();
+
+            BigDecimal depositTotal = transactionRepository.sumAmountByTransactionTypeAndCreatedAtMonthAndYear(Transaction.TransactionType.DEPOSIT, month, year);
+            BigDecimal withdrawalTotal = transactionRepository.sumAmountByTransactionTypeAndCreatedAtMonthAndYear(Transaction.TransactionType.WITHDRAWAL, month, year);
+
+            Map<String, Object> dataPoint = Map.of(
+                    "month", date.getMonth().name(),
+                    "deposit", depositTotal != null ? depositTotal : BigDecimal.ZERO,
+                    "withdrawal", withdrawalTotal != null ? withdrawalTotal : BigDecimal.ZERO
+            );
+
+            result.add(dataPoint);
+        }
+        Collections.reverse(result);
+        return result;
+    }
+
 
 
 }

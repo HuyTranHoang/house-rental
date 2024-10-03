@@ -2,6 +2,7 @@ package com.project.house.rental.service;
 
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public interface DashboardService {
@@ -13,5 +14,6 @@ public interface DashboardService {
     Map<String, Object> getMonthlyStats();
     Map<String, Object> getTotalStats();
     Map<String, Long> countPendingStatuses();
-    Map<String, Map<String, Long>> countCreatedEntitiesLastSevenMonths();
+    List<Map<String, Object>> countCreatedEntitiesLastSevenMonths();
+    List<Map<String, Object>> getTotalTransactionAmountsLastSevenMonths();
 }

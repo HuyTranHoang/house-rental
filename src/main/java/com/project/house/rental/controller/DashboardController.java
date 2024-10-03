@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -61,8 +62,13 @@ public class DashboardController {
     }
 
     @GetMapping("/last-seven-months")
-    public ResponseEntity<Map<String, Map<String, Long>>> getCountCreatedEntitiesLastSevenMonths() {
-        Map<String, Map<String, Long>> counts = dashboardService.countCreatedEntitiesLastSevenMonths();
+    public ResponseEntity<List<Map<String, Object>>> getCountCreatedEntitiesLastSevenMonths() {
+        List<Map<String, Object>> counts = dashboardService.countCreatedEntitiesLastSevenMonths();
         return ResponseEntity.ok(counts);
+    }
+
+    @GetMapping("/transaction")
+    public List<Map<String, Object>> getTotalTransactionAmounts() {
+        return dashboardService.getTotalTransactionAmountsLastSevenMonths();
     }
 }
