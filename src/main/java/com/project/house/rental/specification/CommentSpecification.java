@@ -7,7 +7,7 @@ import com.project.house.rental.entity.auth.UserEntity_;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
-public class CommoentSpecification {
+public class CommentSpecification {
 
     public static Specification<Comment> filterByPropertyId(long propertyId) {
         return (root, query, cb) -> {
@@ -36,6 +36,20 @@ public class CommoentSpecification {
                     cb.like(root.get(Comment_.USER).get(UserEntity_.USERNAME), "%" + search + "%"),
                     cb.like(root.get(Comment_.PROPERTY).get(Property_.TITLE), "%" + search + "%")
             );
+        };
+    }
+
+    public static Specification<Comment> filterByBlocked(String status) {
+        return (root, query, cb) -> {
+            if (!StringUtils.hasLength(status)) {
+                return cb.conjunction();
+            }
+
+            if (status.equals("true")) {
+                return cb.equal(root.get(Property_.IS_BLOCKED), true);
+            } else {
+                return cb.equal(root.get(Property_.IS_BLOCKED), false);
+            }
         };
     }
 }

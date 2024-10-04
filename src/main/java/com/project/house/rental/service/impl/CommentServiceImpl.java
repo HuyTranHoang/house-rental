@@ -15,7 +15,7 @@ import com.project.house.rental.repository.NotificationRespository;
 import com.project.house.rental.repository.auth.UserRepository;
 import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.CommentService;
-import com.project.house.rental.specification.CommoentSpecification;
+import com.project.house.rental.specification.CommentSpecification;
 import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -137,9 +137,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Map<String, Object> getAllCommentWithParams(CommentParams commentParams) {
-        Specification<Comment> spec = CommoentSpecification.filterByPropertyId(commentParams.getPropertyId())
-                .and(CommoentSpecification.filterByUserId(commentParams.getUserId()))
-                .and(CommoentSpecification.searchByUsernamePropertyTitle(commentParams.getSearch()));
+        Specification<Comment> spec = CommentSpecification.filterByPropertyId(commentParams.getPropertyId())
+                .and(CommentSpecification.filterByUserId(commentParams.getUserId()))
+                .and(CommentSpecification.searchByUsernamePropertyTitle(commentParams.getSearch()))
+                .and(CommentSpecification.filterByBlocked(commentParams.getIsBlocked()));
 
         Sort sort = switch (commentParams.getSortBy()) {
             case "createdAtAsc" -> Sort.by(Comment_.CREATED_AT);

@@ -12,5 +12,7 @@ public class CommentParams extends PaginationParams {
 
     private long propertyId;
 
-    private String sortBy = "createdAtDesc";
+    private String isBlocked;
+
+    private String sortBy;
 }
