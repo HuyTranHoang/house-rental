@@ -2,25 +2,18 @@ package com.project.house.rental.service;
 
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 public interface DashboardService {
-    long countUsersCreatedThisWeek();
-    long countUsersCreatedThisMonth();
-    long countTotalUsers();
+    Map<String, Long> countUsersCreatedLastSevenMonths();
+    Map<String, Long> countPropertiesCreatedLastSevenMonths();
+    Map<String, Long> countCommentsCreatedLastSevenMonths();
 
-    BigDecimal getTotalDepositAmountThisWeek();
-    BigDecimal getTotalDepositAmountForCurrentMonth();
-    BigDecimal getTotalDepositAmount();
-
-    BigDecimal getTotalWithdrawalAmountThisWeek();
-    BigDecimal getTotalWithdrawalAmountForCurrentMonth();
-    BigDecimal getTotalWithdrawalAmount();
-
-    long countPropertiesCreatedThisWeek();
-    long countPropertiesCreatedThisMonth();
-    long countTotalProperties();
-
-    long countCommentsCreatedThisWeek();
-    long countCommentsCreatedThisMonth();
-    long countTotalComments();
+    Map<String, Object> getWeeklyStats();
+    Map<String, Object> getMonthlyStats();
+    Map<String, Object> getTotalStats();
+    Map<String, Long> countPendingStatuses();
+    List<Map<String, Object>> countCreatedEntitiesLastSevenMonths();
+    List<Map<String, Object>> getTotalTransactionAmountsLastSevenMonths();
 }

@@ -4,6 +4,7 @@ import com.project.house.rental.entity.Property;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -39,9 +40,15 @@ public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSp
     List<Property> findAllPropertiesExcept(long propertyId);
 
     //Dashboard
-    @Query("SELECT COUNT(p) FROM Property p WHERE p.createdAt BETWEEN :startDate AND :endDate")
+    @Query("SELECT COUNT(p) FROM Property p WHERE p.createdAt BETWEEN :startDate AND :endDate AND p.isDeleted = false")
     long countByCreatedAtBetween(Date startDate, Date endDate);
-    @Query("SELECT COUNT(p) FROM Property p")
+    @Query("SELECT COUNT(p) FROM Property p WHERE p.isDeleted = false")
     long countTotalProperties();
+
+    @Query("SELECT COUNT(p) FROM Property p WHERE EXTRACT(MONTH FROM p.createdAt) = :month AND EXTRACT(YEAR FROM p.createdAt) = :year AND p.isDeleted = false")
+    long countByCreatedAtMonthAndYear(@Param("month") int month, @Param("year") int year);
+
+    @Query("SELECT COUNT(p) FROM Property p WHERE p.status = :status AND p.isDeleted = false")
+    long countPropertiesWithStatus(Property.PropertyStatus status);
 
 }
