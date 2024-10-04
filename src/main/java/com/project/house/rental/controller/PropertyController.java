@@ -56,6 +56,12 @@ public class PropertyController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/self/{id}")
+    public ResponseEntity<Void> selfDeleteProperty(@PathVariable Long id, HttpServletRequest request) {
+        propertyService.selfDeletePropertyById(id, request);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/block/{id}")
     public ResponseEntity<PropertyDto> blockProperty(@PathVariable Long id, @RequestParam String status) {
         PropertyDto propertyDto = propertyService.blockProperty(id, status);

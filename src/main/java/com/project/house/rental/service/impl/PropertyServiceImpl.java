@@ -190,6 +190,19 @@ public class PropertyServiceImpl implements PropertyService {
         propertyRepository.deleteById(property.getId());
     }
 
+    @Override
+    public void selfDeletePropertyById(long id, HttpServletRequest request) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("Không tìm thấy tin đăng với id: " + id));
+
+        String username = jwtTokenProvider.getUsernameFromToken(request);
+
+        if (!property.getUser().getUsername().equals(username)) {
+            throw new IllegalArgumentException("Bạn không có quyền thực hiện hành động này !");
+        }
+
+        propertyRepository.deleteById(property.getId());
+    }
 
     public Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams) {
         Specification<Property> spec = PropertySpecification.searchByCityDistrictLocation(propertyParams.getSearch())

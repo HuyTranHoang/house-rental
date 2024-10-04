@@ -1,17 +1,17 @@
 meta {
-  name: Delete Property
+  name: Self Delete Property
   type: http
-  seq: 10
+  seq: 14
 }
 
 delete {
-  url: {{host}}/api/properties/:id
+  url: {{host}}/api/properties/self/:id
   body: none
   auth: bearer
 }
 
 params:path {
-  id: 46
+  id: 48
 }
 
 auth:bearer {

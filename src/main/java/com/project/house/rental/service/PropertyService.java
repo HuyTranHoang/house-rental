@@ -19,6 +19,8 @@ public interface PropertyService {
 
     void deletePropertyById(long id);
 
+    void selfDeletePropertyById(long id, HttpServletRequest request);
+
     Map<String, Object> getAllPropertiesWithParams(PropertyParams propertyParams);
 
     PropertyDto blockProperty(long id, String status);
