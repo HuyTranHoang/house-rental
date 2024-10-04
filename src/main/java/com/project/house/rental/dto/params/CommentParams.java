@@ -14,5 +14,5 @@ public class CommentParams extends PaginationParams {
 
     private String isBlocked;
 
-    private String sortBy;
+    private String sortBy = "createdAtDesc";
 }
