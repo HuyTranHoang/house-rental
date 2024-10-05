@@ -9,4 +9,6 @@ public interface PropertyImageService {
     List<PropertyImageDto> findByPropertyId(long id);
 
     void deleteByPropertyId(long id) throws IOException;
+
+    void deleteById(long id) throws IOException;
 }

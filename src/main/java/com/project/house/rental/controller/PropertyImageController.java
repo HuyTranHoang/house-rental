@@ -29,4 +29,10 @@ public class PropertyImageController {
         propertyImageService.deleteByPropertyId(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deletePropertyImageById(@PathVariable long id) throws IOException {
+        propertyImageService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

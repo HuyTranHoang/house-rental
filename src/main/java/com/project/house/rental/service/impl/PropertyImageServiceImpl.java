@@ -51,4 +51,13 @@ public class PropertyImageServiceImpl implements PropertyImageService {
             propertyImageRepository.deleteById(propertyImage.getId());
         }
     }
+
+    @Override
+    public void deleteById(long id) throws IOException {
+        PropertyImage propertyImage = propertyImageRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Property image not found"));
+
+        cloudinaryService.delete(propertyImage.getPublicId());
+        propertyImageRepository.deleteById(id);
+    }
 }
