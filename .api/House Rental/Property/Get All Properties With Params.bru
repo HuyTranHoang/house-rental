@@ -5,17 +5,17 @@ meta {
 }
 
 get {
-  url: {{host}}/api/properties?pageNumber=1
+  url: {{host}}/api/properties
   body: none
   auth: none
 }
 
 params:query {
-  pageNumber: 1
   ~userId: 1
-  ~isHidden: true
   ~isBlocked: true
-  ~status: PENDING
+  ~pageNumber: 1
+  ~isHidden: true
+  ~status: REJECTED
   ~minPrice: 0
   ~maxPrice: 0
   ~minArea: 0

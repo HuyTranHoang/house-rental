@@ -126,7 +126,7 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public PropertyDto updateProperty(long id, PropertyDto propertyDto, MultipartFile[] images) throws IOException {
+    public PropertyDto updateProperty(long id, PropertyDto propertyDto, MultipartFile[] images) {
         Property property = propertyRepository.findByIdWithFilter(id);
         if (property == null) {
             throw new NoResultException("Không tìm thấy bất động sản với id: " + id);
@@ -179,6 +179,26 @@ public class PropertyServiceImpl implements PropertyService {
 //        }
 
         propertyRepository.save(property);
+        return propertyMapper.toDto(property);
+    }
+
+    @Override
+    public PropertyDto selfUpdateProperty(long id, PropertyDto propertyDto, MultipartFile[] images, HttpServletRequest request) {
+        Property property = propertyRepository.findByIdWithFilter(id);
+        if (property == null) {
+            throw new NoResultException("Không tìm thấy bất động sản với id: " + id);
+        }
+
+        String username = jwtTokenProvider.getUsernameFromToken(request);
+        if (!property.getUser().getUsername().equals(username)) {
+            throw new IllegalArgumentException("Bạn không có quyền thực hiện hành động này !");
+        }
+
+        propertyDto.setUserId(property.getUser().getId());
+        propertyMapper.updateEntityFromDto(propertyDto, property);
+
+        propertyRepository.save(property);
+
         return propertyMapper.toDto(property);
     }
 

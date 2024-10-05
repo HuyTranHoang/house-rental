@@ -127,10 +127,9 @@ public abstract class PropertyMapperDecorator implements PropertyMapper {
         property.setDistrict(district);
         property.setUser(user);
         property.setRoomType(roomType);
-        property.setAmenities(amenities);
 
-//        property.getAmenities().clear();
-//        property.getAmenities().addAll(amenities);
+        property.getAmenities().clear();
+        property.getAmenities().addAll(amenities);
     }
 
     private boolean isValidPropertyStatus(String status) {

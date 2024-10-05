@@ -1,0 +1,30 @@
+meta {
+  name: Self Update Property With Image
+  type: http
+  seq: 14
+}
+
+put {
+  url: {{host}}/api/properties/self/:id
+  body: multipartForm
+  auth: inherit
+}
+
+params:path {
+  id: 11
+}
+
+body:multipart-form {
+  title: Test update
+  description: WWWWW EEEE
+  price: 123123
+  location: 22222
+  area: 55
+  numRooms: 3
+  cityId: 1
+  districtId: 10
+  roomTypeId: 3
+  status: PENDING
+  amenities: Bếp ga
+  amenities: Hồ bơi
+}

@@ -33,7 +33,7 @@ public class PropertyController {
     }
 
     @PostMapping
-    public ResponseEntity<PropertyDto> createProperty(@Valid @ModelAttribute PropertyDto propertyDto, @RequestParam MultipartFile[] images, @RequestParam MultipartFile thumbnailImage) throws IOException {
+    public ResponseEntity<PropertyDto> createProperty(@Valid @ModelAttribute PropertyDto propertyDto, @RequestParam(required = false) MultipartFile[] images, @RequestParam MultipartFile thumbnailImage) throws IOException {
         PropertyDto createdProperty = propertyService.createProperty(propertyDto, images, thumbnailImage);
         return ResponseEntity.ok(createdProperty);
     }
@@ -47,6 +47,12 @@ public class PropertyController {
     @PutMapping("/{id}")
     public ResponseEntity<PropertyDto> updateProperty(@PathVariable Long id, @Valid @ModelAttribute PropertyDto propertyDto, @RequestParam(required = false) MultipartFile[] images) throws IOException {
         PropertyDto updatedProperty = propertyService.updateProperty(id, propertyDto, images);
+        return ResponseEntity.ok(updatedProperty);
+    }
+
+    @PutMapping("/self/{id}")
+    public ResponseEntity<PropertyDto> selfUpdateProperty(@PathVariable Long id, @Valid @ModelAttribute PropertyDto propertyDto, @RequestParam(required = false) MultipartFile[] images, HttpServletRequest request) throws IOException {
+        PropertyDto updatedProperty = propertyService.selfUpdateProperty(id, propertyDto, images, request);
         return ResponseEntity.ok(updatedProperty);
     }
 
