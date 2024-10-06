@@ -51,8 +51,12 @@ public class PropertyController {
     }
 
     @PutMapping("/self/{id}")
-    public ResponseEntity<PropertyDto> selfUpdateProperty(@PathVariable Long id, @Valid @ModelAttribute PropertyDto propertyDto, @RequestParam(required = false) MultipartFile[] images, HttpServletRequest request) throws IOException {
-        PropertyDto updatedProperty = propertyService.selfUpdateProperty(id, propertyDto, images, request);
+    public ResponseEntity<PropertyDto> selfUpdateProperty(@PathVariable Long id,
+                                                          @Valid @ModelAttribute PropertyDto propertyDto,
+                                                          @RequestParam(required = false) MultipartFile[] images,
+                                                          @RequestParam(required = false) String deleteImages,
+                                                          HttpServletRequest request) throws IOException {
+        PropertyDto updatedProperty = propertyService.selfUpdateProperty(id, propertyDto, images, deleteImages, request);
         return ResponseEntity.ok(updatedProperty);
     }
 

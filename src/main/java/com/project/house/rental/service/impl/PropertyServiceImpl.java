@@ -183,7 +183,7 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public PropertyDto selfUpdateProperty(long id, PropertyDto propertyDto, MultipartFile[] images, HttpServletRequest request) {
+    public PropertyDto selfUpdateProperty(long id, PropertyDto propertyDto, MultipartFile[] images, String deleteImages, HttpServletRequest request) {
         Property property = propertyRepository.findByIdWithFilter(id);
         if (property == null) {
             throw new NoResultException("Không tìm thấy bất động sản với id: " + id);
@@ -192,6 +192,22 @@ public class PropertyServiceImpl implements PropertyService {
         String username = jwtTokenProvider.getUsernameFromToken(request);
         if (!property.getUser().getUsername().equals(username)) {
             throw new IllegalArgumentException("Bạn không có quyền thực hiện hành động này !");
+        }
+
+        if (deleteImages != null && !deleteImages.isEmpty()) {
+            List<String> deletedImageIds = Arrays.asList(deleteImages.split(","));
+            property.getPropertyImages().forEach(propertyImage -> {
+                if (deletedImageIds.contains(propertyImage.getImageUrl())) {
+                    propertyImage.setDeleted(true);
+                    try {
+                        if (propertyImage.getPublicId() != null) {
+                            cloudinaryService.delete(propertyImage.getPublicId());
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
         }
 
         propertyDto.setUserId(property.getUser().getId());

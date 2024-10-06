@@ -17,7 +17,7 @@ public interface PropertyService {
 
     PropertyDto updateProperty(long id, PropertyDto propertyDto, MultipartFile[] images) throws IOException;
 
-    PropertyDto selfUpdateProperty(long id, PropertyDto propertyDto, MultipartFile[] images, HttpServletRequest request) throws IOException;
+    PropertyDto selfUpdateProperty(long id, PropertyDto propertyDto, MultipartFile[] images, String deleteImages, HttpServletRequest request) throws IOException;
 
     void deletePropertyById(long id);
 
