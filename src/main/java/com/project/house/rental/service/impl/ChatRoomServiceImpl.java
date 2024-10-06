@@ -5,6 +5,8 @@ import com.project.house.rental.repository.ChatRoomRepository;
 import com.project.house.rental.service.ChatRoomService;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class ChatRoomServiceImpl implements ChatRoomService {
 
@@ -36,12 +38,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .id(chatId)
                 .senderId(senderId)
                 .receiverId(receiverId)
+                .createdAt(new Date())
                 .build();
 
         ChatRoom receiverSender = ChatRoom.builder()
                 .id(chatId)
                 .senderId(receiverId)
                 .receiverId(senderId)
+                .createdAt(new Date())
                 .build();
 
         chatRoomRepository.save(senderReceiver);

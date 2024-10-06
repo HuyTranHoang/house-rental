@@ -24,6 +24,7 @@ public class SecurityConstant {
             "/api/auth/send-reset-password-email",
             "/api/auth/reset-password",
             "/api/contact",
+            "/ws/**",
     };
 
     public static final String[] API_PUBLIC_GET_URLS = {

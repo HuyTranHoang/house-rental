@@ -84,7 +84,7 @@ public class WebSecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://localhost:3000",
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:3000", "http://127.0.0.1:3100", "http://localhost:3000", "https://localhost:3000",
                 "http://localhost:3100", "https://localhost:3100", "https://house-rental-admin.vercel.app"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
