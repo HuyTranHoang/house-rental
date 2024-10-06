@@ -1,0 +1,17 @@
+meta {
+  name: Entities Created 7 Month
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{host}}/api/dashboard/last-seven-months
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~entityType: properties
+  ~entityType: users
+  ~entityType: comments
+}

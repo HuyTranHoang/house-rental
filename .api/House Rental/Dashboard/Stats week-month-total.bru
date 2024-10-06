@@ -1,0 +1,17 @@
+meta {
+  name: Stats week-month-total
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}/api/dashboard/stats
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~period: monthly
+  ~period: weekly
+  ~period: total
+}
