@@ -1,4 +1,4 @@
-package com.project.house.rental.security;
+package com.project.house.rental.config;
 
 import com.project.house.rental.constant.SecurityConstant;
 import com.project.house.rental.filter.JWTAuthenticationEntryPoint;

@@ -54,6 +54,8 @@ public class UserEntity extends BaseEntity {
     @Column(name = "is_non_locked")
     boolean isNonLocked;
 
+    String status;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "user_roles",
@@ -96,6 +98,6 @@ public class UserEntity extends BaseEntity {
     List<CommentReport> commentReports;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Notification> notifications;
+    List<Notification> notifications;
 
 }

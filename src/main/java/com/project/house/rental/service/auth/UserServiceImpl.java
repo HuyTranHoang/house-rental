@@ -216,6 +216,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void online(UserEntity user) throws CustomRuntimeException {
+        userRepository.findById(user.getId())
+                .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
+
+        user.setStatus("ONLINE");
+        userRepository.save(user);
+    }
+
+    @Override
+    public void offline(UserEntity user) throws CustomRuntimeException {
+        userRepository.findById(user.getId())
+                .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));
+
+        user.setStatus("OFFLINE");
+        userRepository.save(user);
+    }
+
+    @Override
     public UserEntityDto updateRole(long id, List<String> roles) throws CustomRuntimeException {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new CustomRuntimeException("Không tìm thấy tài khoản!"));

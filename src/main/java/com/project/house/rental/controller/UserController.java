@@ -4,12 +4,16 @@ import com.project.house.rental.dto.auth.ChangePasswordDto;
 import com.project.house.rental.dto.auth.ProfileDto;
 import com.project.house.rental.dto.auth.UserEntityDto;
 import com.project.house.rental.dto.params.UserParams;
+import com.project.house.rental.entity.auth.UserEntity;
 import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.service.UserMembershipService;
 import com.project.house.rental.service.auth.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +32,20 @@ public class UserController {
     public UserController(UserService userService, UserMembershipService userMembershipService) {
         this.userService = userService;
         this.userMembershipService = userMembershipService;
+    }
+
+    @MessageMapping("/user.online")
+    @SendTo("/user/topic")
+    public UserEntity online(@Payload UserEntity user) throws CustomRuntimeException {
+        userService.online(user);
+        return user;
+    }
+
+    @MessageMapping("/user.offline")
+    @SendTo("/user/topic")
+    public UserEntity offline(@Payload UserEntity user) throws CustomRuntimeException {
+        userService.offline(user);
+        return user;
     }
 
     @PreAuthorize("hasAnyAuthority('user:update', 'admin:all')")
