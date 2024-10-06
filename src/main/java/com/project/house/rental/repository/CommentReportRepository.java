@@ -1,7 +1,6 @@
 package com.project.house.rental.repository;
 
 import com.project.house.rental.entity.CommentReport;
-import com.project.house.rental.entity.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
