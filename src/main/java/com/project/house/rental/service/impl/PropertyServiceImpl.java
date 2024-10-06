@@ -25,6 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -218,8 +219,8 @@ public class PropertyServiceImpl implements PropertyService {
             propertyImageRepository.saveAll(propertyImages);
         }
 
-        if (deleteImages != null && !deleteImages.isEmpty()) {
-            List<String> deletedImageIds = Arrays.asList(deleteImages.split(","));
+        if (StringUtils.hasLength(deleteImages)) {
+            List<String> deletedImageIds = Arrays.asList(deleteImages.split("\\|"));
             property.getPropertyImages().forEach(propertyImage -> {
                 if (deletedImageIds.contains(propertyImage.getImageUrl())) {
                     propertyImage.setDeleted(true);
