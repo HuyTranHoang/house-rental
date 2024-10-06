@@ -183,7 +183,7 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public PropertyDto selfUpdateProperty(long id, PropertyDto propertyDto, MultipartFile[] images, String deleteImages, HttpServletRequest request) {
+    public PropertyDto selfUpdateProperty(long id, PropertyDto propertyDto, MultipartFile[] images, String deleteImages, HttpServletRequest request) throws IOException {
         Property property = propertyRepository.findByIdWithFilter(id);
         if (property == null) {
             throw new NoResultException("Không tìm thấy bất động sản với id: " + id);
@@ -192,6 +192,30 @@ public class PropertyServiceImpl implements PropertyService {
         String username = jwtTokenProvider.getUsernameFromToken(request);
         if (!property.getUser().getUsername().equals(username)) {
             throw new IllegalArgumentException("Bạn không có quyền thực hiện hành động này !");
+        }
+
+        if (images != null && images.length > 0) {
+            List<PropertyImage> propertyImages = new ArrayList<>();
+            CompletableFuture<List<String>> cloudinaryResponseFuture = cloudinaryService.uploadImages(images);
+
+            List<String> cloudinaryResponse;
+            try {
+                cloudinaryResponse = cloudinaryResponseFuture.get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException("Failed to upload images", e);
+            }
+
+            for (String publicId : cloudinaryResponse) {
+                PropertyImage propertyImage = PropertyImage.builder()
+                        .imageUrl(cloudinaryService.getOptimizedImage(publicId))
+                        .publicId(publicId)
+                        .property(property)
+                        .build();
+                propertyImages.add(propertyImage);
+            }
+
+            property.getPropertyImages().addAll(propertyImages);
+            propertyImageRepository.saveAll(propertyImages);
         }
 
         if (deleteImages != null && !deleteImages.isEmpty()) {
