@@ -54,6 +54,12 @@ public class MembershipServiceImpl implements MembershipService {
         Sort sort = switch (membershipParams.getSortBy()) {
             case "nameAsc" -> Sort.by(Membership_.NAME);
             case "nameDesc" -> Sort.by(Membership_.NAME).descending();
+            case "priceAsc" -> Sort.by(Membership_.PRICE);
+            case "priceDesc" -> Sort.by(Membership_.PRICE).descending();
+            case "refreshAsc" -> Sort.by(Membership_.REFRESH);
+            case "refreshDesc" -> Sort.by(Membership_.REFRESH).descending();
+            case "priorityAsc" -> Sort.by(Membership_.PRIORITY);
+            case "priorityDesc" -> Sort.by(Membership_.PRIORITY).descending();
             case "createdAtAsc" -> Sort.by(Membership_.CREATED_AT);
             case "createdAtDesc" -> Sort.by(Membership_.CREATED_AT).descending();
             default -> Sort.by(Membership_.ID).descending();
