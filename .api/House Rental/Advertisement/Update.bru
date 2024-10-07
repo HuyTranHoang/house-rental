@@ -1,0 +1,17 @@
+meta {
+  name: Update
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{host}}/api/advertisements/1
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  name: Quảng cáo mẫu update
+  description: Đây là mô tả của quảng cáo.
+  ~image: @file(/Users/juststartable/Downloads/3.jpeg)
+}

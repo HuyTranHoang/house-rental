@@ -1,0 +1,17 @@
+meta {
+  name: Delete
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{host}}/api/advertisements/2
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  name: Quảng cáo mẫu
+  description: Đây là mô tả của quảng cáo.
+  image: @file(/Users/juststartable/Downloads/3.jpeg)
+}
