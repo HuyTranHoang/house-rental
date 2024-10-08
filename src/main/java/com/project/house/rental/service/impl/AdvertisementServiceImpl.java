@@ -8,6 +8,7 @@ import com.project.house.rental.repository.AdvertisementRepository;
 import com.project.house.rental.service.AdvertisementService;
 import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.utils.HibernateFilterHelper;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,7 +79,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     public List<AdvertisementDto> getAllAdvertisements() {
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ADVERTISEMENT_FILTER);
 
-        List<Advertisement> advertisementList = advertisementRepository.findAll();
+        List<Advertisement> advertisementList = advertisementRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ADVERTISEMENT_FILTER);
 
