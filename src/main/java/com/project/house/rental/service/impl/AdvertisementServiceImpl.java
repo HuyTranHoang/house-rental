@@ -87,4 +87,20 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .toList();
     }
 
+    @Override
+    public AdvertisementDto updateIsActived(Long id) {
+        Advertisement advertisement = advertisementRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Advertisement not found"));
+
+        advertisement.setActived(!advertisement.isActived());
+
+        advertisementRepository.save(advertisement);
+
+        Advertisement updatedAdvertisement = advertisementRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Advertisement not found"));
+
+        return advertisementMapper.toDto(updatedAdvertisement);
+    }
+
+
 }

@@ -21,4 +21,5 @@ public class CityDto {
     String name;
 
     Date createdAt;
+
 }

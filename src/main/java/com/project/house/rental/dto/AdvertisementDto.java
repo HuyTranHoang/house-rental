@@ -25,4 +25,6 @@ public class AdvertisementDto {
     String imageUrl;
 
     Date createdAt;
+
+    boolean isActived;
 }

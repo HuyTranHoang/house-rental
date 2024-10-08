@@ -29,5 +29,7 @@ public class Advertisement extends BaseEntity {
     String description;
     @Column(name = "image_url")
     String imageUrl;
+    @Column(name = "is_actived")
+    boolean isActived;
 }
 
