@@ -8,6 +8,7 @@ import com.project.house.rental.repository.AdvertisementRepository;
 import com.project.house.rental.service.AdvertisementService;
 import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.utils.HibernateFilterHelper;
+import jakarta.persistence.NoResultException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,7 +50,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public AdvertisementDto updateAdvertisement(Long id, AdvertisementDto advertisementDto, MultipartFile image) throws IOException {
         Advertisement advertisement = advertisementRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Advertisement not found"));
+                .orElseThrow(() -> new NoResultException("Advertisement not found"));
 
         advertisement.setName(advertisementDto.getName());
         advertisement.setDescription(advertisementDto.getDescription());
@@ -66,7 +67,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public AdvertisementDto getAdvertisementById(Long id) {
         Advertisement advertisement = advertisementRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Advertisement not found"));
+                .orElseThrow(() -> new NoResultException("Advertisement not found"));
         return advertisementMapper.toDto(advertisement);
     }
 
@@ -91,16 +92,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public AdvertisementDto updateIsActived(Long id) {
         Advertisement advertisement = advertisementRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Advertisement not found"));
+                .orElseThrow(() -> new NoResultException("Advertisement not found"));
 
         advertisement.setActived(!advertisement.isActived());
 
         advertisementRepository.save(advertisement);
 
-        Advertisement updatedAdvertisement = advertisementRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Advertisement not found"));
-
-        return advertisementMapper.toDto(updatedAdvertisement);
+        return advertisementMapper.toDto(advertisement);
     }
 
 
