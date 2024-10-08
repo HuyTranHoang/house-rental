@@ -57,4 +57,10 @@ public class AdvertisementController {
         List<AdvertisementDto> advertisements = advertisementService.getAllAdvertisements();
         return new ResponseEntity<>(advertisements, HttpStatus.OK);
     }
+
+    @PutMapping("/active/{id}")
+    public ResponseEntity<AdvertisementDto> updateIsActived(@PathVariable Long id) {
+        AdvertisementDto updatedAdvertisement = advertisementService.updateIsActived(id);
+        return new ResponseEntity<>(updatedAdvertisement, HttpStatus.OK);
+    }
 }

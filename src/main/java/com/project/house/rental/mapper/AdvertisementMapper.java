@@ -11,6 +11,7 @@ import org.mapstruct.factory.Mappers;
 public interface AdvertisementMapper {
     AdvertisementMapper INSTANCE = Mappers.getMapper(AdvertisementMapper.class);
 
+    @Mapping(target = "isActived", source = "actived")
     AdvertisementDto toDto(Advertisement advertisement);
 
     Advertisement toEntity(AdvertisementDto advertisementDto);
