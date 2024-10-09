@@ -208,6 +208,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         if (newBalance < 0) {
             throw new CustomRuntimeException("Số dư không thể nhỏ hơn 0!");
+        } else {
+            emailSenderService.sendRechargeHTMLMail(user.getEmail(), user.getUsername(), String.valueOf(amount));
         }
 
         user.setBalance(newBalance);

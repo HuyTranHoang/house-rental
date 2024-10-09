@@ -166,6 +166,19 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         }
     }
 
+    @Override
+    public void sendRechargeHTMLMail(String to, String username, String amount) {
+        try {
+            Context context = new Context();
+            context.setVariable("username", username);
+            context.setVariable("amount", amount);
+            String text = templateEngine.process("recharge-email-template", context);
+            createMessage(to, text, "Mogu - Thông báo nạp tiền thành công");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email");
+        }
+    }
+
     private void createMessage(String to, String text, String subject) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");

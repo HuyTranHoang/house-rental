@@ -21,4 +21,6 @@ public interface EmailSenderService {
 
     void sendUnblockHTMLMail(String to, String username, String propertyTitle);
 
+    void sendRechargeHTMLMail(String to, String username, String amount);
+
 }
