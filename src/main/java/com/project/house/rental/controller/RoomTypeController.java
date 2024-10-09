@@ -5,6 +5,7 @@ import com.project.house.rental.dto.params.RoomTypeParams;
 import com.project.house.rental.service.RoomTypeService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,24 +38,28 @@ public class RoomTypeController {
         return ResponseEntity.ok(roomTypeDto);
     }
 
+    @PreAuthorize("hasAnyAuthority('roomType:create', 'admin:all')")
     @PostMapping({"/", ""})
     public ResponseEntity<RoomTypeDto> createRoomType(@RequestBody @Valid RoomTypeDto roomTypeDto) {
         RoomTypeDto roomType = roomTypeService.createRoomType(roomTypeDto);
         return ResponseEntity.ok(roomType);
     }
 
+    @PreAuthorize("hasAnyAuthority('roomType:update', 'admin:all')")
     @PutMapping("/{id}")
     public ResponseEntity<RoomTypeDto> updateRoomType(@PathVariable long id, @RequestBody @Valid RoomTypeDto roomTypeDto) {
         RoomTypeDto roomType = roomTypeService.updateRoomType(id, roomTypeDto);
         return ResponseEntity.ok(roomType);
     }
 
+    @PreAuthorize("hasAnyAuthority('roomType:delete', 'admin:all')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoomType(@PathVariable long id) {
         roomTypeService.deleteRoomTypeById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('roomType:delete', 'admin:all')")
     @DeleteMapping("/delete-multiple")
     public ResponseEntity<Void> deleteMultipleCities(@RequestBody Map<String, List<Long>> requestBody) {
         List<Long> ids = requestBody.get("ids");

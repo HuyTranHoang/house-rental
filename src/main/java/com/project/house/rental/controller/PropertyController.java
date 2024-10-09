@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,7 +20,6 @@ import java.util.Map;
 public class PropertyController {
 
     private final PropertyService propertyService;
-
 
     @Autowired
     public PropertyController(PropertyService propertyService) {
@@ -44,6 +44,7 @@ public class PropertyController {
         return ResponseEntity.ok(propertyDto);
     }
 
+    @PreAuthorize("hasAnyAuthority('property:update', 'admin:all')")
     @PutMapping("/{id}")
     public ResponseEntity<PropertyDto> updateProperty(@PathVariable Long id, @Valid @ModelAttribute PropertyDto propertyDto, @RequestParam(required = false) MultipartFile[] images) throws IOException {
         PropertyDto updatedProperty = propertyService.updateProperty(id, propertyDto, images);
@@ -60,6 +61,7 @@ public class PropertyController {
         return ResponseEntity.ok(updatedProperty);
     }
 
+    @PreAuthorize("hasAnyAuthority('property:delete', 'admin:all')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProperty(@PathVariable Long id) {
         propertyService.deletePropertyById(id);
@@ -72,12 +74,14 @@ public class PropertyController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('property:update', 'admin:all')")
     @PutMapping("/block/{id}")
     public ResponseEntity<PropertyDto> blockProperty(@PathVariable Long id, @RequestParam String status) {
         PropertyDto propertyDto = propertyService.blockProperty(id, status);
         return ResponseEntity.ok(propertyDto);
     }
 
+    @PreAuthorize("hasAnyAuthority('property:update', 'admin:all')")
     @PutMapping("/status/{id}")
     public ResponseEntity<PropertyDto> updatePropertyStatus(@PathVariable Long id, @RequestParam String status) {
         PropertyDto propertyDto = propertyService.updatePropertyStatus(id, status);

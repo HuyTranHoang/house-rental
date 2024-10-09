@@ -6,6 +6,7 @@ import com.project.house.rental.exception.CustomRuntimeException;
 import com.project.house.rental.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,18 +46,21 @@ public class CommentController {
         return ResponseEntity.ok(newComment);
     }
 
+    @PreAuthorize("hasAnyAuthority('comment:update', 'admin:all')")
     @PutMapping("/{id}")
     public ResponseEntity<CommentDto> updateComment(@PathVariable Long id, @RequestBody CommentDto commentDto) {
         CommentDto updatedComment = commentService.updateComment(id, commentDto);
         return ResponseEntity.ok(updatedComment);
     }
 
+    @PreAuthorize("hasAnyAuthority('comment:delete', 'admin:all')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteComment(@PathVariable Long id) {
         commentService.deleteCommentById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('comment:delete', 'admin:all')")
     @DeleteMapping("/delete-multiple")
     public ResponseEntity<Void> deleteMultipleComments(@RequestBody Map<String, List<Long>> requestBody) {
         List<Long> ids = requestBody.get("ids");

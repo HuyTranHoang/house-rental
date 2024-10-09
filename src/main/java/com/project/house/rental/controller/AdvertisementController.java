@@ -5,6 +5,7 @@ import com.project.house.rental.service.AdvertisementService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +22,7 @@ public class AdvertisementController {
         this.advertisementService = advertisementService;
     }
 
+    @PreAuthorize("hasAnyAuthority('advertisement:read', 'admin:all')")
     @PostMapping
     public ResponseEntity<AdvertisementDto> createAdvertisement(
             @Valid @ModelAttribute AdvertisementDto advertisementDto,
@@ -30,6 +32,7 @@ public class AdvertisementController {
     }
 
 
+    @PreAuthorize("hasAnyAuthority('advertisement:update', 'admin:all')")
     @PutMapping("/{id}")
     public ResponseEntity<AdvertisementDto> updateAdvertisement(
             @PathVariable Long id,
@@ -39,13 +42,13 @@ public class AdvertisementController {
         return new ResponseEntity<>(updatedAdvertisement, HttpStatus.OK);
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<AdvertisementDto> getAdvertisementById(@PathVariable Long id) {
         AdvertisementDto advertisementDto = advertisementService.getAdvertisementById(id);
         return new ResponseEntity<>(advertisementDto, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('advertisement:delete', 'admin:all')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAdvertisement(@PathVariable Long id) {
         advertisementService.deleteAdvertisement(id);
@@ -58,6 +61,7 @@ public class AdvertisementController {
         return new ResponseEntity<>(advertisements, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('advertisement:update', 'admin:all')")
     @PutMapping("/active/{id}")
     public ResponseEntity<AdvertisementDto> updateIsActived(@PathVariable Long id) {
         AdvertisementDto updatedAdvertisement = advertisementService.updateIsActived(id);

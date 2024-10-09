@@ -40,6 +40,7 @@ public class SecurityConstant {
             "/api/transaction/**",
             "/api/user/**",
             "/api/membership/**",
+            "/api/advertisements/**",
     };
 
     public static final String[] RESOURCE_URLS = {

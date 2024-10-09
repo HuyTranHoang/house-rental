@@ -6,6 +6,7 @@ import com.project.house.rental.service.CommentReportService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,12 +45,14 @@ public class CommentReportController {
         return  ResponseEntity.ok(report);
     }
 
+    @PreAuthorize("hasAnyAuthority('commentReport:delete', 'admin:all')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReport(@PathVariable Long id) {
         commentReportService.deleteCommentReportById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('commentReport:update', 'admin:all')")
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateReportStatus(@PathVariable Long id,@RequestParam String status) {
         commentReportService.updateCommentReportStatus(id, status);

@@ -5,6 +5,7 @@ import com.project.house.rental.dto.params.AmenityParams;
 import com.project.house.rental.service.AmenityService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,24 +39,28 @@ public class AmenityController {
         return ResponseEntity.ok(amenities);
     }
 
+    @PreAuthorize("hasAnyAuthority('amenity:create', 'admin:all')")
     @PostMapping({"/", ""})
     public ResponseEntity<AmenityDto> createAmenity(@RequestBody @Valid AmenityDto amenitiesDto) {
         AmenityDto amenities = amenitiesService.createAmenity(amenitiesDto);
         return ResponseEntity.ok(amenities);
     }
 
+    @PreAuthorize("hasAnyAuthority('amenity:update', 'admin:all')")
     @PutMapping("/{id}")
     public ResponseEntity<AmenityDto> updateAmenity(@PathVariable long id, @RequestBody @Valid AmenityDto amenitiesDto) {
         AmenityDto amenities = amenitiesService.updateAmenity(id, amenitiesDto);
         return ResponseEntity.ok(amenities);
     }
 
+    @PreAuthorize("hasAnyAuthority('amenity:delete', 'admin:all')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAmenity(@PathVariable long id) {
         amenitiesService.deleteAmenityById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('amenity:delete', 'admin:all')")
     @DeleteMapping("/delete-multiple")
     public ResponseEntity<Void> deleteMultipleAmenity(@RequestBody Map<String, List<Long>> requestBody) {
         List<Long> ids = requestBody.get("ids");

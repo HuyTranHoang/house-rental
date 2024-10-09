@@ -5,6 +5,7 @@ import com.project.house.rental.dto.params.DistrictParams;
 import com.project.house.rental.service.DistrictService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,24 +39,28 @@ public class DistrictController {
         return ResponseEntity.ok(district);
     }
 
+    @PreAuthorize("hasAnyAuthority('district:create', 'admin:all')")
     @PostMapping({"/", ""})
     public ResponseEntity<DistrictDto> createDistrict(@RequestBody @Valid DistrictDto districtDto) {
         DistrictDto district = districtService.createDistrict(districtDto);
         return ResponseEntity.ok(district);
     }
 
+    @PreAuthorize("hasAnyAuthority('district:update', 'admin:all')")
     @PutMapping("/{id}")
     public ResponseEntity<DistrictDto> updateDistrict(@PathVariable long id, @RequestBody @Valid DistrictDto districtDto) {
         DistrictDto district = districtService.updateDistrict(id, districtDto);
         return ResponseEntity.ok(district);
     }
 
+    @PreAuthorize("hasAnyAuthority('district:delete', 'admin:all')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDistrict(@PathVariable long id) {
         districtService.deleteDistrictById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('district:delete', 'admin:all')")
     @DeleteMapping("/delete-multiple")
     public ResponseEntity<Void> deleteMultipleDistricts(@RequestBody Map<String, List<Long>> requestBody) {
         List<Long> ids = requestBody.get("ids");

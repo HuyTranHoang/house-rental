@@ -5,8 +5,8 @@ import com.project.house.rental.dto.params.ReportParams;
 import com.project.house.rental.service.ReportService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +17,6 @@ import java.util.Map;
 public class ReportController {
     private final ReportService reportService;
 
-    @Autowired
     public ReportController(ReportService reportService) {
         this.reportService = reportService;
     }
@@ -46,12 +45,14 @@ public class ReportController {
         return  ResponseEntity.ok(report);
     }
 
+    @PreAuthorize("hasAnyAuthority('report:delete', 'admin:all')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReport(@PathVariable Long id) {
         reportService.deleteReportById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('report:update', 'admin:all')")
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateReportStatus(@PathVariable Long id,@RequestParam String status) {
         reportService.updateReportStatus(id, status);

@@ -5,7 +5,6 @@ import com.project.house.rental.dto.PaymentRequest;
 import com.project.house.rental.dto.TransactionDto;
 import com.project.house.rental.dto.params.TransactionParams;
 import com.project.house.rental.exception.CustomRuntimeException;
-import com.project.house.rental.security.JWTTokenProvider;
 import com.project.house.rental.service.TransactionService;
 import com.project.house.rental.service.vnPay.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,12 +21,10 @@ public class TransactionController {
 
     private final TransactionService transactionService;
     private final VNPayService vnPayService;
-    private final JWTTokenProvider jwtTokenProvider;
 
-    public TransactionController(TransactionService transactionService, VNPayService vnPayService, JWTTokenProvider jwtTokenProvider) {
+    public TransactionController(TransactionService transactionService, VNPayService vnPayService) {
         this.transactionService = transactionService;
         this.vnPayService = vnPayService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @GetMapping({"", "/"})
@@ -70,7 +67,7 @@ public class TransactionController {
     }
 
     @GetMapping("/user-history")
-    public ResponseEntity<Map<String, Object>> getUserTransactionHistory(HttpServletRequest request,@ModelAttribute TransactionParams transactionParams) {
+    public ResponseEntity<Map<String, Object>> getUserTransactionHistory(HttpServletRequest request, @ModelAttribute TransactionParams transactionParams) {
         Map<String, Object> transactions = transactionService.getUserTransactions(request, transactionParams);
         return ResponseEntity.ok(transactions);
     }

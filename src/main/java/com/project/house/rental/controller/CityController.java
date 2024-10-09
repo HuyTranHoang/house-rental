@@ -5,6 +5,7 @@ import com.project.house.rental.dto.params.CityParams;
 import com.project.house.rental.service.CityService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,24 +39,28 @@ public class CityController {
         return ResponseEntity.ok(city);
     }
 
+    @PreAuthorize("hasAnyAuthority('city:create', 'admin:all')")
     @PostMapping({"/", ""})
     public ResponseEntity<CityDto> createCity(@RequestBody @Valid CityDto cityDto) {
         CityDto city = cityService.createCity(cityDto);
         return ResponseEntity.ok(city);
     }
 
+    @PreAuthorize("hasAnyAuthority('city:update', 'admin:all')")
     @PutMapping("/{id}")
     public ResponseEntity<CityDto> updateCity(@PathVariable long id, @RequestBody @Valid CityDto cityDto) {
         CityDto city = cityService.updateCity(id, cityDto);
         return ResponseEntity.ok(city);
     }
 
+    @PreAuthorize("hasAnyAuthority('city:delete', 'admin:all')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCity(@PathVariable long id) {
         cityService.deleteCityById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('city:delete', 'admin:all')")
     @DeleteMapping("/delete-multiple")
     public ResponseEntity<Void> deleteMultipleCities(@RequestBody Map<String, List<Long>> requestBody) {
         List<Long> ids = requestBody.get("ids");
