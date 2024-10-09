@@ -355,15 +355,13 @@ public class PropertyServiceImpl implements PropertyService {
         if (status.equals("unblock")) {
             property.setBlocked(false);
             propertyRepository.save(property);
-            //TODO: Bat len khi demo -- Chưa có mail unblock
-//            emailSenderService.sendUnblockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
+            emailSenderService.sendUnblockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
             return propertyMapper.toDto(property);
         }
 
         property.setBlocked(true);
         propertyRepository.save(property);
-        //TODO: Bat len khi demo
-//        emailSenderService.sendBlockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
+        emailSenderService.sendBlockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
         return propertyMapper.toDto(property);
     }
 

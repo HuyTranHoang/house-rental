@@ -161,8 +161,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setNonLocked(true);
         user.setRoles(user.getRoles());
 
-        //TODO: Bật lên khi demo
-        //emailSenderService.sendRegisterHTMLMail(user.getEmail());
+        emailSenderService.sendRegisterHTMLMail(user.getEmail());
 
         UserEntity newUser = userMapper.toEntity(user);
         return userMapper.toDto(userRepository.save(newUser));

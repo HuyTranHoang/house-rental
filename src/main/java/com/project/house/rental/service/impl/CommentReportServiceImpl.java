@@ -94,8 +94,7 @@ public class CommentReportServiceImpl implements CommentReportService {
 
         newReport.setStatus(CommentReport.ReportStatus.PENDING);
 
-        // TODO: Bật lên khi test demo, cần viết lại email
-//         emailSenderService.sendReportHTMLMail(currentUser.getEmail(), currentUser.getUsername(), newReport.getProperty().getTitle());
+        emailSenderService.sendCommentReportHTMLMail(currentUser.getEmail(), currentUser.getUsername(), newReport.getComment().getComment());
 
         return commentReportMapper.toDto(commentReportRepository.save(newReport));
     }
@@ -189,8 +188,7 @@ public class CommentReportServiceImpl implements CommentReportService {
                 commentReportRepository.save(pendingReport);
             }
 
-            //TODO: Bật lên khi test demo
-            //emailSenderService.sendBlockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
+            emailSenderService.sendBlockCommentHTMLMail(comment.getUser().getEmail(), comment.getUser().getUsername(), comment.getComment());
         }
 
         commentReportRepository.save(report);

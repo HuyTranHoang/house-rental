@@ -13,6 +13,12 @@ public interface EmailSenderService {
 
     void sendReportHTMLMail(String to, String username, String propertyTitle);
 
+    void sendCommentReportHTMLMail(String to, String username, String comment);
+
     void sendBlockHTMLMail(String to, String username, String propertyTitle);
+
+    void sendBlockCommentHTMLMail(String to, String username, String comment);
+
+    void sendUnblockHTMLMail(String to, String username, String propertyTitle);
 
 }

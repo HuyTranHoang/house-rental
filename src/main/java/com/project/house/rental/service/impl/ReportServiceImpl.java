@@ -94,8 +94,7 @@ public class ReportServiceImpl implements ReportService {
 
         newReport.setStatus(Report.ReportStatus.PENDING);
 
-        // TODO: Bật lên khi test demo
-//         emailSenderService.sendReportHTMLMail(currentUser.getEmail(), currentUser.getUsername(), newReport.getProperty().getTitle());
+        emailSenderService.sendReportHTMLMail(currentUser.getEmail(), currentUser.getUsername(), newReport.getProperty().getTitle());
 
         return reportMapper.toDto(reportRepository.save(newReport));
     }
@@ -193,8 +192,7 @@ public class ReportServiceImpl implements ReportService {
                 reportRepository.save(pendingReport);
             }
 
-            //TODO: Bật lên khi test demo
-            //emailSenderService.sendBlockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
+            emailSenderService.sendBlockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
         }
 
         reportRepository.save(report);

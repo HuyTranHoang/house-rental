@@ -115,13 +115,52 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
+    public void sendCommentReportHTMLMail(String to, String username, String propertyTitle) {
+        try {
+            Context context = new Context();
+            context.setVariable("username", username);
+            context.setVariable("propertyTitle", propertyTitle);
+            String text = templateEngine.process("comment-report-email-template", context);
+            createMessage(to, text, "Mogu - Báo cáo bình luận");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email");
+        }
+    }
+
+    @Override
     public void sendBlockHTMLMail(String to, String username, String propertyTitle) {
         try {
             Context context = new Context();
             context.setVariable("username", username);
             context.setVariable("propertyTitle", propertyTitle);
             String text = templateEngine.process("block-email-template", context);
-            createMessage(to, text, "Mogu - Thông báo khóa tài khoản");
+            createMessage(to, text, "Mogu - Thông báo khóa bài đăng");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email");
+        }
+    }
+
+    @Override
+    public void sendBlockCommentHTMLMail(String to, String username, String comment) {
+        try {
+            Context context = new Context();
+            context.setVariable("username", username);
+            context.setVariable("comment", comment);
+            String text = templateEngine.process("block-comment-email-template", context);
+            createMessage(to, text, "Mogu - Thông báo khóa bình luận");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email");
+        }
+    }
+
+    @Override
+    public void sendUnblockHTMLMail(String to, String username, String comment) {
+        try {
+            Context context = new Context();
+            context.setVariable("username", username);
+            context.setVariable("comment", comment);
+            String text = templateEngine.process("unblock-email-template", context);
+            createMessage(to, text, "Mogu - Thông báo mở khóa bài đăng");
         } catch (Exception e) {
             throw new RuntimeException("Failed to send email");
         }

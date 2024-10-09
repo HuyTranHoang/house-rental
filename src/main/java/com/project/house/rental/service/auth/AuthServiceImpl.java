@@ -55,8 +55,7 @@ public class AuthServiceImpl implements AuthService {
         user.setNonLocked(true);
         user.setRoles(List.of("ROLE_USER"));
 
-        //TODO: Bật lên khi demo
-//        emailSenderService.sendRegisterHTMLMail(user.getEmail());
+        emailSenderService.sendRegisterHTMLMail(user.getEmail());
 
         UserEntity newUser = userMapper.toEntity(user);
         return userMapper.toDto(userRepository.save(newUser));
