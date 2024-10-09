@@ -38,7 +38,7 @@ public class MembershipServiceImpl implements MembershipService {
     public List<MembershipDto> getAllMemberships() {
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_MEMBERSHIP_FILTER);
 
-        List<Membership> membershipList = membershipRepository.findAll();
+        List<Membership> membershipList = membershipRepository.findAll(Sort.by(Sort.Direction.ASC, Membership_.CREATED_AT));
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_MEMBERSHIP_FILTER);
 
