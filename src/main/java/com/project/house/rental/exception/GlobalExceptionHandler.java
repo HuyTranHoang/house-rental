@@ -36,6 +36,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(CustomRuntimeException.class)
+    public ResponseEntity<Map<String, Object>> handleCustomRunTimeExpcetion(CustomRuntimeException ex) {
+        Map<String, Object> errorResponse = Map.of(
+                "timeStamp", LocalDateTime.now().toString(),
+                "statusCode", HttpStatus.BAD_REQUEST.value(),
+                "httpStatus", HttpStatus.BAD_REQUEST,
+                "reason", "Bad Request",
+                "message", ex.getMessage()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<HttpResponse> handleAllExceptions(Exception ex) {
         HttpResponse httpResponse = new HttpResponse(
