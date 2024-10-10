@@ -16,7 +16,7 @@ public interface AdvertisementService {
 
     void deleteAdvertisement(Long id);
 
-    List<AdvertisementDto> getAllAdvertisements();
+    List<AdvertisementDto> getAllAdvertisements(String isActived);
 
     AdvertisementDto updateIsActived(Long id);
 }

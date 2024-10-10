@@ -79,13 +79,18 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public List<AdvertisementDto> getAllAdvertisements() {
+    public List<AdvertisementDto> getAllAdvertisements(String isActived) {
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ADVERTISEMENT_FILTER);
 
-        Specification<Advertisement> isActiveSpec = (root, query, criteriaBuilder) ->
-                criteriaBuilder.isTrue(root.get(Advertisement_.IS_ACTIVED));
+        Specification<Advertisement> spec = (root, query, criteriaBuilder) ->
+                criteriaBuilder.conjunction();
 
-        List<Advertisement> advertisementList = advertisementRepository.findAll(isActiveSpec, Sort.by(Sort.Direction.ASC, Advertisement_.NAME));
+        if (isActived.equals("true")) {
+            spec = (root, query, criteriaBuilder) ->
+                    criteriaBuilder.and(criteriaBuilder.isTrue(root.get(Advertisement_.IS_ACTIVED)));
+        }
+
+        List<Advertisement> advertisementList = advertisementRepository.findAll(spec, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ADVERTISEMENT_FILTER);
 
