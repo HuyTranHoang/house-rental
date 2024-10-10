@@ -152,7 +152,7 @@ public class RoleServiceImpl implements RoleService {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new NoResultException("Không tìm thấy vai trò với id: " + id));
 
-        if (role.getName().equals("ROLE_ADMIN") || role.getName().equals("ROLE_USER")) {
+        if (role.getName().equals("Super Admin") || role.getName().equals("User")) {
             throw new IllegalArgumentException("Không thể xóa vai trò mặc định");
         }
 

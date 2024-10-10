@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(encodePassword);
         user.setActive(true);
         user.setNonLocked(true);
-        user.setRoles(List.of("ROLE_USER"));
+        user.setRoles(List.of("User"));
 
         emailSenderService.sendRegisterHTMLMail(user.getEmail());
 
