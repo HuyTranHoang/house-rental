@@ -56,7 +56,7 @@ public class AdvertisementController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AdvertisementDto>> getAllAdvertisements(@RequestParam String isActived) {
+    public ResponseEntity<List<AdvertisementDto>> getAllAdvertisements(@RequestParam(required = false) String isActived) {
         List<AdvertisementDto> advertisements = advertisementService.getAllAdvertisements(isActived);
         return new ResponseEntity<>(advertisements, HttpStatus.OK);
     }

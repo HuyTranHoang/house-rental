@@ -13,6 +13,7 @@ import jakarta.persistence.NoResultException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -85,7 +86,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         Specification<Advertisement> spec = (root, query, criteriaBuilder) ->
                 criteriaBuilder.conjunction();
 
-        if (isActived.equals("true")) {
+        if (StringUtils.hasLength(isActived) && isActived.equals("true")) {
             spec = (root, query, criteriaBuilder) ->
                     criteriaBuilder.and(criteriaBuilder.isTrue(root.get(Advertisement_.IS_ACTIVED)));
         }
