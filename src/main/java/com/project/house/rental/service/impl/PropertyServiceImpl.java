@@ -530,7 +530,6 @@ public class PropertyServiceImpl implements PropertyService {
         return userMembership;
     }
 
-
     public static boolean isValidPropertyStatus(String status) {
         try {
             Property.PropertyStatus.valueOf(status);
