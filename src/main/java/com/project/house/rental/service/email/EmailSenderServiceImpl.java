@@ -129,6 +129,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
+    @Async
     public void sendBlockHTMLMail(String to, String username, String propertyTitle) {
         try {
             Context context = new Context();
@@ -157,11 +158,11 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     @Override
     @Async
-    public void sendUnblockHTMLMail(String to, String username, String comment) {
+    public void sendUnblockHTMLMail(String to, String username,String propertyTitle) {
         try {
             Context context = new Context();
             context.setVariable("username", username);
-            context.setVariable("comment", comment);
+            context.setVariable("propertyTitle", propertyTitle);
             String text = templateEngine.process("unblock-email-template", context);
             createMessage(to, text, "Mogu - Thông báo mở khóa bài đăng");
         } catch (Exception e) {
