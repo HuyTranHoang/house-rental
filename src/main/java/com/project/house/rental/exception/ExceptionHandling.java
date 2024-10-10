@@ -40,7 +40,7 @@ public class ExceptionHandling {
     }
 
     @ExceptionHandler(CustomRuntimeException.class)
-    public ResponseEntity<HttpResponse> customRuntimeException(Exception e) {
+    public ResponseEntity<HttpResponse> customRuntimeException(CustomRuntimeException e) {
         return createResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
