@@ -3,6 +3,7 @@ package com.project.house.rental.service.impl;
 import com.project.house.rental.constant.FilterConstant;
 import com.project.house.rental.dto.AdvertisementDto;
 import com.project.house.rental.entity.Advertisement;
+import com.project.house.rental.entity.Advertisement_;
 import com.project.house.rental.mapper.AdvertisementMapper;
 import com.project.house.rental.repository.AdvertisementRepository;
 import com.project.house.rental.service.AdvertisementService;
@@ -10,6 +11,7 @@ import com.project.house.rental.service.CloudinaryService;
 import com.project.house.rental.utils.HibernateFilterHelper;
 import jakarta.persistence.NoResultException;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -80,7 +82,10 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     public List<AdvertisementDto> getAllAdvertisements() {
         hibernateFilterHelper.enableFilter(FilterConstant.DELETE_ADVERTISEMENT_FILTER);
 
-        List<Advertisement> advertisementList = advertisementRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+        Specification<Advertisement> isActiveSpec = (root, query, criteriaBuilder) ->
+                criteriaBuilder.isTrue(root.get(Advertisement_.IS_ACTIVED));
+
+        List<Advertisement> advertisementList = advertisementRepository.findAll(isActiveSpec, Sort.by(Sort.Direction.ASC, Advertisement_.NAME));
 
         hibernateFilterHelper.disableFilter(FilterConstant.DELETE_ADVERTISEMENT_FILTER);
 
