@@ -355,13 +355,13 @@ public class PropertyServiceImpl implements PropertyService {
         if (status.equals("unblock")) {
             property.setBlocked(false);
             propertyRepository.save(property);
-            sendUnblockEmailAsync(property);
+            emailSenderService.sendUnblockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
             return propertyMapper.toDto(property);
         }
 
         property.setBlocked(true);
         propertyRepository.save(property);
-        sendBlockEmailAsync(property);
+        emailSenderService.sendBlockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
         return propertyMapper.toDto(property);
     }
 
@@ -567,20 +567,6 @@ public class PropertyServiceImpl implements PropertyService {
         propertiesToUpdate.forEach(property -> property.setPriority(false));
 
         propertyRepository.saveAll(propertiesToUpdate);
-    }
-
-    // Other methods
-
-    private void sendUnblockEmailAsync(Property property) {
-        CompletableFuture.runAsync(() -> {
-            emailSenderService.sendUnblockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
-        });
-    }
-
-    private void sendBlockEmailAsync(Property property) {
-        CompletableFuture.runAsync(() -> {
-            emailSenderService.sendBlockHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
-        });
     }
 
 

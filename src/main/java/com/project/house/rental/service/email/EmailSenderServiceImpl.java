@@ -115,6 +115,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
+    @Async
     public void sendCommentReportHTMLMail(String to, String username, String propertyTitle) {
         try {
             Context context = new Context();
@@ -141,6 +142,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
+    @Async
     public void sendBlockCommentHTMLMail(String to, String username, String comment) {
         try {
             Context context = new Context();
@@ -154,6 +156,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
+    @Async
     public void sendUnblockHTMLMail(String to, String username, String comment) {
         try {
             Context context = new Context();
@@ -167,6 +170,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
+    @Async
     public void sendRechargeHTMLMail(String to, String username, String amount) {
         try {
             Context context = new Context();
