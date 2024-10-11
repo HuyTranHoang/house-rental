@@ -389,7 +389,7 @@ public class PropertyServiceImpl implements PropertyService {
             notification.setType(Notification.NotificationType.APPROVED);
         } else if (status.equals("REJECTED")) {
             notification.setType(Notification.NotificationType.REJECTED);
-            emailSenderService.sendRejectHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), reason);
+            emailSenderService.sendRejectHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle(), reason);
         }
         notificationRespository.save(notification);
         return propertyMapper.toDto(property);

@@ -186,10 +186,11 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     @Override
     @Async
-    public void sendRejectHTMLMail(String to, String username, String reason) {
+    public void sendRejectHTMLMail(String to, String username, String propertyTitle, String reason) {
         try {
             Context context = new Context();
             context.setVariable("username", username);
+            context.setVariable("propertyTitle", propertyTitle);
             context.setVariable("reason", reason);
             String text = templateEngine.process("reject-email-template", context);
             createMessage(to, text, "Mogu - Thông báo từ chối duyệt bài đăng");
