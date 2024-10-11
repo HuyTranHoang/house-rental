@@ -24,4 +24,6 @@ public interface EmailSenderService {
     void sendRechargeHTMLMail(String to, String username, String amount);
 
     void sendRejectHTMLMail(String to, String username, String propertyTitle, String reason);
+
+    void sendApproveHTMLMail(String to, String username, String propertyTitle);
 }

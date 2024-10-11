@@ -387,6 +387,7 @@ public class PropertyServiceImpl implements PropertyService {
 
         if (status.equals("APPROVED")) {
             notification.setType(Notification.NotificationType.APPROVED);
+            emailSenderService.sendApproveHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle());
         } else if (status.equals("REJECTED")) {
             notification.setType(Notification.NotificationType.REJECTED);
             emailSenderService.sendRejectHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), property.getTitle(), reason);
