@@ -83,8 +83,10 @@ public class PropertyController {
 
     @PreAuthorize("hasAnyAuthority('property:update', 'admin:all')")
     @PutMapping("/status/{id}")
-    public ResponseEntity<PropertyDto> updatePropertyStatus(@PathVariable Long id, @RequestParam String status) {
-        PropertyDto propertyDto = propertyService.updatePropertyStatus(id, status);
+    public ResponseEntity<PropertyDto> updatePropertyStatus(@PathVariable Long id,
+                                                            @RequestParam String status,
+                                                            @RequestParam(required = false) String reason) {
+        PropertyDto propertyDto = propertyService.updatePropertyStatus(id, status, reason);
         return ResponseEntity.ok(propertyDto);
     }
 

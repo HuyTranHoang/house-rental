@@ -366,7 +366,7 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public PropertyDto updatePropertyStatus(long id, String status) {
+    public PropertyDto updatePropertyStatus(long id, String status, String reason) {
         Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new NoResultException("Không tìm thấy bài đăng !"));
 
@@ -389,6 +389,7 @@ public class PropertyServiceImpl implements PropertyService {
             notification.setType(Notification.NotificationType.APPROVED);
         } else if (status.equals("REJECTED")) {
             notification.setType(Notification.NotificationType.REJECTED);
+            emailSenderService.sendRejectHTMLMail(property.getUser().getEmail(), property.getUser().getUsername(), reason);
         }
         notificationRespository.save(notification);
         return propertyMapper.toDto(property);

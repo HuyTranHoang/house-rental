@@ -184,6 +184,20 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         }
     }
 
+    @Override
+    @Async
+    public void sendRejectHTMLMail(String to, String username, String reason) {
+        try {
+            Context context = new Context();
+            context.setVariable("username", username);
+            context.setVariable("reason", reason);
+            String text = templateEngine.process("reject-email-template", context);
+            createMessage(to, text, "Mogu - Thông báo từ chối duyệt bài đăng");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email");
+        }
+    }
+
     private void createMessage(String to, String text, String subject) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");

@@ -5,17 +5,18 @@ meta {
 }
 
 put {
-  url: {{host}}/api/properties/status/:id?status=APPROVED
+  url: {{host}}/api/properties/status/:id?status=REJECTED&reason=MỘT HAI BA BỐN
   body: json
   auth: bearer
 }
 
 params:query {
-  status: APPROVED
+  status: REJECTED
+  reason: MỘT HAI BA BỐN
 }
 
 params:path {
-  id: 15
+  id: 78
 }
 
 auth:bearer {
